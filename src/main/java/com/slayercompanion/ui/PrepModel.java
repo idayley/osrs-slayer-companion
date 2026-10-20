@@ -88,13 +88,23 @@ public class PrepModel
 		return upgradeItem == null ? null : "Biggest upgrade: " + upgradeItem + " (+" + upgradePercent + "% dps)";
 	}
 
-	/**
-	 * @param monster the monster at the selected location; null when the task has no bundled data
-	 * @param best    {@link GearOptimizer#best} for the style; empty when the bank has not been seen
-	 */
-	public static PrepModel build(CurrentTask current, Monster monster, OwnedItems owned, Style style,
-		Optional<Loadout> best, Optional<GearOptimizer.Upgrade> upgrade, boolean highlighting, Instant now)
+	/** Gear advice needs the bank: until it has been seen, inventory and worn items alone would mislead. */
+	public static <T> Optional<T> gateOnBank(OwnedItems owned, Optional<T> value)
 	{
+		return owned.bankSeen() ? value : Optional.empty();
+	}
+
+	/**
+	 * @param monster     the monster at the selected location; null when the task has no bundled data
+	 * @param hasSafespot whether the selected location has a known safespot (affects suggested supplies)
+	 * @param best        {@link GearOptimizer#best} for the style; ignored until the bank has been seen
+	 */
+	public static PrepModel build(CurrentTask current, Monster monster, boolean hasSafespot, OwnedItems owned,
+		Style style, Optional<Loadout> bestGear, Optional<GearOptimizer.Upgrade> bestUpgrade, boolean highlighting,
+		Instant now)
+	{
+		Optional<Loadout> best = gateOnBank(owned, bestGear);
+		Optional<GearOptimizer.Upgrade> upgrade = gateOnBank(owned, bestUpgrade);
 		SlayerTask task = current.getTask();
 		StringBuilder sub = new StringBuilder().append(current.getRemaining()).append(" left");
 		current.getMaster().ifPresent(m -> sub.append(" · from ").append(Format.capitalize(m)));
@@ -106,10 +116,11 @@ public class PrepModel
 		Set<Integer> highlight = new LinkedHashSet<>();
 		List<BringLine> bring = new ArrayList<>();
 		addBring(task.getRequiredItems(), owned, bring, highlight);
-		addBring(task.getRecommendedSupplies(), owned, bring, highlight);
+		addBring(task.getRecommendedSupplies().isEmpty() ? Supplies.derive(monster, hasSafespot)
+			: task.getRecommendedSupplies(), owned, bring, highlight);
 
 		List<Slot> slots = new ArrayList<>();
-		String gearMessage = null;
+		String gearMessage = owned.bankSeen() ? null : OPEN_BANK;
 		if (best.isPresent())
 		{
 			Loadout l = best.get();

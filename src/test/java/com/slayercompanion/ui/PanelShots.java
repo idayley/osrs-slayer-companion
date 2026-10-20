@@ -92,7 +92,7 @@ public final class PanelShots
 		owned.updateBank(java.util.Collections.singletonMap(Samples.SHARK, 214), now.minus(Duration.ofMinutes(12)));
 		CurrentTask task = Samples.task(Samples.fireGiants(), 87, 142);
 		GearOptimizer.Upgrade upgrade = new GearOptimizer.Upgrade(Samples.item(11832, "Bandos chestplate", "body"), 4.2);
-		PrepModel prep = PrepModel.build(task, Samples.fireGiant(), owned, Style.MELEE,
+		PrepModel prep = PrepModel.build(task, Samples.fireGiant(), true, owned, Style.MELEE,
 			Optional.of(Samples.meleeLoadout()), Optional.of(upgrade), false, now);
 		WhereToGoModel where = WhereToGoModel.build(Samples.fireGiantRanking(), null);
 
@@ -124,7 +124,7 @@ public final class PanelShots
 		shoot(panel, SlayerCompanionPanel.Tab.ON_TASK, new File(dir, "ontask.png"));
 
 		PrepModel noBank = PrepModel.build(Samples.task(Samples.needs("Aberrant spectres", "nose peg or Slayer helmet",
-			4168), 120, 120), null, new OwnedItems(), Style.RANGED, Optional.empty(), Optional.empty(), false, now);
+			4168), 120, 120), null, false, new OwnedItems(), Style.RANGED, Optional.empty(), Optional.empty(), false, now);
 		panel.update(noBank, WhereToGoModel.noTask(), OnTaskModel.noTask());
 		shoot(panel, SlayerCompanionPanel.Tab.PREP, new File(dir, "prep-nobank.png"));
 		shoot(panel, SlayerCompanionPanel.Tab.ON_TASK, new File(dir, "notask.png"));

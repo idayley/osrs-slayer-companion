@@ -17,6 +17,12 @@ public final class FoodItems
 	{
 	}
 
+	/** All food item ids this plugin knows. */
+	public static Set<Integer> ids()
+	{
+		return FOOD;
+	}
+
 	public static boolean isFood(int itemId)
 	{
 		return FOOD.contains(itemId);

@@ -46,6 +46,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
@@ -147,19 +151,31 @@ public class SlayerCompanionPlugin extends Plugin
 	private boolean taskDirty;
 	private boolean planDirty;
 	private int ticksSincePlan;
-	/** Bumped when the set of owned item ids changes; gear searches are cached against it. */
+	/** Bumped when the set of owned catalogue (equipment) item ids changes; gear results are keyed on it. */
 	private int ownedVersion;
-	private final Map<Integer, Set<Integer>> containerIds = new HashMap<>();
+	private final Map<Integer, Set<Integer>> containerGearIds = new HashMap<>();
 	private int inventoryFood = -1;
 	private final Map<Skill, Integer> levels = new EnumMap<>(Skill.class);
 	private String savedInitialTask;
 	private int savedInitialAmount;
 	private PrepModel prepModel = PrepModel.noTask();
 	private WhereToGoModel whereModel = WhereToGoModel.noTask();
-	/** Gear searches are slow (an upgrade scan is ~100 ms), so results are kept until gear inputs change. */
-	private final Map<Integer, Optional<Loadout>> gearCache = new HashMap<>();
-	private final Map<Integer, Optional<GearOptimizer.Upgrade>> upgradeCache = new HashMap<>();
-	private String gearCacheKey;
+	/*
+	 * Gear searches are slow (an upgrade scan is ~100-200 ms), so they run on gearExecutor against an immutable
+	 * OwnedItems snapshot. Results are stored per monster with the key they were computed for; the panel keeps
+	 * showing the previous result (or nothing) until a result for the current key arrives.
+	 */
+	private ExecutorService gearExecutor;
+	/** Bumped on shutdown so results from a previous run are dropped. */
+	private int gearGeneration;
+	private final Map<Integer, Optional<Loadout>> bestByMonster = new HashMap<>();
+	private final Map<Integer, String> bestKeyByMonster = new HashMap<>();
+	private final Map<Integer, Optional<GearOptimizer.Upgrade>> upgradeByMonster = new HashMap<>();
+	private final Map<Integer, String> upgradeKeyByMonster = new HashMap<>();
+	private final Set<String> pendingGearJobs = new HashSet<>();
+	private OwnedItems gearSnapshot;
+	private String gearSnapshotKey;
+	private Set<Integer> catalogueIds;
 	/** Quest states run client scripts, so they are read on login and on the periodic refresh only. */
 	private final Map<String, Boolean> questCache = new HashMap<>();
 
@@ -175,10 +191,18 @@ public class SlayerCompanionPlugin extends Plugin
 		data = GameData.load("/com/slayercompanion");
 		optimizer = new GearOptimizer(data.allEquipment());
 		equipmentQuests = new HashSet<>();
+		catalogueIds = new HashSet<>();
 		for (Equipment e : data.allEquipment())
 		{
 			equipmentQuests.addAll(e.getQuestReqs());
+			catalogueIds.add(e.getItemId());
 		}
+		gearExecutor = Executors.newSingleThreadExecutor(r ->
+		{
+			Thread t = new Thread(r, "slayer-companion-gear");
+			t.setDaemon(true);
+			return t;
+		});
 		tracker = new TaskTracker(client, data);
 		session = new TaskSession(Clock.systemUTC());
 		owned = new OwnedItems(itemManager::canonicalize);
@@ -228,10 +252,11 @@ public class SlayerCompanionPlugin extends Plugin
 		highlighting = false;
 		inventoryFood = -1;
 		levels.clear();
-		gearCache.clear();
-		upgradeCache.clear();
-		containerIds.clear();
-		gearCacheKey = null;
+		gearExecutor.shutdownNow();
+		gearExecutor = null;
+		gearGeneration++;
+		clearGearResults();
+		containerGearIds.clear();
 		questCache.clear();
 		prepModel = PrepModel.noTask();
 		whereModel = WhereToGoModel.noTask();
@@ -307,9 +332,15 @@ public class SlayerCompanionPlugin extends Plugin
 	@Subscribe
 	public void onRuneScapeProfileChanged(RuneScapeProfileChanged e)
 	{
-		loadProfile();
-		taskDirty = true;
-		planDirty = true;
+		// The store and owned items are client-thread only, whichever thread posts this event.
+		clientThread.invoke(() ->
+		{
+			loadProfile();
+			clearGearResults();
+			containerGearIds.clear();
+			taskDirty = true;
+			planDirty = true;
+		});
 	}
 
 	@Subscribe
@@ -388,9 +419,17 @@ public class SlayerCompanionPlugin extends Plugin
 		{
 			return;
 		}
-		// Quantities (food, runes) change constantly; only a different set of items can change the best gear.
-		Set<Integer> ids = new HashSet<>(items.keySet());
-		if (!ids.equals(containerIds.put(id, ids)))
+		// Potions, loot and food change constantly; only a different set of owned equipment can change the gear.
+		Set<Integer> gearIds = new HashSet<>();
+		for (int itemId : items.keySet())
+		{
+			int canon = itemManager.canonicalize(itemId);
+			if (catalogueIds.contains(canon))
+			{
+				gearIds.add(canon);
+			}
+		}
+		if (!gearIds.equals(containerGearIds.put(id, gearIds)))
 		{
 			ownedVersion++;
 		}
@@ -548,13 +587,7 @@ public class SlayerCompanionPlugin extends Plugin
 		CombatStats stats = stats();
 		Set<String> questsDone = questsDone(locations);
 
-		String key = style + ":" + ownedVersion + ":" + stats + ":" + questsDone;
-		if (!key.equals(gearCacheKey))
-		{
-			gearCache.clear();
-			upgradeCache.clear();
-			gearCacheKey = key;
-		}
+		String key = style + ":" + ownedVersion + ":" + owned.bankSeen() + ":" + stats + ":" + questsDone;
 
 		List<RankedLocation> ranked = Collections.emptyList();
 		WorldPoint player = playerPoint();
@@ -564,8 +597,8 @@ public class SlayerCompanionPlugin extends Plugin
 				l -> Requirements.lockReason(l, this::skillLevel, questsDone::contains, SlayerCompanionPlugin::questName, owned),
 				c.getKonarLocation().filter(s -> !s.trim().isEmpty()),
 				l -> safespots.hasAny(l.getId()),
-				l -> xpPerHour(stats, l),
-				l -> gpPerHour(stats, l));
+				l -> xpPerHour(stats, l, key),
+				l -> gpPerHour(stats, l, key));
 		}
 
 		String selectedId = WhereToGoModel.effectiveSelection(ranked, preferredLocationId);
@@ -581,26 +614,117 @@ public class SlayerCompanionPlugin extends Plugin
 		safespotMenu.setContext(locationId, selectedMonster == null ? 0 : selectedMonster.getId());
 		safespotOverlay.setLocationId(locationId);
 
-		Optional<Loadout> best = selectedMonster == null ? Optional.empty() : bestGear(stats, selectedMonster);
-		Monster monster = selectedMonster;
-		Optional<GearOptimizer.Upgrade> upgrade = best.isPresent()
-			? upgradeCache.computeIfAbsent(monster.getId(),
-				k -> optimizer.biggestUpgrade(stats, questsDone, best.get(), monster, true, owned))
-			: Optional.empty();
-		prepModel = PrepModel.build(c, selectedMonster, owned, style, best, upgrade, highlighting, Instant.now());
+		Optional<Loadout> best = selectedMonster == null ? Optional.empty() : bestGear(stats, selectedMonster, key);
+		Optional<GearOptimizer.Upgrade> upgrade = selectedMonster == null ? Optional.empty()
+			: upgrade(stats, questsDone, selectedMonster, key);
+		boolean safespot = selectedLocation != null && safespots.hasAny(selectedLocation.getId());
+		prepModel = PrepModel.build(c, selectedMonster, safespot, owned, style, best, upgrade, highlighting,
+			Instant.now());
 		bankHighlightOverlay.setItems(highlighting ? prepModel.getHighlightIds() : Collections.emptySet());
 		whereModel = WhereToGoModel.build(ranked, selectedId);
 	}
 
-	private Optional<Loadout> bestGear(CombatStats stats, Monster m)
+	private void clearGearResults()
 	{
-		return gearCache.computeIfAbsent(m.getId(),
-			k -> optimizer.best(stats, style, m, true, owned));
+		bestByMonster.clear();
+		bestKeyByMonster.clear();
+		upgradeByMonster.clear();
+		upgradeKeyByMonster.clear();
+		pendingGearJobs.clear();
+		gearSnapshot = null;
+		gearSnapshotKey = null;
 	}
 
-	private double dps(CombatStats stats, Monster m)
+	/** Latest best gear for the monster; requests a fresh search when it is missing or stale. */
+	private Optional<Loadout> bestGear(CombatStats stats, Monster m, String key)
 	{
-		Loadout l = bestGear(stats, m).orElseGet(() ->
+		if (!owned.bankSeen())
+		{
+			return Optional.empty();
+		}
+		int id = m.getId();
+		if (!key.equals(bestKeyByMonster.get(id)))
+		{
+			Style s = style;
+			runGearJob("best:" + key + ":" + id, snapshot -> optimizer.best(stats, s, m, true, snapshot),
+				r ->
+				{
+					bestByMonster.put(id, r);
+					bestKeyByMonster.put(id, key);
+				});
+		}
+		return bestByMonster.getOrDefault(id, Optional.empty());
+	}
+
+	/** Latest biggest upgrade for the monster; computed once best gear for the current key is known. */
+	private Optional<GearOptimizer.Upgrade> upgrade(CombatStats stats, Set<String> questsDone, Monster m, String key)
+	{
+		int id = m.getId();
+		Optional<Loadout> best = bestByMonster.getOrDefault(id, Optional.empty());
+		if (owned.bankSeen() && best.isPresent() && key.equals(bestKeyByMonster.get(id))
+			&& !key.equals(upgradeKeyByMonster.get(id)))
+		{
+			Loadout base = best.get();
+			runGearJob("upgrade:" + key + ":" + id,
+				snapshot -> optimizer.biggestUpgrade(stats, questsDone, base, m, true, snapshot),
+				r ->
+				{
+					upgradeByMonster.put(id, r);
+					upgradeKeyByMonster.put(id, key);
+				});
+		}
+		return upgradeByMonster.getOrDefault(id, Optional.empty());
+	}
+
+	/** Runs a gear search off the client thread on a snapshot of owned items; the result is applied on the client thread. */
+	private <T> void runGearJob(String tag, Function<OwnedItems, T> search, Consumer<T> apply)
+	{
+		ExecutorService executor = gearExecutor;
+		if (executor == null || !pendingGearJobs.add(tag))
+		{
+			return;
+		}
+		String snapshotKey = ownedVersion + ":" + owned.bankSeenAt().orElse(null);
+		if (!snapshotKey.equals(gearSnapshotKey))
+		{
+			// Canonical ids are already applied, so the copy needs no ItemManager (safe off-thread).
+			gearSnapshot = OwnedItems.fromJson(owned.toJson());
+			gearSnapshotKey = snapshotKey;
+		}
+		OwnedItems snapshot = gearSnapshot;
+		int generation = gearGeneration;
+		executor.execute(() ->
+		{
+			T result;
+			try
+			{
+				result = search.apply(snapshot);
+			}
+			catch (RuntimeException ex)
+			{
+				log.warn("Gear search failed", ex);
+				result = null;
+			}
+			T r = result;
+			clientThread.invoke(() ->
+			{
+				if (generation != gearGeneration)
+				{
+					return;
+				}
+				pendingGearJobs.remove(tag);
+				if (r != null)
+				{
+					apply.accept(r);
+					planDirty = true;
+				}
+			});
+		});
+	}
+
+	private double dps(CombatStats stats, Monster m, String key)
+	{
+		Loadout l = bestGear(stats, m, key).orElseGet(() ->
 		{
 			Loadout empty = new Loadout();
 			empty.setStyle(style);
@@ -609,17 +733,17 @@ public class SlayerCompanionPlugin extends Plugin
 		return DpsCalculator.dps(stats, l, m, true);
 	}
 
-	private double xpPerHour(CombatStats stats, Location l)
+	private double xpPerHour(CombatStats stats, Location l, String key)
 	{
 		return data.monster(l.getMonsterId())
-			.map(m -> Estimates.xpPerHour(Estimates.killsPerHour(dps(stats, m), m, l), m))
+			.map(m -> Estimates.xpPerHour(Estimates.killsPerHour(dps(stats, m, key), m, l), m))
 			.orElse(0.0);
 	}
 
-	private double gpPerHour(CombatStats stats, Location l)
+	private double gpPerHour(CombatStats stats, Location l, String key)
 	{
 		return data.monster(l.getMonsterId())
-			.map(m -> Estimates.gpPerHour(Estimates.killsPerHour(dps(stats, m), m, l),
+			.map(m -> Estimates.gpPerHour(Estimates.killsPerHour(dps(stats, m, key), m, l),
 				Estimates.gpPerKill(m, itemManager::getItemPrice), l))
 			.orElse(0.0);
 	}

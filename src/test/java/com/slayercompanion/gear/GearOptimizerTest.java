@@ -105,6 +105,21 @@ public class GearOptimizerTest
 	}
 
 	@Test
+	public void upgradeChecksSlayerLevel()
+	{
+		Equipment leaf = eq(20727, "Leaf-bladed battleaxe", "weapon", 5, "slash", 110, "str", 110, null);
+		leaf.getSkillReqs().put("slayer", 55);
+		GearOptimizer g = new GearOptimizer(List.of(SCIM, leaf));
+		Loadout cur = new Loadout();
+		cur.getBySlot().put("weapon", SCIM);
+		CombatStats lowSlayer = new CombatStats(99, 99, 99, 99, 99, 99, 99, 40);
+		assertFalse(g.biggestUpgrade(lowSlayer, new HashSet<>(), cur, giant(), false, owned(SCIM)).isPresent());
+		CombatStats highSlayer = new CombatStats(99, 99, 99, 99, 99, 99, 99, 55);
+		assertEquals("Leaf-bladed battleaxe",
+			g.biggestUpgrade(highSlayer, new HashSet<>(), cur, giant(), false, owned(SCIM)).get().getItem().getName());
+	}
+
+	@Test
 	public void upgradeIgnoresPrice()
 	{
 		GearOptimizer g = new GearOptimizer(List.of(SCIM, WHIP, PRICEY, HIGHREQ));

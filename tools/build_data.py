@@ -70,7 +70,7 @@ _SENT_SKIP = re.compile(r"creat|craft|make|made|enchant|smith|imbu|process|kill|
                         r"train|charg|recharg|purchas|\bbuy|access|mine[sd]?\b|cut\b", re.I)
 # Skills that can gate wielding or wearing gear (this excludes crafting, smithing, slayer-to-kill etc.).
 EQUIP_SKILLS = {"attack", "strength", "defence", "ranged", "magic", "prayer", "hitpoints",
-                "mining", "woodcutting", "agility"}
+                "mining", "woodcutting", "agility", "slayer"}
 
 _SKILL_PATTERNS = [
     re.compile(r"(?:\[\[)?(%s)(?:\|[^\]]*)?(?:\]\])?\s+levels?\s+(?:of\s+)?(\d+)" % _SKILL_RE),
@@ -369,6 +369,19 @@ def _base_title(title):
     return re.sub(r"\s*\([^)]*\)\s*$", "", title) or title
 
 
+# Cosmetic-kit variants named with a prefix, e.g. "Frozen abyssal whip" -> "Abyssal whip".
+_KIT_PREFIXES = ("Frozen", "Volcanic", "Holy", "Sanguine", "Blood", "Ice", "Smoke", "Shadow", "Twisted")
+
+
+def _kit_base(title, known):
+    """The base item a prefix-kit variant was made from, if that base is a known page; else None."""
+    first, _, rest = title.partition(" ")
+    if first not in _KIT_PREFIXES or not rest:
+        return None
+    base = rest[0].upper() + rest[1:]
+    return base if base in known else None
+
+
 def _useful(e):
     if not e.get("slot") or not e.get("id"):
         return False
@@ -401,7 +414,9 @@ def build_equipment(src):
             "questReqs": [],
             "twoHanded": bool(e.get("isTwoHanded")) or e["slot"] == "2h",
         })
-    titles = {x["_page"] for x in out} | {_base_title(x["_page"]) for x in out}
+    known = {x["_page"] for x in out}
+    titles = known | {_base_title(t) for t in known}
+    titles |= {b for b in (_kit_base(_base_title(t), known) for t in known) if b}
     pages = src.wikitext(sorted(titles))
 
     def reqs_for(title):
@@ -414,6 +429,9 @@ def build_equipment(src):
         base = _base_title(title)
         if not skills and not quests and base != title:  # (or), (a), (bh), (deadman)... inherit the base item
             skills, quests = reqs_for(base)
+        kit = _kit_base(base, known)
+        if not skills and not quests and kit:  # Frozen/Volcanic abyssal whip... inherit the base item
+            skills, quests = reqs_for(kit)
         x["skillReqs"], x["questReqs"] = dict(skills), list(quests)
     return out
 

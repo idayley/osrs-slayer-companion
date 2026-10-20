@@ -105,3 +105,24 @@ def test_black_mask_uses_wiki_values():
 def test_whip_or_inherits_attack_70():
     assert equipment()[26482]["skillReqs"]["attack"] == 70
 
+
+def test_slayer_is_an_equip_skill():
+    skills, _ = bd.parse_requirements("The slayer helmet requires 10 [[Defence]] and 55 [[Slayer]] to wear.")
+    assert skills == {"defence": 10, "slayer": 55}
+
+
+def test_kit_variant_inherits_base_requirements(monkeypatch):
+    raw = SRC.equipment_raw()
+    whip = next(e for e in raw if e["id"] == 4151)
+    raw = raw + [dict(whip, id=12774, name="Frozen abyssal whip", version="")]
+    monkeypatch.setattr(SRC, "equipment_raw", lambda: raw)
+    eq = {e["itemId"]: e for e in bd.build_equipment(SRC)}
+    assert eq[12774]["skillReqs"]["attack"] == 70
+
+
+def test_kit_base_needs_known_prefix_and_page():
+    known = {"Abyssal whip", "Scythe of vitur"}
+    assert bd._kit_base("Volcanic abyssal whip", known) == "Abyssal whip"
+    assert bd._kit_base("Sanguine scythe of vitur", known) == "Scythe of vitur"
+    assert bd._kit_base("Dragon scimitar", known) is None
+    assert bd._kit_base("Frozen key", known) is None

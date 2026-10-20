@@ -41,6 +41,10 @@ public class BundledGeneratedDataTest
 		assertEquals("weapon", whip.getSlot());
 		assertEquals(82, (int) whip.getBonuses().get("slash"));
 		assertEquals(Integer.valueOf(70), whip.getSkillReqs().get("attack"));
+		Equipment frozenWhip = equipment.stream().filter(e -> "Frozen abyssal whip".equals(e.getName()))
+			.findFirst().orElseThrow(AssertionError::new);
+		assertEquals(Integer.valueOf(70), frozenWhip.getSkillReqs().get("attack"));
+		assertTrue(equipment.stream().anyMatch(e -> e.getSkillReqs().containsKey("slayer")));
 
 		for (Equipment e : equipment)
 		{

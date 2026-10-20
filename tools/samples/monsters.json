@@ -1,0 +1,99 @@
+[
+ {
+  "id": 415,
+  "name": "Abyssal demon",
+  "version": "Standard",
+  "image": "Abyssal demon.png",
+  "level": 124,
+  "speed": 4,
+  "style": [
+   "Stab"
+  ],
+  "size": 1,
+  "max_hit": "8",
+  "skills": {
+   "atk": 97,
+   "def": 135,
+   "hp": 150,
+   "magic": 1,
+   "ranged": 1,
+   "str": 67
+  },
+  "offensive": {
+   "atk": 0,
+   "magic": 0,
+   "magic_str": 0,
+   "ranged": 0,
+   "ranged_str": 0,
+   "str": 0
+  },
+  "defensive": {
+   "flat_armour": 0,
+   "crush": 20,
+   "magic": 0,
+   "heavy": 20,
+   "standard": 20,
+   "light": 20,
+   "slash": 20,
+   "stab": 20
+  },
+  "attributes": [
+   "demon"
+  ],
+  "immunities": {
+   "burn": null
+  },
+  "is_slayer_monster": true,
+  "weakness": null
+ },
+ {
+  "id": 2075,
+  "name": "Fire giant",
+  "version": "Level 86",
+  "image": "Fire giant.png",
+  "level": 86,
+  "speed": 5,
+  "style": [
+   "Slash"
+  ],
+  "size": 2,
+  "max_hit": "11",
+  "skills": {
+   "atk": 65,
+   "def": 65,
+   "hp": 111,
+   "magic": 1,
+   "ranged": 1,
+   "str": 65
+  },
+  "offensive": {
+   "atk": 29,
+   "magic": 0,
+   "magic_str": 0,
+   "ranged": 0,
+   "ranged_str": 0,
+   "str": 31
+  },
+  "defensive": {
+   "flat_armour": 0,
+   "crush": 2,
+   "magic": 0,
+   "heavy": 0,
+   "standard": 0,
+   "light": 0,
+   "slash": 3,
+   "stab": 0
+  },
+  "attributes": [
+   "fiery"
+  ],
+  "immunities": {
+   "burn": "Weak"
+  },
+  "is_slayer_monster": true,
+  "weakness": {
+   "element": "water",
+   "severity": 100
+  }
+ }
+]

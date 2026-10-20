@@ -1,0 +1,95 @@
+[
+ {
+  "name": "'24-carat' sword",
+  "id": 24539,
+  "weight": 0.453,
+  "version": "",
+  "slot": "weapon",
+  "image": "'24-carat' sword.png",
+  "speed": 4,
+  "category": "Blunt",
+  "bonuses": {
+   "str": -10,
+   "ranged_str": 0,
+   "magic_str": 0,
+   "prayer": 0
+  },
+  "offensive": {
+   "stab": -100,
+   "slash": -100,
+   "crush": -50,
+   "magic": 0,
+   "ranged": 0
+  },
+  "defensive": {
+   "stab": 0,
+   "slash": 0,
+   "crush": 0,
+   "magic": 0,
+   "ranged": 0
+  },
+  "isTwoHanded": false
+ },
+ {
+  "name": "Abyssal whip",
+  "id": 4151,
+  "weight": 0.453,
+  "version": "",
+  "slot": "weapon",
+  "image": "Abyssal whip.png",
+  "speed": 4,
+  "category": "Whip",
+  "bonuses": {
+   "str": 82,
+   "ranged_str": 0,
+   "magic_str": 0,
+   "prayer": 0
+  },
+  "offensive": {
+   "stab": 0,
+   "slash": 82,
+   "crush": 0,
+   "magic": 0,
+   "ranged": 0
+  },
+  "defensive": {
+   "stab": 0,
+   "slash": 0,
+   "crush": 0,
+   "magic": 0,
+   "ranged": 0
+  },
+  "isTwoHanded": false
+ },
+ {
+  "name": "Amulet of fury",
+  "id": 6585,
+  "weight": 0.01,
+  "version": "",
+  "slot": "neck",
+  "image": "Amulet of fury.png",
+  "speed": 0,
+  "category": "",
+  "bonuses": {
+   "str": 8,
+   "ranged_str": 0,
+   "magic_str": 0,
+   "prayer": 5
+  },
+  "offensive": {
+   "stab": 10,
+   "slash": 10,
+   "crush": 10,
+   "magic": 10,
+   "ranged": 10
+  },
+  "defensive": {
+   "stab": 15,
+   "slash": 15,
+   "crush": 15,
+   "magic": 15,
+   "ranged": 15
+  },
+  "isTwoHanded": false
+ }
+]

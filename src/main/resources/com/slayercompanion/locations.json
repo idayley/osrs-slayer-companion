@@ -1,0 +1,2281 @@
+[
+ {
+  "id": "aberrant-spectres--slayer-tower-first-floor",
+  "name": "Slayer Tower (first floor)",
+  "taskId": "aberrant-spectres",
+  "monsterId": 2,
+  "entrance": {
+   "x": 3428,
+   "y": 3543,
+   "plane": 1
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "aberrant-spectres--stronghold-slayer-cave",
+  "name": "Stronghold Slayer Cave",
+  "taskId": "aberrant-spectres",
+  "monsterId": 2,
+  "entrance": {
+   "x": 2458,
+   "y": 9780,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "aberrant-spectres--catacombs-of-kourend",
+  "name": "Catacombs of Kourend",
+  "taskId": "aberrant-spectres",
+  "monsterId": 7279,
+  "entrance": {
+   "x": 1621,
+   "y": 10004,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Catacombs bonus drops"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 2.97
+ },
+ {
+  "id": "abyssal-demons--slayer-tower-second-floor",
+  "name": "Slayer Tower (second floor)",
+  "taskId": "abyssal-demons",
+  "monsterId": 415,
+  "entrance": {
+   "x": 3415,
+   "y": 3569,
+   "plane": 2
+  },
+  "tags": [
+   "Single-combat"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "abyssal-demons--slayer-tower-basement",
+  "name": "Slayer Tower (basement)",
+  "taskId": "abyssal-demons",
+  "monsterId": 415,
+  "entrance": {
+   "x": 3436,
+   "y": 9964,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "abyssal-demons--catacombs-of-kourend",
+  "name": "Catacombs of Kourend",
+  "taskId": "abyssal-demons",
+  "monsterId": 7241,
+  "entrance": {
+   "x": 1673,
+   "y": 10084,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Catacombs bonus drops"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 2.63
+ },
+ {
+  "id": "abyssal-demons--wilderness-slayer-cave",
+  "name": "Wilderness Slayer Cave",
+  "taskId": "abyssal-demons",
+  "monsterId": 11239,
+  "entrance": {
+   "x": 3343,
+   "y": 10163,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Cannon allowed",
+   "Wilderness"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.4,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "aviansie--god-wars-dungeon",
+  "name": "God Wars Dungeon",
+  "taskId": "aviansie",
+  "monsterId": 3173,
+  "entrance": {
+   "x": 2855,
+   "y": 5283,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "DEATH_PLATEAU"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "basilisks--fremennik-slayer-dungeon",
+  "name": "Fremennik Slayer Dungeon",
+  "taskId": "basilisks",
+  "monsterId": 417,
+  "entrance": {
+   "x": 2742,
+   "y": 10008,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "basilisks--jormungand-s-prison",
+  "name": "Jormungand's Prison",
+  "taskId": "basilisks",
+  "monsterId": 9283,
+  "entrance": {
+   "x": 2475,
+   "y": 10403,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "THE_FREMENNIK_EXILES"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "black-demons--taverley-dungeon",
+  "name": "Taverley Dungeon",
+  "taskId": "black-demons",
+  "monsterId": 240,
+  "entrance": {
+   "x": 2853,
+   "y": 9786,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "black-demons--chasm-of-fire",
+  "name": "Chasm of Fire",
+  "taskId": "black-demons",
+  "monsterId": 240,
+  "entrance": {
+   "x": 1377,
+   "y": 9894,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.4,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "black-demons--catacombs-of-kourend",
+  "name": "Catacombs of Kourend",
+  "taskId": "black-demons",
+  "monsterId": 7243,
+  "entrance": {
+   "x": 1718,
+   "y": 10086,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Catacombs bonus drops"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 2.71
+ },
+ {
+  "id": "black-demons--wilderness-slayer-cave",
+  "name": "Wilderness Slayer Cave",
+  "taskId": "black-demons",
+  "monsterId": 7874,
+  "entrance": {
+   "x": 3359,
+   "y": 10114,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Cannon allowed",
+   "Wilderness"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.4,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "black-demons--brimhaven-dungeon",
+  "name": "Brimhaven Dungeon",
+  "taskId": "black-demons",
+  "monsterId": 240,
+  "entrance": {
+   "x": 2703,
+   "y": 9483,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "bloodveld--slayer-tower-first-floor",
+  "name": "Slayer Tower (first floor)",
+  "taskId": "bloodveld",
+  "monsterId": 484,
+  "entrance": {
+   "x": 3417,
+   "y": 3565,
+   "plane": 1
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "bloodveld--slayer-tower-basement",
+  "name": "Slayer Tower (basement)",
+  "taskId": "bloodveld",
+  "monsterId": 484,
+  "entrance": {
+   "x": 3412,
+   "y": 9935,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "bloodveld--stronghold-slayer-cave",
+  "name": "Stronghold Slayer Cave",
+  "taskId": "bloodveld",
+  "monsterId": 484,
+  "entrance": {
+   "x": 2465,
+   "y": 9830,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "blue-dragons--taverley-dungeon",
+  "name": "Taverley Dungeon",
+  "taskId": "blue-dragons",
+  "monsterId": 265,
+  "entrance": {
+   "x": 2903,
+   "y": 9786,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "blue-dragons--taverley-dungeon-upper-level-task-only",
+  "name": "Taverley Dungeon (upper level, task only)",
+  "taskId": "blue-dragons",
+  "monsterId": 5878,
+  "entrance": {
+   "x": 2926,
+   "y": 9812,
+   "plane": 1
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "blue-dragons--catacombs-of-kourend",
+  "name": "Catacombs of Kourend",
+  "taskId": "blue-dragons",
+  "monsterId": 7273,
+  "entrance": {
+   "x": 1629,
+   "y": 10071,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Catacombs bonus drops"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 3.61
+ },
+ {
+  "id": "brine-rats--brine-rat-cavern",
+  "name": "Brine Rat Cavern",
+  "taskId": "brine-rats",
+  "monsterId": 4501,
+  "entrance": {
+   "x": 2705,
+   "y": 10133,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "OLAFS_QUEST"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "cave-horrors--mos-le-harmless-cave",
+  "name": "Mos Le'Harmless Cave",
+  "taskId": "cave-horrors",
+  "monsterId": 1047,
+  "entrance": {
+   "x": 3764,
+   "y": 9424,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "CABIN_FEVER"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "cave-kraken--kraken-cove",
+  "name": "Kraken Cove",
+  "taskId": "cave-kraken",
+  "monsterId": 492,
+  "entrance": {
+   "x": 2278,
+   "y": 10034,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "crabs--rock-crabs-north-of-rellekka",
+  "name": "Rock crabs north of Rellekka",
+  "taskId": "crabs",
+  "monsterId": 100,
+  "entrance": {
+   "x": 2687,
+   "y": 3724,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "crabs--sand-crabs-hosidius-southern-coast",
+  "name": "Sand crabs (Hosidius southern coast)",
+  "taskId": "crabs",
+  "monsterId": 5935,
+  "entrance": {
+   "x": 1750,
+   "y": 3470,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "crabs--ammonite-crabs-mushroom-forest",
+  "name": "Ammonite crabs (Mushroom Forest)",
+  "taskId": "crabs",
+  "monsterId": 7799,
+  "entrance": {
+   "x": 3732,
+   "y": 3848,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "BONE_VOYAGE"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "custodian-stalkers--stalker-den-single-combat",
+  "name": "Stalker Den (single-combat)",
+  "taskId": "custodian-stalkers",
+  "monsterId": 14702,
+  "entrance": {
+   "x": 1325,
+   "y": 3364,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {
+   "slayer": 54
+  },
+  "questReqs": [
+   "SHADOWS_OF_CUSTODIA"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "custodian-stalkers--stalker-den-multi-combat",
+  "name": "Stalker Den (multi-combat)",
+  "taskId": "custodian-stalkers",
+  "monsterId": 14703,
+  "entrance": {
+   "x": 1325,
+   "y": 3364,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat"
+  ],
+  "skillReqs": {
+   "slayer": 67
+  },
+  "questReqs": [
+   "SHADOWS_OF_CUSTODIA"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "dagannoth--lighthouse-dungeon",
+  "name": "Lighthouse Dungeon",
+  "taskId": "dagannoth",
+  "monsterId": 973,
+  "entrance": {
+   "x": 2522,
+   "y": 10023,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "HORROR_FROM_THE_DEEP"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "dagannoth--jormungand-s-prison",
+  "name": "Jormungand's Prison",
+  "taskId": "dagannoth",
+  "monsterId": 973,
+  "entrance": {
+   "x": 2443,
+   "y": 10436,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "THE_FREMENNIK_EXILES"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.4,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "dagannoth--catacombs-of-kourend",
+  "name": "Catacombs of Kourend",
+  "taskId": "dagannoth",
+  "monsterId": 7260,
+  "entrance": {
+   "x": 1666,
+   "y": 9997,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Catacombs bonus drops"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 2.14
+ },
+ {
+  "id": "dust-devils--smoke-dungeon",
+  "name": "Smoke Dungeon",
+  "taskId": "dust-devils",
+  "monsterId": 423,
+  "entrance": {
+   "x": 3218,
+   "y": 9373,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.4,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "dust-devils--catacombs-of-kourend",
+  "name": "Catacombs of Kourend",
+  "taskId": "dust-devils",
+  "monsterId": 7249,
+  "entrance": {
+   "x": 1713,
+   "y": 10020,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Catacombs bonus drops"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 2.49
+ },
+ {
+  "id": "dust-devils--wilderness-slayer-cave",
+  "name": "Wilderness Slayer Cave",
+  "taskId": "dust-devils",
+  "monsterId": 11238,
+  "entrance": {
+   "x": 3439,
+   "y": 10123,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Cannon allowed",
+   "Wilderness"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.4,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "elves--lletya",
+  "name": "Lletya",
+  "taskId": "elves",
+  "monsterId": 5293,
+  "entrance": {
+   "x": 2329,
+   "y": 3173,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "elves--iorwerth-dungeon",
+  "name": "Iorwerth Dungeon",
+  "taskId": "elves",
+  "monsterId": 9502,
+  "entrance": {
+   "x": 3187,
+   "y": 12407,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "SONG_OF_THE_ELVES"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "fever-spiders--braindeath-island",
+  "name": "Braindeath Island",
+  "taskId": "fever-spiders",
+  "monsterId": 626,
+  "entrance": {
+   "x": 2146,
+   "y": 5098,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "RUM_DEAL"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "fire-giants--waterfall-dungeon",
+  "name": "Waterfall Dungeon",
+  "taskId": "fire-giants",
+  "monsterId": 2075,
+  "entrance": {
+   "x": 2575,
+   "y": 9891,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "WATERFALL_QUEST"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "fire-giants--stronghold-slayer-cave",
+  "name": "Stronghold Slayer Cave",
+  "taskId": "fire-giants",
+  "monsterId": 2075,
+  "entrance": {
+   "x": 2400,
+   "y": 9777,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "fire-giants--catacombs-of-kourend",
+  "name": "Catacombs of Kourend",
+  "taskId": "fire-giants",
+  "monsterId": 7252,
+  "entrance": {
+   "x": 1629,
+   "y": 10056,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Catacombs bonus drops"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 2.49
+ },
+ {
+  "id": "fire-giants--karuulm-slayer-dungeon",
+  "name": "Karuulm Slayer Dungeon",
+  "taskId": "fire-giants",
+  "monsterId": 2075,
+  "entrance": {
+   "x": 1137,
+   "y": 10269,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [
+   {
+    "name": "boots of stone",
+    "itemIds": [
+     23037,
+     22951,
+     21643
+    ]
+   }
+  ],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "fossil-island-wyverns--wyvern-cave-task-only",
+  "name": "Wyvern Cave (task only)",
+  "taskId": "fossil-island-wyverns",
+  "monsterId": 7792,
+  "entrance": {
+   "x": 3602,
+   "y": 10193,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat"
+  ],
+  "skillReqs": {
+   "slayer": 66
+  },
+  "questReqs": [
+   "BONE_VOYAGE"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "gargoyles--slayer-tower-top-floor",
+  "name": "Slayer Tower (top floor)",
+  "taskId": "gargoyles",
+  "monsterId": 412,
+  "entrance": {
+   "x": 3439,
+   "y": 3542,
+   "plane": 2
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "gargoyles--slayer-tower-basement",
+  "name": "Slayer Tower (basement)",
+  "taskId": "gargoyles",
+  "monsterId": 1543,
+  "entrance": {
+   "x": 3432,
+   "y": 9937,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "greater-demons--brimhaven-dungeon-upper-level",
+  "name": "Brimhaven Dungeon (upper level)",
+  "taskId": "greater-demons",
+  "monsterId": 2025,
+  "entrance": {
+   "x": 2633,
+   "y": 9491,
+   "plane": 1
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "greater-demons--chasm-of-fire",
+  "name": "Chasm of Fire",
+  "taskId": "greater-demons",
+  "monsterId": 2025,
+  "entrance": {
+   "x": 1375,
+   "y": 9992,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.4,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "greater-demons--catacombs-of-kourend",
+  "name": "Catacombs of Kourend",
+  "taskId": "greater-demons",
+  "monsterId": 7245,
+  "entrance": {
+   "x": 1691,
+   "y": 10096,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Catacombs bonus drops"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 2.39
+ },
+ {
+  "id": "greater-demons--wilderness-slayer-cave",
+  "name": "Wilderness Slayer Cave",
+  "taskId": "greater-demons",
+  "monsterId": 7871,
+  "entrance": {
+   "x": 3428,
+   "y": 10151,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Cannon allowed",
+   "Wilderness"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.4,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "greater-demons--karuulm-slayer-dungeon",
+  "name": "Karuulm Slayer Dungeon",
+  "taskId": "greater-demons",
+  "monsterId": 2025,
+  "entrance": {
+   "x": 1126,
+   "y": 10167,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [
+   {
+    "name": "boots of stone",
+    "itemIds": [
+     23037,
+     22951,
+     21643
+    ]
+   }
+  ],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "gryphons--gryphon-dungeon-western",
+  "name": "Gryphon dungeon (western)",
+  "taskId": "gryphons",
+  "monsterId": 14857,
+  "entrance": {
+   "x": 3111,
+   "y": 8870,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {
+   "sailing": 45
+  },
+  "questReqs": [
+   "TROUBLED_TORTUGANS"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "gryphons--gryphon-dungeon-task-only-eastern",
+  "name": "Gryphon dungeon (task only, eastern)",
+  "taskId": "gryphons",
+  "monsterId": 14857,
+  "entrance": {
+   "x": 3233,
+   "y": 8859,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Cannon allowed"
+  ],
+  "skillReqs": {
+   "sailing": 45
+  },
+  "questReqs": [
+   "TROUBLED_TORTUGANS"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.4,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "hellhounds--taverley-dungeon",
+  "name": "Taverley Dungeon",
+  "taskId": "hellhounds",
+  "monsterId": 104,
+  "entrance": {
+   "x": 2861,
+   "y": 9837,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "hellhounds--stronghold-slayer-cave",
+  "name": "Stronghold Slayer Cave",
+  "taskId": "hellhounds",
+  "monsterId": 104,
+  "entrance": {
+   "x": 2426,
+   "y": 9782,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "hellhounds--witchaven-dungeon",
+  "name": "Witchaven Dungeon",
+  "taskId": "hellhounds",
+  "monsterId": 104,
+  "entrance": {
+   "x": 2740,
+   "y": 9688,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "hellhounds--catacombs-of-kourend",
+  "name": "Catacombs of Kourend",
+  "taskId": "hellhounds",
+  "monsterId": 104,
+  "entrance": {
+   "x": 1643,
+   "y": 10063,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Catacombs bonus drops"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 2.4
+ },
+ {
+  "id": "hellhounds--wilderness-slayer-cave",
+  "name": "Wilderness Slayer Cave",
+  "taskId": "hellhounds",
+  "monsterId": 7877,
+  "entrance": {
+   "x": 3440,
+   "y": 10085,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Cannon allowed",
+   "Wilderness"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.4,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "hellhounds--karuulm-slayer-dungeon",
+  "name": "Karuulm Slayer Dungeon",
+  "taskId": "hellhounds",
+  "monsterId": 104,
+  "entrance": {
+   "x": 1196,
+   "y": 10262,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [
+   {
+    "name": "boots of stone",
+    "itemIds": [
+     23037,
+     22951,
+     21643
+    ]
+   }
+  ],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "jellies--fremennik-slayer-dungeon",
+  "name": "Fremennik Slayer Dungeon",
+  "taskId": "jellies",
+  "monsterId": 437,
+  "entrance": {
+   "x": 2704,
+   "y": 10028,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "jellies--wilderness-slayer-cave",
+  "name": "Wilderness Slayer Cave",
+  "taskId": "jellies",
+  "monsterId": 11241,
+  "entrance": {
+   "x": 3430,
+   "y": 10104,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Cannon allowed",
+   "Wilderness"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.4,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "jellies--catacombs-of-kourend-warped-jellies",
+  "name": "Catacombs of Kourend (warped jellies)",
+  "taskId": "jellies",
+  "monsterId": 7277,
+  "entrance": {
+   "x": 1716,
+   "y": 10044,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Catacombs bonus drops"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 2.56
+ },
+ {
+  "id": "jungle-horrors--mos-le-harmless",
+  "name": "Mos Le'Harmless",
+  "taskId": "jungle-horrors",
+  "monsterId": 1044,
+  "entrance": {
+   "x": 3728,
+   "y": 3021,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "CABIN_FEVER"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "kalphite--kalphite-lair",
+  "name": "Kalphite Lair",
+  "taskId": "kalphite",
+  "monsterId": 957,
+  "entrance": {
+   "x": 3205,
+   "y": 9510,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [
+   {
+    "name": "rope",
+    "itemIds": [
+     954
+    ]
+   }
+  ],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "kalphite--kalphite-cave-task-only",
+  "name": "Kalphite Cave (task only)",
+  "taskId": "kalphite",
+  "monsterId": 958,
+  "entrance": {
+   "x": 3379,
+   "y": 9502,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "kurask--fremennik-slayer-dungeon",
+  "name": "Fremennik Slayer Dungeon",
+  "taskId": "kurask",
+  "monsterId": 410,
+  "entrance": {
+   "x": 2699,
+   "y": 9977,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "kurask--iorwerth-dungeon",
+  "name": "Iorwerth Dungeon",
+  "taskId": "kurask",
+  "monsterId": 410,
+  "entrance": {
+   "x": 3225,
+   "y": 12367,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "SONG_OF_THE_ELVES"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "lesser-demons--chasm-of-fire",
+  "name": "Chasm of Fire",
+  "taskId": "lesser-demons",
+  "monsterId": 2005,
+  "entrance": {
+   "x": 1373,
+   "y": 10081,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "lesser-demons--catacombs-of-kourend",
+  "name": "Catacombs of Kourend",
+  "taskId": "lesser-demons",
+  "monsterId": 7247,
+  "entrance": {
+   "x": 1716,
+   "y": 10067,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Catacombs bonus drops"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 2.23
+ },
+ {
+  "id": "lesser-demons--wilderness-slayer-cave",
+  "name": "Wilderness Slayer Cave",
+  "taskId": "lesser-demons",
+  "monsterId": 7865,
+  "entrance": {
+   "x": 3337,
+   "y": 10134,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Cannon allowed",
+   "Wilderness"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.4,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "lesser-demons--taverley-dungeon",
+  "name": "Taverley Dungeon",
+  "taskId": "lesser-demons",
+  "monsterId": 2005,
+  "entrance": {
+   "x": 2931,
+   "y": 9798,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "lesser-nagua--neypotzli",
+  "name": "Neypotzli",
+  "taskId": "lesser-nagua",
+  "monsterId": 13033,
+  "entrance": {
+   "x": 1359,
+   "y": 9567,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "PERILOUS_MOONS"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "lesser-nagua--ruins-of-tapoyauik",
+  "name": "Ruins of Tapoyauik",
+  "taskId": "lesser-nagua",
+  "monsterId": 13728,
+  "entrance": {
+   "x": 1638,
+   "y": 9630,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "THE_HEART_OF_DARKNESS"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "lizardmen--lizardman-canyon-east",
+  "name": "Lizardman Canyon (east)",
+  "taskId": "lizardmen",
+  "monsterId": 6914,
+  "entrance": {
+   "x": 1501,
+   "y": 3702,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.4,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "lizardmen--shayzien-s-wall",
+  "name": "Shayzien's Wall",
+  "taskId": "lizardmen",
+  "monsterId": 6914,
+  "entrance": {
+   "x": 1372,
+   "y": 3532,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "lizardmen--lizardman-temple-beneath-molch",
+  "name": "Lizardman Temple (beneath Molch)",
+  "taskId": "lizardmen",
+  "monsterId": 8565,
+  "entrance": {
+   "x": 1312,
+   "y": 10094,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "mutated-zygomites--zanaris-east-of-the-furnace",
+  "name": "Zanaris (east of the furnace)",
+  "taskId": "mutated-zygomites",
+  "monsterId": 537,
+  "entrance": {
+   "x": 2412,
+   "y": 4470,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "LOST_CITY"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "mutated-zygomites--zanaris-near-the-cosmic-altar",
+  "name": "Zanaris (near the cosmic altar)",
+  "taskId": "mutated-zygomites",
+  "monsterId": 1024,
+  "entrance": {
+   "x": 2419,
+   "y": 4374,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "LOST_CITY"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "mutated-zygomites--mushroom-forest-fossil-island",
+  "name": "Mushroom Forest (Fossil Island)",
+  "taskId": "mutated-zygomites",
+  "monsterId": 7797,
+  "entrance": {
+   "x": 3689,
+   "y": 3857,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "BONE_VOYAGE"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "nechryael--slayer-tower-top-floor",
+  "name": "Slayer Tower (top floor)",
+  "taskId": "nechryael",
+  "monsterId": 11,
+  "entrance": {
+   "x": 3443,
+   "y": 3570,
+   "plane": 2
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "nechryael--slayer-tower-basement",
+  "name": "Slayer Tower (basement)",
+  "taskId": "nechryael",
+  "monsterId": 11,
+  "entrance": {
+   "x": 3413,
+   "y": 9965,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "nechryael--catacombs-of-kourend-greater-nechryael",
+  "name": "Catacombs of Kourend (greater nechryael)",
+  "taskId": "nechryael",
+  "monsterId": 7278,
+  "entrance": {
+   "x": 1704,
+   "y": 10081,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Catacombs bonus drops"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 3.13
+ },
+ {
+  "id": "nechryael--wilderness-slayer-cave-greater-nechryael",
+  "name": "Wilderness Slayer Cave (greater nechryael)",
+  "taskId": "nechryael",
+  "monsterId": 11240,
+  "entrance": {
+   "x": 3337,
+   "y": 10107,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Cannon allowed",
+   "Wilderness"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.4,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "shadow-warriors--legends-guild-dungeon",
+  "name": "Legends' Guild Dungeon",
+  "taskId": "shadow-warriors",
+  "monsterId": 2853,
+  "entrance": {
+   "x": 2703,
+   "y": 9770,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "LEGENDS_QUEST"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "skeletal-wyverns--asgarnian-ice-dungeon",
+  "name": "Asgarnian Ice Dungeon",
+  "taskId": "skeletal-wyverns",
+  "monsterId": 468,
+  "entrance": {
+   "x": 3066,
+   "y": 9562,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "ELEMENTAL_WORKSHOP_I"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "spiritual-creatures--god-wars-dungeon",
+  "name": "God Wars Dungeon",
+  "taskId": "spiritual-creatures",
+  "monsterId": 2242,
+  "entrance": {
+   "x": 2883,
+   "y": 5297,
+   "plane": 2
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "DEATH_PLATEAU"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "spiritual-creatures--wilderness-god-wars-dungeon",
+  "name": "Wilderness God Wars Dungeon",
+  "taskId": "spiritual-creatures",
+  "monsterId": 2242,
+  "entrance": {
+   "x": 3043,
+   "y": 10136,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Wilderness"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "trolls--death-plateau",
+  "name": "Death Plateau",
+  "taskId": "trolls",
+  "monsterId": 936,
+  "entrance": {
+   "x": 2867,
+   "y": 3595,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "DEATH_PLATEAU"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "trolls--ice-path",
+  "name": "Ice Path",
+  "taskId": "trolls",
+  "monsterId": 650,
+  "entrance": {
+   "x": 2859,
+   "y": 3728,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "turoth--fremennik-slayer-dungeon",
+  "name": "Fremennik Slayer Dungeon",
+  "taskId": "turoth",
+  "monsterId": 428,
+  "entrance": {
+   "x": 2721,
+   "y": 10003,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "tzhaar--mor-ul-rek-tzhaar-ket",
+  "name": "Mor Ul Rek (TzHaar-Ket)",
+  "taskId": "tzhaar",
+  "monsterId": 2173,
+  "entrance": {
+   "x": 2487,
+   "y": 5138,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [
+   {
+    "name": "fire cape",
+    "itemIds": [
+     6570,
+     13329,
+     21295,
+     21285
+    ]
+   }
+  ],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "tzhaar--mor-ul-rek-tzhaar-xil",
+  "name": "Mor Ul Rek (TzHaar-Xil)",
+  "taskId": "tzhaar",
+  "monsterId": 2168,
+  "entrance": {
+   "x": 2492,
+   "y": 5139,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [
+   {
+    "name": "fire cape",
+    "itemIds": [
+     6570,
+     13329,
+     21295,
+     21285
+    ]
+   }
+  ],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "tzhaar--mor-ul-rek-tzhaar-mej",
+  "name": "Mor Ul Rek (TzHaar-Mej)",
+  "taskId": "tzhaar",
+  "monsterId": 2154,
+  "entrance": {
+   "x": 2490,
+   "y": 5101,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [
+   {
+    "name": "fire cape",
+    "itemIds": [
+     6570,
+     13329,
+     21295,
+     21285
+    ]
+   }
+  ],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "vampyres--haunted-woods",
+  "name": "Haunted Woods",
+  "taskId": "vampyres",
+  "monsterId": 3237,
+  "entrance": {
+   "x": 3617,
+   "y": 3477,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "PRIEST_IN_PERIL"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "vampyres--burgh-de-rott-west",
+  "name": "Burgh de Rott (west)",
+  "taskId": "vampyres",
+  "monsterId": 3237,
+  "entrance": {
+   "x": 3460,
+   "y": 3231,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "IN_AID_OF_THE_MYREQUE"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "vampyres--god-wars-dungeon",
+  "name": "God Wars Dungeon",
+  "taskId": "vampyres",
+  "monsterId": 3137,
+  "entrance": {
+   "x": 2885,
+   "y": 5312,
+   "plane": 0
+  },
+  "tags": [
+   "Multi-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "DEATH_PLATEAU"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.4,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "warped-creatures--poison-waste-dungeon-main-level-tortoises",
+  "name": "Poison Waste Dungeon (main level, tortoises)",
+  "taskId": "warped-creatures",
+  "monsterId": 12490,
+  "entrance": {
+   "x": 1488,
+   "y": 4262,
+   "plane": 1
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "THE_PATH_OF_GLOUPHRIE"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "warped-creatures--poison-waste-dungeon-main-level-terrorbirds",
+  "name": "Poison Waste Dungeon (main level, terrorbirds)",
+  "taskId": "warped-creatures",
+  "monsterId": 12491,
+  "entrance": {
+   "x": 1503,
+   "y": 4268,
+   "plane": 1
+  },
+  "tags": [
+   "Single-combat",
+   "Cannon allowed"
+  ],
+  "skillReqs": {},
+  "questReqs": [
+   "THE_PATH_OF_GLOUPHRIE"
+  ],
+  "itemReqs": [],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.2,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "wyrms--karuulm-slayer-dungeon-lower-level",
+  "name": "Karuulm Slayer Dungeon (lower level)",
+  "taskId": "wyrms",
+  "monsterId": 8611,
+  "entrance": {
+   "x": 1270,
+   "y": 10186,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [
+   {
+    "name": "boots of stone",
+    "itemIds": [
+     23037,
+     22951,
+     21643
+    ]
+   }
+  ],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ },
+ {
+  "id": "wyrms--karuulm-slayer-dungeon-task-only-area",
+  "name": "Karuulm Slayer Dungeon (task-only area)",
+  "taskId": "wyrms",
+  "monsterId": 8611,
+  "entrance": {
+   "x": 1259,
+   "y": 10154,
+   "plane": 0
+  },
+  "tags": [
+   "Single-combat",
+   "Safespot"
+  ],
+  "skillReqs": {},
+  "questReqs": [],
+  "itemReqs": [
+   {
+    "name": "boots of stone",
+    "itemIds": [
+     23037,
+     22951,
+     21643
+    ]
+   }
+  ],
+  "overheadSeconds": 4.0,
+  "killSpeedFactor": 1.0,
+  "bonusGpPerKill": 0.0
+ }
+]

@@ -1,0 +1,1007 @@
+[
+ {
+  "id": "aberrant-spectres",
+  "name": "Aberrant spectres",
+  "monsterIds": [
+   2,
+   7279
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [
+   {
+    "name": "nose peg or Slayer helmet",
+    "itemIds": [
+     4168,
+     11864,
+     11865,
+     19639,
+     19641,
+     19643,
+     19645,
+     19647,
+     19649,
+     21264,
+     21266,
+     21888,
+     21890,
+     23073,
+     23075,
+     24370,
+     24444,
+     25898,
+     25900,
+     25904,
+     25906,
+     25910,
+     25912,
+     29816,
+     29818
+    ]
+   }
+  ],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "aberrant-spectres--slayer-tower-first-floor",
+   "aberrant-spectres--stronghold-slayer-cave",
+   "aberrant-spectres--catacombs-of-kourend"
+  ]
+ },
+ {
+  "id": "abyssal-demons",
+  "name": "Abyssal demons",
+  "monsterIds": [
+   415,
+   7241,
+   11239
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "abyssal-demons--slayer-tower-second-floor",
+   "abyssal-demons--slayer-tower-basement",
+   "abyssal-demons--catacombs-of-kourend",
+   "abyssal-demons--wilderness-slayer-cave"
+  ]
+ },
+ {
+  "id": "aviansie",
+  "name": "Aviansie",
+  "monsterIds": [
+   3169,
+   3170,
+   3171,
+   3172,
+   3173,
+   3174,
+   3175,
+   3176,
+   3177,
+   3178,
+   3179,
+   3180,
+   3181,
+   3182,
+   3183
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "aviansie--god-wars-dungeon"
+  ]
+ },
+ {
+  "id": "basilisks",
+  "name": "Basilisks",
+  "monsterIds": [
+   417,
+   9283,
+   9285,
+   9282,
+   9293,
+   7395,
+   9287
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [
+   {
+    "name": "mirror shield or V's shield",
+    "itemIds": [
+     4156,
+     24265
+    ]
+   }
+  ],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "basilisks--fremennik-slayer-dungeon",
+   "basilisks--jormungand-s-prison"
+  ]
+ },
+ {
+  "id": "black-demons",
+  "name": "Black demons",
+  "monsterIds": [
+   240,
+   7243,
+   7242,
+   7874
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "black-demons--taverley-dungeon",
+   "black-demons--chasm-of-fire",
+   "black-demons--catacombs-of-kourend",
+   "black-demons--wilderness-slayer-cave",
+   "black-demons--brimhaven-dungeon"
+  ]
+ },
+ {
+  "id": "bloodveld",
+  "name": "Bloodveld",
+  "monsterIds": [
+   484,
+   3138,
+   7276
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "bloodveld--slayer-tower-first-floor",
+   "bloodveld--slayer-tower-basement",
+   "bloodveld--stronghold-slayer-cave"
+  ]
+ },
+ {
+  "id": "blue-dragons",
+  "name": "Blue dragons",
+  "monsterIds": [
+   265,
+   266,
+   267,
+   268,
+   269,
+   5878,
+   5879,
+   5880,
+   5881,
+   5882,
+   7273
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [
+   {
+    "name": "dragonfire protection",
+    "itemIds": [
+     1540,
+     11283,
+     22002,
+     21633
+    ]
+   }
+  ],
+  "locationIds": [
+   "blue-dragons--taverley-dungeon",
+   "blue-dragons--taverley-dungeon-upper-level-task-only",
+   "blue-dragons--catacombs-of-kourend"
+  ]
+ },
+ {
+  "id": "brine-rats",
+  "name": "Brine rats",
+  "monsterIds": [
+   4501
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [
+   {
+    "name": "spade",
+    "itemIds": [
+     952
+    ]
+   }
+  ],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "brine-rats--brine-rat-cavern"
+  ]
+ },
+ {
+  "id": "cave-horrors",
+  "name": "Cave horrors",
+  "monsterIds": [
+   1047,
+   1048,
+   1049,
+   1050,
+   1051
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [
+   {
+    "name": "witchwood icon",
+    "itemIds": [
+     8923
+    ]
+   }
+  ],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "cave-horrors--mos-le-harmless-cave"
+  ]
+ },
+ {
+  "id": "cave-kraken",
+  "name": "Cave kraken",
+  "monsterIds": [
+   492,
+   493
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "cave-kraken--kraken-cove"
+  ]
+ },
+ {
+  "id": "crabs",
+  "name": "Crabs",
+  "monsterIds": [
+   100,
+   101,
+   5935,
+   5936,
+   7799,
+   13789,
+   13790,
+   8297,
+   8298,
+   8299
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "crabs--rock-crabs-north-of-rellekka",
+   "crabs--sand-crabs-hosidius-southern-coast",
+   "crabs--ammonite-crabs-mushroom-forest"
+  ]
+ },
+ {
+  "id": "custodian-stalkers",
+  "name": "Custodian stalkers",
+  "monsterIds": [
+   14702,
+   14703,
+   14704
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "custodian-stalkers--stalker-den-single-combat",
+   "custodian-stalkers--stalker-den-multi-combat"
+  ]
+ },
+ {
+  "id": "dagannoth",
+  "name": "Dagannoth",
+  "monsterIds": [
+   970,
+   973,
+   7259,
+   7260,
+   2264,
+   3184
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "dagannoth--lighthouse-dungeon",
+   "dagannoth--jormungand-s-prison",
+   "dagannoth--catacombs-of-kourend"
+  ]
+ },
+ {
+  "id": "dust-devils",
+  "name": "Dust devils",
+  "monsterIds": [
+   423,
+   11238,
+   7249
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [
+   {
+    "name": "facemask or Slayer helmet",
+    "itemIds": [
+     4164,
+     11864,
+     11865,
+     19639,
+     19641,
+     19643,
+     19645,
+     19647,
+     19649,
+     21264,
+     21266,
+     21888,
+     21890,
+     23073,
+     23075,
+     24370,
+     24444,
+     25898,
+     25900,
+     25904,
+     25906,
+     25910,
+     25912,
+     29816,
+     29818
+    ]
+   }
+  ],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "dust-devils--smoke-dungeon",
+   "dust-devils--catacombs-of-kourend",
+   "dust-devils--wilderness-slayer-cave"
+  ]
+ },
+ {
+  "id": "elves",
+  "name": "Elves",
+  "monsterIds": [
+   5293,
+   5294,
+   5295,
+   5296,
+   3429,
+   9502,
+   3428,
+   8760,
+   7029
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "elves--lletya",
+   "elves--iorwerth-dungeon"
+  ]
+ },
+ {
+  "id": "fever-spiders",
+  "name": "Fever spiders",
+  "monsterIds": [
+   626
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [
+   {
+    "name": "Slayer gloves",
+    "itemIds": [
+     6720
+    ]
+   }
+  ],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "fever-spiders--braindeath-island"
+  ]
+ },
+ {
+  "id": "fire-giants",
+  "name": "Fire giants",
+  "monsterIds": [
+   2075,
+   7252,
+   7251
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "fire-giants--waterfall-dungeon",
+   "fire-giants--stronghold-slayer-cave",
+   "fire-giants--catacombs-of-kourend",
+   "fire-giants--karuulm-slayer-dungeon"
+  ]
+ },
+ {
+  "id": "fossil-island-wyverns",
+  "name": "Fossil Island wyverns",
+  "monsterIds": [
+   7794,
+   7793,
+   7792,
+   7795
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [
+   {
+    "name": "icy breath protection shield",
+    "itemIds": [
+     2890,
+     9731,
+     11283,
+     22002,
+     21633
+    ]
+   }
+  ],
+  "locationIds": [
+   "fossil-island-wyverns--wyvern-cave-task-only"
+  ]
+ },
+ {
+  "id": "gargoyles",
+  "name": "Gargoyles",
+  "monsterIds": [
+   412,
+   1543
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [
+   {
+    "name": "rock hammer",
+    "itemIds": [
+     4162,
+     21742
+    ]
+   }
+  ],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "gargoyles--slayer-tower-top-floor",
+   "gargoyles--slayer-tower-basement"
+  ]
+ },
+ {
+  "id": "greater-demons",
+  "name": "Greater demons",
+  "monsterIds": [
+   2025,
+   7245,
+   7244,
+   7871,
+   7246
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "greater-demons--brimhaven-dungeon-upper-level",
+   "greater-demons--chasm-of-fire",
+   "greater-demons--catacombs-of-kourend",
+   "greater-demons--wilderness-slayer-cave",
+   "greater-demons--karuulm-slayer-dungeon"
+  ]
+ },
+ {
+  "id": "gryphons",
+  "name": "Gryphons",
+  "monsterIds": [
+   14857,
+   14860,
+   14859
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "gryphons--gryphon-dungeon-western",
+   "gryphons--gryphon-dungeon-task-only-eastern"
+  ]
+ },
+ {
+  "id": "hellhounds",
+  "name": "Hellhounds",
+  "monsterIds": [
+   104,
+   3133,
+   7877
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "hellhounds--taverley-dungeon",
+   "hellhounds--stronghold-slayer-cave",
+   "hellhounds--witchaven-dungeon",
+   "hellhounds--catacombs-of-kourend",
+   "hellhounds--wilderness-slayer-cave",
+   "hellhounds--karuulm-slayer-dungeon"
+  ]
+ },
+ {
+  "id": "jellies",
+  "name": "Jellies",
+  "monsterIds": [
+   437,
+   438,
+   439,
+   440,
+   441,
+   442,
+   11241,
+   11242,
+   11243,
+   11244,
+   11245,
+   7277
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "jellies--fremennik-slayer-dungeon",
+   "jellies--wilderness-slayer-cave",
+   "jellies--catacombs-of-kourend-warped-jellies"
+  ]
+ },
+ {
+  "id": "jungle-horrors",
+  "name": "Jungle horrors",
+  "monsterIds": [
+   1042,
+   1043,
+   1044,
+   1045,
+   1046
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "jungle-horrors--mos-le-harmless"
+  ]
+ },
+ {
+  "id": "kalphite",
+  "name": "Kalphite",
+  "monsterIds": [
+   955,
+   957,
+   958,
+   960,
+   959,
+   962,
+   963,
+   965
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "kalphite--kalphite-lair",
+   "kalphite--kalphite-cave-task-only"
+  ]
+ },
+ {
+  "id": "kurask",
+  "name": "Kurask",
+  "monsterIds": [
+   410,
+   411,
+   7405
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [
+   {
+    "name": "leaf-bladed weapon, broad ammunition or Slayer's staff",
+    "itemIds": [
+     4158,
+     11902,
+     20727,
+     4160,
+     11875,
+     21316,
+     4170,
+     21255
+    ]
+   }
+  ],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "kurask--fremennik-slayer-dungeon",
+   "kurask--iorwerth-dungeon"
+  ]
+ },
+ {
+  "id": "lesser-demons",
+  "name": "Lesser demons",
+  "monsterIds": [
+   2005,
+   7247,
+   7248,
+   7865
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "lesser-demons--chasm-of-fire",
+   "lesser-demons--catacombs-of-kourend",
+   "lesser-demons--wilderness-slayer-cave",
+   "lesser-demons--taverley-dungeon"
+  ]
+ },
+ {
+  "id": "lesser-nagua",
+  "name": "Lesser Nagua",
+  "monsterIds": [
+   13033,
+   12879,
+   13728,
+   14420,
+   14421
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "lesser-nagua--neypotzli",
+   "lesser-nagua--ruins-of-tapoyauik"
+  ]
+ },
+ {
+  "id": "lizardmen",
+  "name": "Lizardmen",
+  "monsterIds": [
+   6914,
+   6916,
+   6918,
+   6766,
+   8565,
+   8564
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "lizardmen--lizardman-canyon-east",
+   "lizardmen--shayzien-s-wall",
+   "lizardmen--lizardman-temple-beneath-molch"
+  ]
+ },
+ {
+  "id": "mutated-zygomites",
+  "name": "Mutated Zygomites",
+  "monsterIds": [
+   537,
+   1024,
+   7797
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [
+   {
+    "name": "fungicide spray",
+    "itemIds": [
+     7421,
+     7422,
+     7423,
+     7424,
+     7425,
+     7426,
+     7427,
+     7428,
+     7429,
+     7430
+    ]
+   }
+  ],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "mutated-zygomites--zanaris-east-of-the-furnace",
+   "mutated-zygomites--zanaris-near-the-cosmic-altar",
+   "mutated-zygomites--mushroom-forest-fossil-island"
+  ]
+ },
+ {
+  "id": "nechryael",
+  "name": "Nechryael",
+  "monsterIds": [
+   8,
+   11,
+   7278,
+   11240
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "nechryael--slayer-tower-top-floor",
+   "nechryael--slayer-tower-basement",
+   "nechryael--catacombs-of-kourend-greater-nechryael",
+   "nechryael--wilderness-slayer-cave-greater-nechryael"
+  ]
+ },
+ {
+  "id": "shadow-warriors",
+  "name": "Shadow warriors",
+  "monsterIds": [
+   2853
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "shadow-warriors--legends-guild-dungeon"
+  ]
+ },
+ {
+  "id": "skeletal-wyverns",
+  "name": "Skeletal Wyverns",
+  "monsterIds": [
+   468,
+   465,
+   466,
+   467
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [
+   {
+    "name": "icy breath protection shield",
+    "itemIds": [
+     2890,
+     9731,
+     11283,
+     22002,
+     21633
+    ]
+   }
+  ],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "skeletal-wyverns--asgarnian-ice-dungeon"
+  ]
+ },
+ {
+  "id": "spiritual-creatures",
+  "name": "Spiritual creatures",
+  "monsterIds": [
+   2242,
+   2211,
+   3160,
+   3167,
+   11291,
+   2243,
+   2210,
+   3159,
+   3166,
+   11290,
+   2244,
+   2212,
+   3161,
+   3168,
+   11292
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "spiritual-creatures--god-wars-dungeon",
+   "spiritual-creatures--wilderness-god-wars-dungeon"
+  ]
+ },
+ {
+  "id": "trolls",
+  "name": "Trolls",
+  "monsterIds": [
+   936,
+   4143,
+   648,
+   649,
+   650,
+   651,
+   1874,
+   1875,
+   1876,
+   1877,
+   5828,
+   5829,
+   5830
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "trolls--death-plateau",
+   "trolls--ice-path"
+  ]
+ },
+ {
+  "id": "turoth",
+  "name": "Turoth",
+  "monsterIds": [
+   427,
+   428,
+   429,
+   430
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [
+   {
+    "name": "leaf-bladed weapon, broad ammunition or Slayer's staff",
+    "itemIds": [
+     4158,
+     11902,
+     20727,
+     4160,
+     11875,
+     21316,
+     4170,
+     21255
+    ]
+   }
+  ],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "turoth--fremennik-slayer-dungeon"
+  ]
+ },
+ {
+  "id": "tzhaar",
+  "name": "TzHaar",
+  "monsterIds": [
+   2173,
+   2154,
+   2168,
+   2161
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "tzhaar--mor-ul-rek-tzhaar-ket",
+   "tzhaar--mor-ul-rek-tzhaar-xil",
+   "tzhaar--mor-ul-rek-tzhaar-mej"
+  ]
+ },
+ {
+  "id": "vampyres",
+  "name": "Vampyres",
+  "monsterIds": [
+   3237,
+   3707,
+   3234,
+   3137,
+   4427,
+   9727,
+   3694,
+   4436,
+   9731,
+   3692
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "vampyres--haunted-woods",
+   "vampyres--burgh-de-rott-west",
+   "vampyres--god-wars-dungeon"
+  ]
+ },
+ {
+  "id": "warped-creatures",
+  "name": "Warped creatures",
+  "monsterIds": [
+   12490,
+   12491,
+   12499
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "warped-creatures--poison-waste-dungeon-main-level-tortoises",
+   "warped-creatures--poison-waste-dungeon-main-level-terrorbirds"
+  ]
+ },
+ {
+  "id": "wyrms",
+  "name": "Wyrms",
+  "monsterIds": [
+   8610,
+   8611
+  ],
+  "masters": [
+   "Chaeldar"
+  ],
+  "requiredItems": [],
+  "recommendedSupplies": [],
+  "locationIds": [
+   "wyrms--karuulm-slayer-dungeon-lower-level",
+   "wyrms--karuulm-slayer-dungeon-task-only-area"
+  ]
+ }
+]

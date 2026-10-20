@@ -1,0 +1,26 @@
+[
+ {
+  "locationId": "warped-creatures--poison-waste-dungeon-main-level-tortoises",
+  "monsterId": 12490,
+  "tile": {
+   "x": 1505,
+   "y": 4282,
+   "plane": 1
+  },
+  "note": "OSRS Wiki (Slayer task/Warped creatures) safespot pin: about halfway through the dungeon, behind the pillars; two tortoises can be safespotted from here with Ranged.",
+  "verified": false,
+  "source": "builtin"
+ },
+ {
+  "locationId": "skeletal-wyverns--asgarnian-ice-dungeon",
+  "monsterId": 468,
+  "tile": {
+   "x": 3059,
+   "y": 9560,
+   "plane": 0
+  },
+  "note": "OSRS Wiki (Slayer task/Skeletal Wyvern): stand one tile north-west of Steve/Pieve (NPC at 3060,9559) after the wyverns lose aggression (about 10 minutes); use Ranged or Magic.",
+  "verified": false,
+  "source": "builtin"
+ }
+]

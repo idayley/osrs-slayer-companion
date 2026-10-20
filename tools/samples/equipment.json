@@ -91,5 +91,98 @@
    "ranged": 15
   },
   "isTwoHanded": false
+ },
+ {
+  "name": "Abyssal whip (or)",
+  "id": 26482,
+  "weight": 0.453,
+  "version": "",
+  "slot": "weapon",
+  "image": "Abyssal whip (or).png",
+  "speed": 4,
+  "category": "Whip",
+  "bonuses": {
+   "str": 82,
+   "ranged_str": 0,
+   "magic_str": 0,
+   "prayer": 0
+  },
+  "offensive": {
+   "stab": 0,
+   "slash": 82,
+   "crush": 0,
+   "magic": 0,
+   "ranged": 0
+  },
+  "defensive": {
+   "stab": 0,
+   "slash": 0,
+   "crush": 0,
+   "magic": 0,
+   "ranged": 0
+  },
+  "isTwoHanded": false
+ },
+ {
+  "name": "Berserker ring",
+  "id": 6737,
+  "weight": 0.004,
+  "version": "",
+  "slot": "ring",
+  "image": "Berserker ring.png",
+  "speed": 0,
+  "category": "",
+  "bonuses": {
+   "str": 4,
+   "ranged_str": 0,
+   "magic_str": 0,
+   "prayer": 0
+  },
+  "offensive": {
+   "stab": 0,
+   "slash": 0,
+   "crush": 0,
+   "magic": 0,
+   "ranged": 0
+  },
+  "defensive": {
+   "stab": 0,
+   "slash": 0,
+   "crush": 4,
+   "magic": 0,
+   "ranged": 0
+  },
+  "isTwoHanded": false
+ },
+ {
+  "name": "Black mask",
+  "id": 8919,
+  "weight": 10,
+  "version": "(1)",
+  "slot": "head",
+  "image": "Black mask.png",
+  "speed": 0,
+  "category": "",
+  "bonuses": {
+   "str": 0,
+   "ranged_str": 0,
+   "magic_str": 0,
+   "prayer": 0
+  },
+  "offensive": {
+   "stab": 0,
+   "slash": 0,
+   "crush": 0,
+   "magic": -3,
+   "ranged": -1
+  },
+  "defensive": {
+   "stab": 9,
+   "slash": 10,
+   "crush": 8,
+   "magic": -1,
+   "ranged": 9
+  },
+  "isTwoHanded": false
  }
 ]

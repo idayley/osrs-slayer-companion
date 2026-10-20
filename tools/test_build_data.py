@@ -60,3 +60,24 @@ def test_filters_to_task_monsters(tmp_path):
     ids = bd.task_monster_ids(str(f))
     out = [m["id"] for m in bd.build_monsters(SRC, only_ids=ids)]
     assert out == [2075]
+
+
+def test_poison_and_venom():
+    ms = monsters()
+    assert ms[2075]["poisonous"] is False and ms[2075]["venomous"] is False
+    assert ms[408]["poisonous"] is True  # Cave crawler
+    assert ms[957]["poisonous"] is True  # Kalphite Soldier
+    assert bd._poison_by_id([{"id": ["1"], "poisonous": "Yes ([[venom]])"}]) == {1: "venom"}
+
+
+def test_berserker_ring_has_no_reqs():
+    r = equipment()[6737]
+    assert r["skillReqs"] == {} and r["questReqs"] == []
+
+
+def test_black_mask_has_no_strength_req():
+    assert "strength" not in equipment()[8919]["skillReqs"]
+
+
+def test_whip_or_inherits_attack_70():
+    assert equipment()[26482]["skillReqs"]["attack"] == 70

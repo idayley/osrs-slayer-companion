@@ -95,5 +95,100 @@
    "element": "water",
    "severity": 100
   }
+ },
+ {
+  "id": 408,
+  "name": "Cave crawler",
+  "version": "Standard (3)",
+  "image": "Cave crawler (3).png",
+  "level": 23,
+  "speed": 4,
+  "style": [
+   "Stab"
+  ],
+  "size": 2,
+  "max_hit": "3",
+  "skills": {
+   "atk": 22,
+   "def": 18,
+   "hp": 22,
+   "magic": 1,
+   "ranged": 1,
+   "str": 18
+  },
+  "offensive": {
+   "atk": 0,
+   "magic": 0,
+   "magic_str": 0,
+   "ranged": 0,
+   "ranged_str": 0,
+   "str": 0
+  },
+  "defensive": {
+   "flat_armour": 0,
+   "crush": 5,
+   "magic": 5,
+   "heavy": 10,
+   "standard": 10,
+   "light": 10,
+   "slash": 10,
+   "stab": 10
+  },
+  "attributes": [],
+  "immunities": {
+   "burn": null
+  },
+  "is_slayer_monster": true,
+  "weakness": null
+ },
+ {
+  "id": 957,
+  "name": "Kalphite Soldier",
+  "version": "Kalphite Lair",
+  "image": "Kalphite Soldier.png",
+  "level": 85,
+  "speed": 4,
+  "style": [
+   "Crush"
+  ],
+  "size": 3,
+  "max_hit": "8",
+  "skills": {
+   "atk": 70,
+   "def": 70,
+   "hp": 90,
+   "magic": 1,
+   "ranged": 1,
+   "str": 70
+  },
+  "offensive": {
+   "atk": 0,
+   "magic": 0,
+   "magic_str": 0,
+   "ranged": 0,
+   "ranged_str": 0,
+   "str": 0
+  },
+  "defensive": {
+   "flat_armour": 0,
+   "crush": 5,
+   "magic": 50,
+   "heavy": 50,
+   "standard": 30,
+   "light": 50,
+   "slash": 25,
+   "stab": 25
+  },
+  "attributes": [
+   "kalphite"
+  ],
+  "immunities": {
+   "burn": null
+  },
+  "is_slayer_monster": true,
+  "weakness": {
+   "element": "fire",
+   "severity": 40
+  }
  }
 ]

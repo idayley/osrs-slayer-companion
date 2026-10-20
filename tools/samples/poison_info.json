@@ -1,0 +1,88 @@
+[
+ {
+  "id": [
+   "7252"
+  ],
+  "poisonous": "No",
+  "page_name": "Fire giant"
+ },
+ {
+  "id": [
+   "2075",
+   "2076",
+   "2077",
+   "2078",
+   "2079",
+   "2080",
+   "2081",
+   "2082",
+   "2083",
+   "2084"
+  ],
+  "poisonous": "No",
+  "page_name": "Fire giant"
+ },
+ {
+  "id": [
+   "7251"
+  ],
+  "poisonous": "No",
+  "page_name": "Fire giant"
+ },
+ {
+  "id": [
+   "408"
+  ],
+  "poisonous": "Yes (8)",
+  "page_name": "Cave crawler"
+ },
+ {
+  "id": [
+   "407"
+  ],
+  "poisonous": "Yes (8)",
+  "page_name": "Cave crawler"
+ },
+ {
+  "id": [
+   "409"
+  ],
+  "poisonous": "Yes (8)",
+  "page_name": "Cave crawler"
+ },
+ {
+  "id": [
+   "406"
+  ],
+  "poisonous": "Yes (8)",
+  "page_name": "Cave crawler"
+ },
+ {
+  "id": [
+   "13801"
+  ],
+  "poisonous": "Yes (8)",
+  "page_name": "Cave crawler"
+ },
+ {
+  "id": [
+   "13800"
+  ],
+  "poisonous": "Yes (8)",
+  "page_name": "Cave crawler"
+ },
+ {
+  "id": [
+   "957"
+  ],
+  "poisonous": "Yes (4)",
+  "page_name": "Kalphite Soldier"
+ },
+ {
+  "id": [
+   "958"
+  ],
+  "poisonous": "Yes (4)",
+  "page_name": "Kalphite Soldier"
+ }
+]

@@ -63,6 +63,14 @@ def quest_enum_name(title):
 
 _SKILL_RE = "|".join(s.capitalize() for s in SKILLS)
 _SENT_KEY = re.compile(r"requir|wield|equip|wear|worn", re.I)
+# Sentences about making, obtaining or fighting something are not the item's own equip requirement.
+_SENT_SKIP = re.compile(r"creat|craft|make|made|enchant|smith|imbu|process|kill|drop|obtain|upgrad|combin|"
+                        r"train|charg|recharg|purchas|\bbuy|access|mine[sd]?\b|cut\b", re.I)
+# Skills that can gate wielding or wearing gear (this excludes crafting, smithing, slayer-to-kill etc.).
+EQUIP_SKILLS = {"attack", "strength", "defence", "ranged", "magic", "prayer", "hitpoints",
+                "mining", "woodcutting", "agility"}
+# Wiki prose that is wrong or about another item; keyed by page title.
+REQ_OVERRIDES = {"Black mask": ({}, [])}
 _SKILL_PATTERNS = [
     re.compile(r"(?:\[\[)?(%s)(?:\|[^\]]*)?(?:\]\])?\s+levels?\s+(?:of\s+)?(\d+)" % _SKILL_RE),
     re.compile(r"levels?\s+(\d+)\s+(?:\[\[)?(%s)\b" % _SKILL_RE),
@@ -76,7 +84,7 @@ def parse_requirements(text):
     """Returns (skillReqs, questReqs) from a page intro's prose."""
     skills, quests = {}, []
     for sent in re.split(r"(?<=[.!?])\s+", text):
-        if not _SENT_KEY.search(sent):
+        if not _SENT_KEY.search(sent) or _SENT_SKIP.search(sent):
             continue
         for i, pat in enumerate(_SKILL_PATTERNS):
             for m in pat.finditer(sent):
@@ -86,7 +94,7 @@ def parse_requirements(text):
                 else:
                     sk, lvl = a, int(b)
                 sk = sk.lower()
-                if sk in SKILLS and 1 < lvl <= 99:
+                if sk in EQUIP_SKILLS and 1 < lvl <= 99:
                     skills[sk] = max(skills.get(sk, 0), lvl)
         for m in _QUEST_RE.finditer(sent):
             q = quest_enum_name(m.group(1))
@@ -108,6 +116,21 @@ def intro_of(wikitext):
 
 # ---------------------------------------------------------------- sources
 
+def _poison_by_id(rows):
+    """Wiki infobox_monster 'poisonous' text per NPC id: 'Yes (4)' poisons, 'Yes ([[venom]])' venoms."""
+    out = {}
+    for r in rows:
+        val = str(r.get("poisonous") or "")
+        if val.lower().startswith("yes"):
+            kind = "venom" if "venom" in val.lower() else "poison"
+            for i in r.get("id") or []:
+                try:
+                    out[int(i)] = kind
+                except ValueError:
+                    pass
+    return out
+
+
 class SampleSource:
     """Reads tools/samples/ so tests run offline."""
 
@@ -127,6 +150,9 @@ class SampleSource:
     def drops(self, page_name):
         path = "drops_%s.json" % page_name.replace(" ", "_")
         return self._load(path) if os.path.exists(os.path.join(self.dir, path)) else []
+
+    def poison_info(self):
+        return _poison_by_id(self._load("poison_info.json"))
 
     def item_ids(self):
         return {r["page_name"]: int(r["item_id"][0]) for r in self._load("item_ids.json") if r.get("item_id")}
@@ -180,6 +206,16 @@ class LiveSource:
             if len(got) < 500:
                 return rows
             off += 500
+
+    def poison_info(self):
+        rows, off = [], 0
+        while True:
+            got = self._bucket("bucket('infobox_monster').select('page_name','id','poisonous')"
+                               ".limit(5000).offset(%d).run()" % off)
+            rows += got
+            if len(got) < 5000:
+                return _poison_by_id(rows)
+            off += 5000
 
     def item_ids(self):
         out, off = {}, 0
@@ -237,6 +273,7 @@ def build_monsters(src, only_ids=None):
     what the calc's skills.hp holds.
     """
     ids = src.item_ids()
+    poison = src.poison_info()
     drop_cache = {}
     out = {}
     for r in src.monsters_raw():
@@ -258,7 +295,7 @@ def build_monsters(src, only_ids=None):
             drop_cache[name] = build_drops(src.drops(name), ids)
         out[r["id"]] = {
             "id": r["id"],
-            "name": name if not r.get("version") else "%s (%s)" % (name, r["version"]),
+            "name": _display_name(name, r.get("version")),
             "hitpoints": hp,
             "slayerXp": hp,
             "defenceLevel": int(r.get("skills", {}).get("def", 0)),
@@ -269,8 +306,8 @@ def build_monsters(src, only_ids=None):
             "elementalWeaknessPercent": int(weak.get("severity", 0)) if weak.get("element") else 0,
             "maxHit": _first_int(r.get("max_hit")),
             "attackStyles": [s.lower() for s in (r.get("style") or []) if s],
-            "poisonous": False,
-            "venomous": False,
+            "poisonous": poison.get(r["id"]) == "poison",
+            "venomous": poison.get(r["id"]) == "venom",
             "undead": "undead" in attrs,
             "demon": "demon" in attrs,
             "dragon": "dragon" in attrs,
@@ -301,6 +338,17 @@ def build_drops(rows, item_ids):
     return drops
 
 
+def _display_name(name, version):
+    if not version:
+        return name
+    return "%s %s" % (name, version) if version.startswith("(") else "%s (%s)" % (name, version)
+
+
+def _base_title(title):
+    """'Abyssal whip (or)' -> 'Abyssal whip'; names without a trailing (...) are returned unchanged."""
+    return re.sub(r"\s*\([^)]*\)\s*$", "", title) or title
+
+
 def _useful(e):
     if not e.get("slot") or not e.get("id"):
         return False
@@ -317,7 +365,7 @@ def build_equipment(src):
         b, o = e.get("bonuses", {}), e.get("offensive", {})
         out.append({
             "itemId": e["id"],
-            "name": e["name"] if not e.get("version") else "%s (%s)" % (e["name"], e["version"]),
+            "name": _display_name(e["name"], e.get("version")),
             "_page": e["name"],
             "slot": "weapon" if e["slot"] == "2h" else e["slot"],
             "bonuses": {
@@ -333,11 +381,22 @@ def build_equipment(src):
             "questReqs": [],
             "twoHanded": bool(e.get("isTwoHanded")) or e["slot"] == "2h",
         })
-    pages = src.wikitext(sorted({x["_page"] for x in out}))
+    titles = {x["_page"] for x in out} | {_base_title(x["_page"]) for x in out}
+    pages = src.wikitext(sorted(titles))
+
+    def reqs_for(title):
+        if title in REQ_OVERRIDES:
+            return REQ_OVERRIDES[title]
+        text = pages.get(title)
+        return parse_requirements(intro_of(text)) if text else ({}, [])
+
     for x in out:
-        text = pages.get(x.pop("_page"))
-        if text:
-            x["skillReqs"], x["questReqs"] = parse_requirements(intro_of(text))
+        title = x.pop("_page")
+        skills, quests = reqs_for(title)
+        base = _base_title(title)
+        if not skills and not quests and base != title:  # (or), (a), (bh), (deadman)... inherit the base item
+            skills, quests = reqs_for(base)
+        x["skillReqs"], x["questReqs"] = dict(skills), list(quests)
     return out
 
 

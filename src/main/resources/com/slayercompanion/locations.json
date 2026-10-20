@@ -2010,8 +2010,8 @@
   "bonusGpPerKill": 0.0
  },
  {
-  "id": "tzhaar--mor-ul-rek-tzhaar-ket",
-  "name": "Mor Ul Rek (TzHaar-Ket)",
+  "id": "tzhaar--tzhaar-city-tzhaar-ket",
+  "name": "TzHaar City (TzHaar-Ket)",
   "taskId": "tzhaar",
   "monsterId": 2173,
   "entrance": {
@@ -2024,24 +2024,14 @@
   ],
   "skillReqs": {},
   "questReqs": [],
-  "itemReqs": [
-   {
-    "name": "fire cape",
-    "itemIds": [
-     6570,
-     13329,
-     21295,
-     21285
-    ]
-   }
-  ],
+  "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.0,
   "bonusGpPerKill": 0.0
  },
  {
-  "id": "tzhaar--mor-ul-rek-tzhaar-xil",
-  "name": "Mor Ul Rek (TzHaar-Xil)",
+  "id": "tzhaar--tzhaar-city-tzhaar-xil",
+  "name": "TzHaar City (TzHaar-Xil)",
   "taskId": "tzhaar",
   "monsterId": 2168,
   "entrance": {
@@ -2054,24 +2044,14 @@
   ],
   "skillReqs": {},
   "questReqs": [],
-  "itemReqs": [
-   {
-    "name": "fire cape",
-    "itemIds": [
-     6570,
-     13329,
-     21295,
-     21285
-    ]
-   }
-  ],
+  "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.0,
   "bonusGpPerKill": 0.0
  },
  {
-  "id": "tzhaar--mor-ul-rek-tzhaar-mej",
-  "name": "Mor Ul Rek (TzHaar-Mej)",
+  "id": "tzhaar--tzhaar-city-tzhaar-mej",
+  "name": "TzHaar City (TzHaar-Mej)",
   "taskId": "tzhaar",
   "monsterId": 2154,
   "entrance": {
@@ -2084,17 +2064,7 @@
   ],
   "skillReqs": {},
   "questReqs": [],
-  "itemReqs": [
-   {
-    "name": "fire cape",
-    "itemIds": [
-     6570,
-     13329,
-     21295,
-     21285
-    ]
-   }
-  ],
+  "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.0,
   "bonusGpPerKill": 0.0

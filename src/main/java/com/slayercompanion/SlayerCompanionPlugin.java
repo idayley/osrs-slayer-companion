@@ -70,6 +70,9 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.StatChanged;
 import net.runelite.api.events.VarbitChanged;
+import net.runelite.api.events.WidgetClosed;
+import net.runelite.api.events.WidgetLoaded;
+import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
 import net.runelite.api.gameval.VarPlayerID;
 import net.runelite.api.gameval.VarbitID;
@@ -435,6 +438,29 @@ public class SlayerCompanionPlugin extends Plugin
 		}
 		planDirty = true;
 		saveOwned();
+	}
+
+	@Subscribe
+	public void onWidgetLoaded(WidgetLoaded e)
+	{
+		if (isBankInterface(e.getGroupId()))
+		{
+			session.setBankOpen(true, inventoryFood);
+		}
+	}
+
+	@Subscribe
+	public void onWidgetClosed(WidgetClosed e)
+	{
+		if (isBankInterface(e.getGroupId()))
+		{
+			session.setBankOpen(false, inventoryFood);
+		}
+	}
+
+	private static boolean isBankInterface(int groupId)
+	{
+		return groupId == InterfaceID.BANKMAIN || groupId == InterfaceID.BANK_DEPOSITBOX;
 	}
 
 	@Subscribe

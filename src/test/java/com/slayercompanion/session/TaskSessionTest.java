@@ -156,6 +156,23 @@ public class TaskSessionTest
 	}
 
 	@Test
+	public void bankingDoesNotCountAsEating()
+	{
+		session.onTaskUpdate(task("Abyssal demons", 100, 100));
+		session.onFoodCount(10);
+		session.onTaskUpdate(task("Abyssal demons", 90, 100)); // 10 kills
+		session.onFoodCount(8); // 2 eaten
+		session.setBankOpen(true, 8);
+		session.onFoodCount(0); // deposited
+		session.onFoodCount(20); // withdrew
+		session.onFoodCount(18); // put two back
+		session.setBankOpen(false, 18);
+		session.onFoodCount(17); // 1 eaten
+		// 3 eaten / 10 kills = 0.3 per kill; 17 left -> 56 kills
+		assertEquals(56, session.killsUntilFoodRunsOut().getAsInt());
+	}
+
+	@Test
 	public void nextTaskBonusAt49()
 	{
 		assertTrue(session.nextTaskIsBonus(49));

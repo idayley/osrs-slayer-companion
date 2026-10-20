@@ -41,6 +41,7 @@ public class TaskSession
 	private BestDrop best;
 	private int lastFood = -1;
 	private int foodEaten;
+	private boolean bankOpen;
 
 	public TaskSession(Clock clock)
 	{
@@ -174,9 +175,22 @@ public class TaskSession
 		}
 	}
 
+	/**
+	 * While a bank or deposit box is open, food leaving the inventory was banked, not eaten.
+	 * On close the count is re-baselined to {@code foodInInventory}.
+	 */
+	public void setBankOpen(boolean open, int foodInInventory)
+	{
+		bankOpen = open;
+		if (!open)
+		{
+			lastFood = foodInInventory;
+		}
+	}
+
 	public void onFoodCount(int foodInInventory)
 	{
-		if (lastFood >= 0 && started && foodInInventory < lastFood)
+		if (lastFood >= 0 && started && !bankOpen && foodInInventory < lastFood)
 		{
 			foodEaten += lastFood - foodInInventory;
 		}

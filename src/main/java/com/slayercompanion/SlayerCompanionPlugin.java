@@ -446,7 +446,8 @@ public class SlayerCompanionPlugin extends Plugin
 		}
 		for (ItemStack stack : e.getItems())
 		{
-			session.onLoot(stack.getId(), stack.getQuantity(), itemManager.getItemPrice(stack.getId()));
+			session.onLoot(stack.getId(), itemManager.getItemComposition(stack.getId()).getName(), stack.getQuantity(),
+				itemManager.getItemPrice(stack.getId()));
 		}
 	}
 

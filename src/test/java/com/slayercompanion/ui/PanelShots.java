@@ -108,10 +108,10 @@ public final class PanelShots
 			session.onTaskUpdate(Samples.task(Samples.fireGiants(), remaining, 142));
 		}
 		session.onFoodCount(6);
-		session.onLoot(1333, 1, 15_000);
+		session.onLoot(1333, "Rune scimitar", 1, 15_000);
 		for (int i = 0; i < 40; i++)
 		{
-			session.onLoot(995, 2200, 1);
+			session.onLoot(995, "Coins", 2200, 1);
 		}
 		session.onSuperior();
 		OnTaskModel onTask = OnTaskModel.build("Fire giants", "Waterfall Dungeon", session, Samples.fireGiant(), 6,

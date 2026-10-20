@@ -97,7 +97,7 @@ public class OnTaskModelTest
 		session.setMonster(Samples.fireGiant());
 		session.onTaskUpdate(Samples.task(Samples.fireGiants(), 142, 142));
 		session.onTaskUpdate(Samples.task(Samples.fireGiants(), 141, 142));
-		session.onLoot(1333, 1, 15_000);
+		session.onLoot(1333, "Rune scimitar", 1, 15_000);
 		session.onSuperior();
 		OnTaskModel m = build(-1);
 		assertEquals("1", m.getSuperiors());

@@ -104,13 +104,17 @@ public class TaskSession
 		foodEaten = 0;
 	}
 
-	public void onLoot(int itemId, int qty, long gpEach)
+	/**
+	 * @param itemName the game's name for the item, used when the drop isn't in the selected
+	 *                 monster's table (may be null)
+	 */
+	public void onLoot(int itemId, String itemName, int qty, long gpEach)
 	{
 		long value = qty * gpEach;
 		lootTotal += value;
 		if (best == null || value > best.getValue())
 		{
-			best = new BestDrop(nameOf(itemId), value, rateOf(itemId));
+			best = new BestDrop(nameOf(itemId, itemName), value, rateOf(itemId));
 		}
 	}
 
@@ -130,10 +134,14 @@ public class TaskSession
 		return null;
 	}
 
-	private String nameOf(int itemId)
+	private String nameOf(int itemId, String itemName)
 	{
 		Drop d = dropOf(itemId);
-		return d != null && d.getName() != null ? d.getName() : "Item " + itemId;
+		if (d != null && d.getName() != null)
+		{
+			return d.getName();
+		}
+		return itemName != null && !itemName.isEmpty() ? itemName : "Item " + itemId;
 	}
 
 	private double rateOf(int itemId)

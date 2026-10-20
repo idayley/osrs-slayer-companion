@@ -98,7 +98,7 @@ public class TaskSessionTest
 		session.onTaskUpdate(task("Abyssal demons", 99, 100));
 		clock.advance(30);
 		session.onTaskUpdate(task("Abyssal demons", 98, 100));
-		session.onLoot(4151, 1, 2_000_000L);
+		session.onLoot(4151, "Abyssal whip", 1, 2_000_000L);
 		session.onSuperior();
 		session.onTaskUpdate(task("Gargoyles", 120, 120));
 		assertEquals(120, session.remaining());
@@ -120,14 +120,27 @@ public class TaskSessionTest
 		m.getDrops().add(scim);
 		session.setMonster(m);
 		session.onTaskUpdate(task("Abyssal demons", 10, 10));
-		session.onLoot(995, 500, 1);
-		session.onLoot(1333, 1, 15000);
-		session.onLoot(560, 10, 100);
+		session.onLoot(995, "Coins", 500, 1);
+		session.onLoot(1333, "Rune scim", 1, 15000);
+		session.onLoot(560, "Death rune", 10, 100);
 		TaskSession.BestDrop best = session.bestDrop().get();
 		assertEquals("Rune scimitar", best.getName());
 		assertEquals(15000L, best.getValue());
 		assertEquals(1.0 / 128, best.getRate(), 1e-12);
 		assertEquals(500 + 15000 + 1000, session.lootTotal());
+	}
+
+	@Test
+	public void bestDropOffTableUsesItemNameWithNoRate()
+	{
+		session.setMonster(new Monster());
+		session.onTaskUpdate(task("Abyssal demons", 10, 10));
+		session.onLoot(12345, "Clue scroll (hard)", 1, 5000);
+		TaskSession.BestDrop best = session.bestDrop().get();
+		assertEquals("Clue scroll (hard)", best.getName());
+		assertEquals(0.0, best.getRate(), 0.0);
+		session.onLoot(23456, null, 1, 9000);
+		assertEquals("Item 23456", session.bestDrop().get().getName());
 	}
 
 	@Test

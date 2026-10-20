@@ -64,9 +64,10 @@ src/test/java/com/slayercompanion/SlayerCompanionPluginTest.java  (launches clie
 - Produces:
   - `Monster { int id; String name; int hitpoints; int slayerXp; int defenceLevel, magicLevel; Map<String,Integer> defensiveBonuses /* stab,slash,crush,magic,light,standard,heavy */; String elementalWeakness /* "water"|"air"|"earth"|"fire"|null */; int elementalWeaknessPercent; int maxHit; List<String> attackStyles; boolean poisonous, venomous; boolean undead, demon, dragon; List<Drop> drops; }`
   - `Drop { int itemId; String name; double rate /* per kill, e.g. 1/128 = 0.0078125 */; int qtyMin, qtyMax; }`
-  - `Equipment { int itemId; String name; String slot; Map<String,Integer> bonuses; int speedTicks; String category; Map<String,Integer> skillReqs; List<String> questReqs; boolean twoHanded; }`
-  - `SlayerTask { String id; String name; List<Integer> monsterIds; List<String> masters; List<String> requiredItems; List<String> recommendedSupplies; List<String> locationIds; }`
-  - `Location { String id; String name; String taskId; int monsterId; WorldPointDto entrance; List<String> tags; List<String> skillReqs; List<String> questReqs; List<String> itemReqs; double overheadSeconds; double killSpeedFactor; double bonusGpPerKill; }`
+  - `Equipment { int itemId; String name; String slot; Map<String,Integer> bonuses; int speedTicks; String category; Map<String,Integer> skillReqs; List<String> questReqs; boolean twoHanded; }` — `bonuses` keys exactly: "stab","slash","crush","magic","ranged" (attack), "str","ranged_str","magic_str" (tenths of a percent, 15 = +1.5%), "prayer"; `questReqs` are RuneLite `Quest` enum names
+  - `ItemNeed { String name; List<Integer> itemIds /* any one satisfies */; }`
+  - `SlayerTask { String id; String name; List<Integer> monsterIds; List<String> masters; List<ItemNeed> requiredItems; List<ItemNeed> recommendedSupplies; List<String> locationIds; }`
+  - `Location { String id; String name; String taskId; int monsterId; WorldPointDto entrance; List<String> tags; Map<String,Integer> skillReqs; List<String> questReqs /* Quest enum names */; List<ItemNeed> itemReqs; double overheadSeconds; double killSpeedFactor; double bonusGpPerKill; }`
   - `Safespot { String locationId; int monsterId; WorldPointDto tile; String note; boolean verified; String source /* "builtin"|"player" */; }`
   - `WorldPointDto { int x, y, plane; }` with `WorldPoint toWorldPoint()`
   - `GameData.load(String resourceDir) -> GameData` with `Optional<Monster> monster(int id)`, `Optional<Equipment> equipment(int itemId)`, `Collection<Equipment> allEquipment()`, `Optional<SlayerTask> taskByName(String)`, `List<Location> locations(String taskId)`, `List<Safespot> builtinSafespots()`
@@ -147,7 +148,7 @@ Follow the Wiki DPS calculator's formulas for melee, ranged and standard spells,
 - Produces:
   - `OwnedItems { void updateBank(Map<Integer,Integer>, Instant seen); void updateInventory(Map<Integer,Integer>); void updateWorn(Map<Integer,Integer>); int count(int itemId); boolean bankSeen(); Optional<Instant> bankSeenAt(); String toJson(); static OwnedItems fromJson(String); }` — counts are bank + inventory + worn; noted and placeholder ids canonicalised via a `IntUnaryOperator canonical` passed to the constructor (wired to `ItemManager.canonicalize` in the plugin).
   - `GearOptimizer.best(CombatStats, Style, Monster, boolean onTask, OwnedItems) -> Optional<Loadout>` — empty when `!bankSeen()`.
-  - `GearOptimizer.biggestUpgrade(CombatStats, Set<String> questsDone, Loadout current, Monster, boolean onTask) -> Optional<Upgrade>` where `Upgrade { Equipment item; double dpsGainPercent; }` — any price, only items whose `skillReqs` and `questReqs` the player meets, not already owned.
+  - `GearOptimizer.biggestUpgrade(CombatStats, Set<String> questsDone, Loadout current, Monster, boolean onTask, OwnedItems owned) -> Optional<Upgrade>` where `Upgrade { Equipment item; double dpsGainPercent; }` — any price, only items whose `skillReqs` and `questReqs` the player meets, not already owned.
 
 Search: greedy per slot (weapon first, honouring two-handed), repeated until no slot improves (max 3 passes).
 
@@ -166,7 +167,7 @@ Search: greedy per slot (weapon first, honouring two-handed), repeated until no 
 **Interfaces:**
 - Consumes: `GameData.taskByName` (Task 1).
 - Produces:
-  - `CurrentTask { SlayerTask task; int remaining; int initialAmount; Optional<String> konarLocation; String master; int streak; }`
+  - `CurrentTask { SlayerTask task; int remaining; int initialAmount; Optional<String> konarLocation; Optional<String> master /* from the assignment chat message when seen, else empty */; int streak; }`
   - `TaskTracker(Client, GameData)`; `Optional<CurrentTask> read()`; `boolean isNewTask(Optional<CurrentTask> previous, Optional<CurrentTask> now)` (true when the task name changes or remaining goes up).
 
 Read the same varps/varbits RuneLite's built-in `net.runelite.client.plugins.slayer.SlayerPlugin` reads for task creature, amount, Konar location and streak; resolve the creature name via the game's slayer task enum as that plugin does. Initial amount: the highest remaining seen for this task (persisted by the plugin).
@@ -204,7 +205,7 @@ Order: usable before locked; then (Ranged/Magic only) safespot first; then trave
 ### Task 8: On-task session stats
 
 **Files:**
-- Create: `session/TaskSession.java`
+- Create: `session/TaskSession.java`, `session/FoodItems.java` (`static boolean isFood(int itemId)`, common foods: shark, manta ray, anglerfish, monkfish, karambwan, lobster, swordfish, tuna, salmon, trout, potato with cheese, pineapple pizza halves/whole, cake slices)
 - Test: `src/test/java/com/slayercompanion/session/TaskSessionTest.java`
 
 **Interfaces:**

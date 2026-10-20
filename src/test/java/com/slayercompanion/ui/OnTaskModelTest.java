@@ -50,10 +50,10 @@ public class OnTaskModelTest
 		session.onTaskUpdate(Samples.task(Samples.fireGiants(), 140, 142));
 		OnTaskModel two = build(-1);
 		assertTrue(!two.isTimingHidden());
-		assertEquals("16", stat(two, "Per kill"));
-		assertEquals("~37", stat(two, "Time left"));
-		assertEquals("225", stat(two, "Kills / hr"));
-		assertEquals("25k", stat(two, "Slayer XP / hr"));
+		assertEquals("32", stat(two, "Per kill"));
+		assertEquals("~75", stat(two, "Time left"));
+		assertEquals("113", stat(two, "Kills / hr"));
+		assertEquals("12.5k", stat(two, "Slayer XP / hr"));
 	}
 
 	@Test

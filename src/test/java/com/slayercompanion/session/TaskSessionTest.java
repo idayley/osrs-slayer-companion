@@ -68,12 +68,23 @@ public class TaskSessionTest
 	public void secondsPerKillAndTimeLeft()
 	{
 		session.onTaskUpdate(task("Abyssal demons", 142, 142));
-		session.onTaskUpdate(task("Abyssal demons", 141, 142));
+		session.onTaskUpdate(task("Abyssal demons", 141, 142)); // kill 1 starts the clock
 		clock.advance(96);
-		session.onTaskUpdate(task("Abyssal demons", 139, 142));
+		session.onTaskUpdate(task("Abyssal demons", 138, 142)); // 4 kills over 96 s -> 3 timed kills
 		assertEquals(32.0, session.secondsPerKill().getAsDouble(), 1e-9);
-		assertEquals(4448.0, session.secondsLeft().getAsDouble(), 1e-9);
+		assertEquals(32.0 * 138, session.secondsLeft().getAsDouble(), 1e-9);
 		assertEquals(112.5, session.killsPerHour().getAsDouble(), 1e-9);
+	}
+
+	@Test
+	public void timingHiddenAfterOnlyOneKill()
+	{
+		session.onTaskUpdate(task("Abyssal demons", 142, 142));
+		session.onTaskUpdate(task("Abyssal demons", 141, 142));
+		clock.advance(40);
+		assertFalse(session.secondsPerKill().isPresent());
+		assertFalse(session.killsPerHour().isPresent());
+		assertFalse(session.secondsLeft().isPresent());
 	}
 
 	@Test
@@ -87,8 +98,8 @@ public class TaskSessionTest
 		session.onLoggedIn();
 		clock.advance(30);
 		session.onTaskUpdate(task("Abyssal demons", 97, 100));
-		// 3 kills over 60 active seconds
-		assertEquals(20.0, session.secondsPerKill().getAsDouble(), 1e-9);
+		// 3 kills, the 2 after the first took 60 active seconds
+		assertEquals(30.0, session.secondsPerKill().getAsDouble(), 1e-9);
 	}
 
 	@Test

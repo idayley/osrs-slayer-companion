@@ -32,6 +32,8 @@ public class TaskSession
 	private int total;
 	private boolean hasTask;
 	private int kills;
+	/** Kills seen in the update that started the clock; time per kill only counts kills after these. */
+	private int killsAtStart;
 	private boolean started;
 	private boolean loggedIn = true;
 	private Instant runningSince;
@@ -82,6 +84,7 @@ public class TaskSession
 			if (!started)
 			{
 				started = true;
+				killsAtStart = delta;
 				if (loggedIn)
 				{
 					runningSince = clock.instant();
@@ -96,6 +99,7 @@ public class TaskSession
 		remaining = 0;
 		total = 0;
 		kills = 0;
+		killsAtStart = 0;
 		started = false;
 		runningSince = null;
 		accumulated = Duration.ZERO;
@@ -222,13 +226,18 @@ public class TaskSession
 		return d.toMillis() / 1000.0;
 	}
 
+	/**
+	 * The clock starts at the first kill, so the time divides over the kills after it
+	 * (usually kills - 1). Empty until there is at least one timed kill (kills >= 2).
+	 */
 	public OptionalDouble secondsPerKill()
 	{
-		if (!started || kills <= 0)
+		int timedKills = kills - killsAtStart;
+		if (!started || timedKills <= 0)
 		{
 			return OptionalDouble.empty();
 		}
-		return OptionalDouble.of(activeSeconds() / kills);
+		return OptionalDouble.of(activeSeconds() / timedKills);
 	}
 
 	public OptionalDouble killsPerHour()

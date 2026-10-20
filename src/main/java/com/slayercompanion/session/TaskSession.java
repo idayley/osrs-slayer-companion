@@ -281,7 +281,7 @@ public class TaskSession
 		return (long) Math.floor(points / 4);
 	}
 
-	static int levelForXp(long xp)
+	public static int levelForXp(long xp)
 	{
 		int level = 1;
 		while (level < 99 && xpForLevel(level + 1) <= xp)

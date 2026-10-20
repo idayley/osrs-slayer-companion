@@ -33,6 +33,15 @@ public class SafespotStore
 	public SafespotStore(List<Safespot> builtin, String savedJson)
 	{
 		this.builtin = new ArrayList<>(builtin);
+		load(savedJson);
+	}
+
+	/** Replaces the player's marks and decisions with saved JSON (e.g. after switching account). */
+	public void load(String savedJson)
+	{
+		player.clear();
+		confirmed.clear();
+		rejected.clear();
 		if (savedJson == null || savedJson.trim().isEmpty())
 		{
 			return;
@@ -166,6 +175,12 @@ public class SafespotStore
 			.collect(Collectors.toList());
 		out.addAll(player);
 		return out;
+	}
+
+	/** How many spots {@link SafespotExport#export} would include. */
+	public int exportableCount()
+	{
+		return exportable().size();
 	}
 
 	public String toJson()

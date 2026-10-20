@@ -36,3 +36,11 @@ tasks.withType(JavaCompile).configureEach {
 	options.encoding = 'UTF-8'
 	options.release.set(11)
 }
+
+// Renders the side panel tabs with sample data to build/panel-shots/*.png (layout check; not part of `test`).
+tasks.register('panelShots', JavaExec) {
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass = 'com.slayercompanion.ui.PanelShots'
+	systemProperty 'java.awt.headless', 'true'
+	args layout.buildDirectory.dir('panel-shots').get().asFile.absolutePath
+}

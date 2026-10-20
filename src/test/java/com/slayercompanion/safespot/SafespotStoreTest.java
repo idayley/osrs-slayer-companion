@@ -95,4 +95,22 @@ public class SafespotStoreTest
 		store.reject(new WorldPoint(3, 4, 0));
 		assertEquals(null, store.spotAt("loc", new WorldPoint(3, 4, 0)));
 	}
+
+	@Test
+	public void loadReplacesPlayerStateAndCountsExportable()
+	{
+		SafespotStore a = new SafespotStore(List.of(builtin("loc", 1, 3, 4)), null);
+		a.mark("loc", 1, new WorldPoint(10, 10, 0), "");
+		a.confirm(new WorldPoint(3, 4, 0));
+		assertEquals(2, a.exportableCount());
+
+		SafespotStore b = new SafespotStore(List.of(builtin("loc", 1, 3, 4)), null);
+		b.mark("loc", 1, new WorldPoint(20, 20, 0), "");
+		b.load(a.toJson());
+		assertEquals(2, b.exportableCount());
+		assertEquals(null, b.spotAt("loc", new WorldPoint(20, 20, 0)));
+		b.load(null);
+		assertEquals(0, b.exportableCount());
+		assertEquals(1, b.forLocation("loc").size());
+	}
 }

@@ -1,0 +1,11 @@
+[
+  {
+    "id": 2075, "name": "Fire giant", "hitpoints": 111, "slayerXp": 111,
+    "defenceLevel": 65, "magicLevel": 61,
+    "defensiveBonuses": {"stab": 25, "slash": 25, "crush": 25, "magic": 0, "light": 0, "standard": 0, "heavy": 0},
+    "elementalWeakness": "water", "elementalWeaknessPercent": 50,
+    "maxHit": 11, "attackStyles": ["melee"],
+    "poisonous": false, "venomous": false, "undead": false, "demon": false, "dragon": false,
+    "drops": [{"itemId": 1359, "name": "Rune axe", "rate": 0.0078125, "qtyMin": 1, "qtyMax": 1}]
+  }
+]

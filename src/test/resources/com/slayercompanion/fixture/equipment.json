@@ -1,0 +1,8 @@
+[
+  {
+    "itemId": 4151, "name": "Abyssal whip", "slot": "weapon",
+    "bonuses": {"stab": 0, "slash": 82, "crush": 0, "magic": 0, "ranged": 0, "str": 82, "ranged_str": 0, "magic_str": 0, "prayer": 0},
+    "speedTicks": 4, "category": "whip",
+    "skillReqs": {"ATTACK": 70}, "questReqs": [], "twoHanded": false
+  }
+]

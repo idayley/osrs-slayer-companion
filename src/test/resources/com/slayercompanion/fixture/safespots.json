@@ -1,0 +1,7 @@
+[
+  {
+    "locationId": "waterfall_dungeon", "monsterId": 2075,
+    "tile": {"x": 2570, "y": 9890, "plane": 0},
+    "note": "Placeholder fixture safespot", "verified": false, "source": "builtin"
+  }
+]

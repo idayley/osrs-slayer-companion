@@ -1,0 +1,9 @@
+[
+  {
+    "id": "fire_giants", "name": "Fire giants", "monsterIds": [2075],
+    "masters": ["konar", "nieve", "duradel"],
+    "requiredItems": [],
+    "recommendedSupplies": [{"name": "Prayer potion", "itemIds": [2434, 139, 141, 143]}],
+    "locationIds": ["waterfall_dungeon", "catacombs_fire_giants"]
+  }
+]

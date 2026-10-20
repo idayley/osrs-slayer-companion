@@ -1,0 +1,16 @@
+[
+  {
+    "id": "waterfall_dungeon", "name": "Waterfall Dungeon", "taskId": "fire_giants", "monsterId": 2075,
+    "entrance": {"x": 3200, "y": 3200, "plane": 0},
+    "tags": ["multi"], "skillReqs": {}, "questReqs": ["WATERFALL_QUEST"],
+    "itemReqs": [{"name": "Rope", "itemIds": [954]}],
+    "overheadSeconds": 60.0, "killSpeedFactor": 1.0, "bonusGpPerKill": 0.0
+  },
+  {
+    "id": "catacombs_fire_giants", "name": "Catacombs of Kourend", "taskId": "fire_giants", "monsterId": 2075,
+    "entrance": {"x": 1640, "y": 3673, "plane": 0},
+    "tags": ["multi", "catacombs"], "skillReqs": {}, "questReqs": [],
+    "itemReqs": [],
+    "overheadSeconds": 90.0, "killSpeedFactor": 0.9, "bonusGpPerKill": 150.0
+  }
+]

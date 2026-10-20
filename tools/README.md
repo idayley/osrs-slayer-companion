@@ -3,11 +3,13 @@
 `build_data.py` generates `monsters.json` and `equipment.json` under
 `src/main/resources/com/slayercompanion/`. The plugin never touches the network; only this script does.
 
-    python3 tools/build_data.py --out src/main/resources/com/slayercompanion
-    python3 tools/build_data.py --out ... --monsters-from src/main/resources/com/slayercompanion/tasks.json
+    R=src/main/resources/com/slayercompanion
+    python3 tools/build_data.py --out $R --keep-from $R/tasks.json --keep-from $R/locations.json
 
-Regenerate after an OSRS update that changes monster stats, drop tables or gear, and once tasks.json
-exists (the `--monsters-from` filter keeps only task monsters and shrinks the jar). Takes ~2.5 minutes.
+Regenerate after an OSRS update that changes monster stats, drop tables or gear. Every slayer-flagged
+monster is emitted (so other masters' tasks still resolve by name), plus anything tasks.json/locations.json
+reference. If monsters.json would exceed 3 MB, drop tables are removed for monsters those files don't
+reference. `--monsters-from tasks.json` still exists to emit only task monsters. Takes ~2.5 minutes.
 Commit the output.
 
 Sources: weirdgloop/osrs-dps-calc `cdn/json/{monsters,equipment}.json` (stats, bonuses, weaknesses),

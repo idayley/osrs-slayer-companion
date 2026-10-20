@@ -7,7 +7,9 @@ Sources (network is used by this script only, never by the plugin):
   * OSRS Wiki page wikitext   equipment skill / quest requirements (parsed from the intro prose)
 
 Usage:
-  python3 tools/build_data.py --out src/main/resources/com/slayercompanion [--monsters-from tasks.json]
+  python3 tools/build_data.py --out src/main/resources/com/slayercompanion \
+      --keep-from src/main/resources/com/slayercompanion/tasks.json \
+      --keep-from src/main/resources/com/slayercompanion/locations.json
   python3 tools/build_data.py --samples --out /tmp/x      # offline, reads tools/samples/
 """
 import argparse
@@ -260,13 +262,32 @@ def _first_int(s):
     return int(m.group()) if m else 0
 
 
+MONSTERS_MAX_BYTES = 3_000_000
+
+
 def task_monster_ids(tasks_path):
+    """Monster ids referenced by tasks.json ("monsterIds") or locations.json ("monsterId")."""
     with open(tasks_path, encoding="utf-8") as f:
-        return {i for t in json.load(f) for i in t.get("monsterIds", [])}
+        ids = set()
+        for t in json.load(f):
+            ids.update(t.get("monsterIds", []))
+            if t.get("monsterId") is not None:
+                ids.add(t["monsterId"])
+        return ids
 
 
-def build_monsters(src, only_ids=None):
-    """One record per calc monster that is a Slayer monster (slayer XP > 0).
+def cap_monster_size(monsters, keep_ids, limit=MONSTERS_MAX_BYTES):
+    """Drops the drop tables of monsters nobody references when the file would exceed `limit` bytes."""
+    if len(json.dumps(monsters, separators=(",", ":"), ensure_ascii=False).encode("utf-8")) <= limit:
+        return monsters
+    for m in monsters:
+        if m["id"] not in keep_ids:
+            m["drops"] = []
+    return monsters
+
+
+def build_monsters(src, only_ids=None, keep_ids=None):
+    """One record per calc monster that is a Slayer monster (slayer XP > 0), plus any in `keep_ids`.
 
     Slayer XP per kill equals the monster's base hitpoints (Wiki rule), which is
     what the calc's skills.hp holds.
@@ -279,10 +300,10 @@ def build_monsters(src, only_ids=None):
         if only_ids is not None:
             if r["id"] not in only_ids:
                 continue
-        elif not r.get("is_slayer_monster"):
+        elif not r.get("is_slayer_monster") and r["id"] not in (keep_ids or ()):
             continue
         hp = int(r.get("skills", {}).get("hp", 0))
-        if only_ids is None and hp <= 0:
+        if only_ids is None and hp <= 0 and r["id"] not in (keep_ids or ()):
             continue
         if r["id"] in out:
             continue
@@ -410,12 +431,17 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", required=True, help="output directory")
     ap.add_argument("--monsters-from", help="tasks.json: only emit monsters referenced by tasks")
+    ap.add_argument("--keep-from", action="append", default=[],
+                    help="tasks.json / locations.json: always emit (and keep drops for) monsters they reference")
     ap.add_argument("--samples", action="store_true", help="read tools/samples/ instead of the network")
     a = ap.parse_args(argv)
     src = SampleSource() if a.samples else LiveSource()
     only = task_monster_ids(a.monsters_from) if a.monsters_from else None
+    keep = set()
+    for path in a.keep_from:
+        keep |= task_monster_ids(path)
     os.makedirs(a.out, exist_ok=True)
-    write_json(os.path.join(a.out, "monsters.json"), build_monsters(src, only))
+    write_json(os.path.join(a.out, "monsters.json"), cap_monster_size(build_monsters(src, only, keep), keep))
     write_json(os.path.join(a.out, "equipment.json"), build_equipment(src))
 
 

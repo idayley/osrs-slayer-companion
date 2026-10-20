@@ -540,30 +540,7 @@ public class SlayerCompanionPlugin extends Plugin
 
 	private boolean isTaskNpc(NPC npc)
 	{
-		if (npc == null || npc.getName() == null)
-		{
-			return false;
-		}
-		List<Integer> ids = current.get().getTask().getMonsterIds();
-		if (ids.isEmpty())
-		{
-			return true;
-		}
-		for (int id : ids)
-		{
-			Optional<Monster> m = data.monster(id);
-			if (m.isPresent() && baseName(m.get().getName()).equalsIgnoreCase(npc.getName()))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private static String baseName(String monsterName)
-	{
-		int paren = monsterName.indexOf(" (");
-		return paren > 0 ? monsterName.substring(0, paren) : monsterName;
+		return npc != null && TaskTracker.isTaskNpcName(npc.getName(), current.get().getTask(), data);
 	}
 
 	// ---- plan (Prep + Where to go) ----

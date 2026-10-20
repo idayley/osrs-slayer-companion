@@ -62,6 +62,28 @@ def test_filters_to_task_monsters(tmp_path):
     assert out == [2075]
 
 
+def test_keep_ids_are_emitted_even_if_not_slayer_flagged(monkeypatch):
+    raw = SRC.monsters_raw()
+    raw = [dict(r, is_slayer_monster=False) if r["id"] == 2075 else r for r in raw]
+    monkeypatch.setattr(SRC, "monsters_raw", lambda: raw)
+    assert 2075 not in [m["id"] for m in bd.build_monsters(SRC)]
+    assert 2075 in [m["id"] for m in bd.build_monsters(SRC, keep_ids={2075})]
+
+
+def test_location_monster_ids_are_read(tmp_path):
+    f = tmp_path / "locations.json"
+    f.write_text('[{"id":"a","monsterId":415},{"id":"b","monsterId":2075}]')
+    assert bd.task_monster_ids(str(f)) == {415, 2075}
+
+
+def test_size_cap_drops_unreferenced_drop_tables():
+    ms = [{"id": 1, "drops": [{"itemId": 5}] * 50}, {"id": 2, "drops": [{"itemId": 6}] * 50}]
+    out = bd.cap_monster_size(ms, keep_ids={1}, limit=10)
+    assert len(out[0]["drops"]) == 50 and out[1]["drops"] == []
+    small = [{"id": 2, "drops": [{"itemId": 6}]}]
+    assert bd.cap_monster_size(small, keep_ids=set(), limit=10_000)[0]["drops"] == [{"itemId": 6}]
+
+
 def test_poison_and_venom():
     ms = monsters()
     assert ms[2075]["poisonous"] is False and ms[2075]["venomous"] is False
@@ -82,3 +104,4 @@ def test_black_mask_uses_wiki_values():
 
 def test_whip_or_inherits_attack_70():
     assert equipment()[26482]["skillReqs"]["attack"] == 70
+

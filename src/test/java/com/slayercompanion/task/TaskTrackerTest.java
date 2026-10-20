@@ -1,6 +1,8 @@
 package com.slayercompanion.task;
 
 import com.slayercompanion.data.GameData;
+import com.slayercompanion.data.SlayerTask;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import net.runelite.api.Client;
@@ -100,6 +102,27 @@ public class TaskTrackerTest
 		assertEquals("Zzyzx beasts", t.getTask().getName());
 		assertTrue(t.getTask().getMonsterIds().isEmpty());
 		assertEquals(25, t.getRemaining());
+	}
+
+	@Test
+	public void otherMastersTaskResolvesMonstersByName()
+	{
+		givenTask(55, "Hill giants", 30);
+		SlayerTask t = tracker.read().get().getTask();
+		assertEquals("Hill giants", t.getName());
+		assertEquals(Arrays.asList(2098, 2099), t.getMonsterIds());
+		assertTrue(t.getLocationIds().isEmpty());
+		assertTrue(TaskTracker.isTaskNpcName("Hill Giant", t, data));
+		assertFalse(TaskTracker.isTaskNpcName("Fire giant", t, data));
+	}
+
+	@Test
+	public void taskWithoutMonsterIdsMatchesNoNpc()
+	{
+		givenTask(99, "Zzyzx beasts", 25);
+		SlayerTask t = tracker.read().get().getTask();
+		assertFalse(TaskTracker.isTaskNpcName("Zzyzx beast", t, data));
+		assertFalse(TaskTracker.isTaskNpcName("Fire giant", t, data));
 	}
 
 	@Test

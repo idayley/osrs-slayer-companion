@@ -24,12 +24,15 @@ public class GameData
 	private final Map<Integer, Monster> monsters = new HashMap<>();
 	private final Map<Integer, Equipment> equipment = new HashMap<>();
 	private final Map<String, SlayerTask> tasksByName = new HashMap<>();
+	private final Map<String, List<Integer>> monsterIdsByBaseName = new HashMap<>();
 	private final Map<String, List<Location>> locationsByTask = new HashMap<>();
 	private final List<Safespot> safespots;
 
 	private GameData(List<Monster> m, List<Equipment> e, List<SlayerTask> t, List<Location> l, List<Safespot> s)
 	{
 		m.forEach(x -> monsters.put(x.getId(), x));
+		m.stream().filter(x -> x.getName() != null).forEach(x -> monsterIdsByBaseName
+			.computeIfAbsent(baseName(x.getName()).toLowerCase(Locale.ROOT), k -> new ArrayList<>()).add(x.getId()));
 		e.forEach(x -> equipment.put(x.getItemId(), x));
 		t.forEach(x -> tasksByName.put(x.getName().toLowerCase(Locale.ROOT), x));
 		l.forEach(x -> locationsByTask.computeIfAbsent(x.getTaskId(), k -> new ArrayList<>()).add(x));
@@ -77,6 +80,23 @@ public class GameData
 	public Optional<Monster> monster(int id)
 	{
 		return Optional.ofNullable(monsters.get(id));
+	}
+
+	/**
+	 * Ids of every bundled monster with this name, ignoring case and any variant suffix
+	 * such as "(Level 28)" or "(Wilderness Slayer Cave)".
+	 */
+	public List<Integer> monsterIdsNamed(String name)
+	{
+		return name == null ? Collections.emptyList() : Collections.unmodifiableList(
+			monsterIdsByBaseName.getOrDefault(baseName(name.trim()).toLowerCase(Locale.ROOT), Collections.emptyList()));
+	}
+
+	/** "Aviansie (Level 131)" -> "Aviansie"; the same rule the plugin uses to match NPC names. */
+	public static String baseName(String monsterName)
+	{
+		int paren = monsterName.indexOf(" (");
+		return paren > 0 ? monsterName.substring(0, paren) : monsterName;
 	}
 
 	public Optional<Equipment> equipment(int itemId)

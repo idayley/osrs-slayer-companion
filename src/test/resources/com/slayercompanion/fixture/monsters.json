@@ -7,5 +7,13 @@
     "maxHit": 11, "attackStyles": ["melee"],
     "poisonous": false, "venomous": false, "undead": false, "demon": false, "dragon": false,
     "drops": [{"itemId": 1359, "name": "Rune axe", "rate": 0.0078125, "qtyMin": 1, "qtyMax": 1}]
+  },
+  {
+    "id": 2098, "name": "Hill Giant (Level 28)", "hitpoints": 35, "slayerXp": 35,
+    "defenceLevel": 26, "magicLevel": 1, "defensiveBonuses": {}, "attackStyles": ["melee"], "drops": []
+  },
+  {
+    "id": 2099, "name": "Hill Giant (Level 42)", "hitpoints": 50, "slayerXp": 50,
+    "defenceLevel": 40, "magicLevel": 1, "defensiveBonuses": {}, "attackStyles": ["melee"], "drops": []
   }
 ]

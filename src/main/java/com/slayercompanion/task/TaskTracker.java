@@ -1,6 +1,7 @@
 package com.slayercompanion.task;
 
 import com.slayercompanion.data.GameData;
+import com.slayercompanion.data.Monster;
 import com.slayercompanion.data.SlayerTask;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -113,6 +114,24 @@ public class TaskTracker
 			client.getVarbitValue(VarbitID.SLAYER_TASKS_COMPLETED)));
 	}
 
+	/** True when an NPC with this name is one of the task's monsters; never true for a task with no monster ids. */
+	public static boolean isTaskNpcName(String npcName, SlayerTask task, GameData data)
+	{
+		if (npcName == null)
+		{
+			return false;
+		}
+		for (int id : task.getMonsterIds())
+		{
+			Optional<Monster> m = data.monster(id);
+			if (m.isPresent() && GameData.baseName(m.get().getName()).equalsIgnoreCase(npcName))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/** True when the task name changed or the remaining count went up (a fresh assignment). */
 	public boolean isNewTask(Optional<CurrentTask> previous, Optional<CurrentTask> now)
 	{
@@ -176,7 +195,11 @@ public class TaskTracker
 		return f == null || f.length == 0 ? Optional.empty() : Optional.ofNullable((String) f[0]);
 	}
 
-	/** Finds bundled data for an in-game name, tolerating case and singular/plural differences. */
+	/**
+	 * Finds bundled data for an in-game name, tolerating case and singular/plural differences.
+	 * A task with no tasks.json entry (another master's) gets a stub carrying the ids of the
+	 * bundled monsters with that name, so gear and stats still work; it has no locations.
+	 */
 	private SlayerTask resolve(String name)
 	{
 		Set<String> candidates = new LinkedHashSet<>();
@@ -210,6 +233,16 @@ public class TaskTracker
 		}
 		SlayerTask stub = new SlayerTask();
 		stub.setName(name);
+		for (String c : candidates)
+		{
+			for (int id : data.monsterIdsNamed(c))
+			{
+				if (!stub.getMonsterIds().contains(id))
+				{
+					stub.getMonsterIds().add(id);
+				}
+			}
+		}
 		return stub;
 	}
 }

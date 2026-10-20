@@ -1,0 +1,7 @@
+.tools/
+.superpowers/
+.gradle/
+build/
+*.class
+__pycache__/
+.pytest_cache/

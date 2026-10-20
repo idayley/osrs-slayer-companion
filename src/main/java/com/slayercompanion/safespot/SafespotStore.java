@@ -111,6 +111,12 @@ public class SafespotStore
 		return out;
 	}
 
+	/** The shown spot at a template-space tile (as from WorldPoint.fromLocalInstance), or null. */
+	public Safespot spotAt(String locationId, WorldPoint tile)
+	{
+		return forLocation(locationId).stream().filter(s -> point(s).equals(tile)).findFirst().orElse(null);
+	}
+
 	public boolean hasAny(String locationId)
 	{
 		return !forLocation(locationId).isEmpty();

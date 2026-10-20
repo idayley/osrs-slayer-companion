@@ -83,4 +83,16 @@ public class SafespotStoreTest
 		SafespotStore store = new SafespotStore(List.of(builtin("loc", 1, 3, 4)), "{not json");
 		assertEquals(1, store.forLocation("loc").size());
 	}
+
+	@Test
+	public void spotAtMatchesOnlyExactTileInLocation()
+	{
+		SafespotStore store = new SafespotStore(List.of(builtin("loc", 1, 3, 4)), null);
+		assertEquals(3, store.spotAt("loc", new WorldPoint(3, 4, 0)).getTile().getX());
+		assertEquals(null, store.spotAt("loc", new WorldPoint(3, 5, 0)));
+		assertEquals(null, store.spotAt("loc", new WorldPoint(3, 4, 1)));
+		assertEquals(null, store.spotAt("other", new WorldPoint(3, 4, 0)));
+		store.reject(new WorldPoint(3, 4, 0));
+		assertEquals(null, store.spotAt("loc", new WorldPoint(3, 4, 0)));
+	}
 }

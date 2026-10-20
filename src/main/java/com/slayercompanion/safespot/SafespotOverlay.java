@@ -59,22 +59,25 @@ public class SafespotOverlay extends Overlay
 		WorldPoint playerPos = client.getLocalPlayer().getWorldLocation();
 		for (Safespot spot : store.forLocation(loc))
 		{
-			WorldPoint wp = spot.getTile().toWorldPoint();
-			if (wp.getPlane() != client.getTopLevelWorldView().getPlane() || wp.distanceTo(playerPos) >= MAX_DRAW_DISTANCE)
+			// Spots are stored in template (non-instance) coordinates; map to the real scene like Ground Markers.
+			for (WorldPoint wp : WorldPoint.toLocalInstance(client.getTopLevelWorldView(), spot.getTile().toWorldPoint()))
 			{
-				continue;
-			}
-			LocalPoint lp = LocalPoint.fromWorld(client.getTopLevelWorldView(), wp);
-			if (lp == null)
-			{
-				continue;
-			}
-			Polygon poly = canvasPoly(lp);
-			if (poly != null)
-			{
-				Color c = spot.isVerified() ? VERIFIED : UNVERIFIED;
-				OverlayUtil.renderPolygon(graphics, poly, c, new Color(c.getRed(), c.getGreen(), c.getBlue(), 40),
-					spot.isVerified() ? SOLID : DASHED);
+				if (wp.getPlane() != client.getTopLevelWorldView().getPlane() || wp.distanceTo(playerPos) >= MAX_DRAW_DISTANCE)
+				{
+					continue;
+				}
+				LocalPoint lp = LocalPoint.fromWorld(client.getTopLevelWorldView(), wp);
+				if (lp == null)
+				{
+					continue;
+				}
+				Polygon poly = canvasPoly(lp);
+				if (poly != null)
+				{
+					Color c = spot.isVerified() ? VERIFIED : UNVERIFIED;
+					OverlayUtil.renderPolygon(graphics, poly, c, new Color(c.getRed(), c.getGreen(), c.getBlue(), 40),
+						spot.isVerified() ? SOLID : DASHED);
+				}
 			}
 		}
 		return null;

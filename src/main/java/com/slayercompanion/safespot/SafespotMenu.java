@@ -68,15 +68,8 @@ public class SafespotMenu
 		}
 		WorldPoint wp = WorldPoint.fromLocalInstance(client, tile.getLocalLocation());
 
-		Safespot shown = null;
-		for (Safespot s : store.forLocation(loc))
-		{
-			if (s.getTile().toWorldPoint().equals(wp))
-			{
-				shown = s;
-				break;
-			}
-		}
+		// wp is in template space, the same space spots are stored in.
+		Safespot shown = store.spotAt(loc, wp);
 
 		if (shown != null)
 		{

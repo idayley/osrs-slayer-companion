@@ -93,7 +93,13 @@ public final class DpsCalculator
 			{
 				long eff = s.getMagic() + 9;
 				long roll = eff * (sum(l, "magic") + 64);
-				return (long) Math.floor(roll * accuracyMult(l, m, onTask));
+				long attack = (long) Math.floor(roll * accuracyMult(l, m, onTask));
+				if (weaknessApplies(l, m))
+				{
+					// Wiki: bonus is a percentage of the unmodified base roll, added last.
+					attack += roll * m.getElementalWeaknessPercent() / 100;
+				}
+				return attack;
 			}
 			default:
 			{
@@ -142,13 +148,10 @@ public final class DpsCalculator
 	private static int magicMax(CombatStats s, Loadout l, Monster m, boolean onTask)
 	{
 		int base;
-		String element = null;
 		if (l.getSpell() != null)
 		{
 			Integer b = SPELL_MAX.get(l.getSpell().toLowerCase(Locale.ROOT));
 			base = b == null ? 0 : b;
-			String first = l.getSpell().toLowerCase(Locale.ROOT).split(" ")[0];
-			element = "wind".equals(first) ? "air" : first;
 		}
 		else
 		{
@@ -171,12 +174,25 @@ public final class DpsCalculator
 		{
 			return 0;
 		}
-		if (element != null && element.equals(m.getElementalWeakness()))
-		{
-			base += base * m.getElementalWeaknessPercent() / 100;
-		}
 		int withBonus = (int) Math.floor(base * (1.0 + sum(l, "magic_str") / 1000.0));
-		return (int) Math.floor(withBonus * damageMult(l, m, onTask));
+		int max = (int) Math.floor(withBonus * damageMult(l, m, onTask));
+		if (weaknessApplies(l, m))
+		{
+			// Wiki: weakness is added last, as a percentage of the pre-bonus base max.
+			max += base * m.getElementalWeaknessPercent() / 100;
+		}
+		return max;
+	}
+
+	private static boolean weaknessApplies(Loadout l, Monster m)
+	{
+		if (l.getSpell() == null || m.getElementalWeakness() == null)
+		{
+			return false;
+		}
+		String first = l.getSpell().toLowerCase(Locale.ROOT).split(" ")[0];
+		String element = "wind".equals(first) ? "air" : first;
+		return element.equals(m.getElementalWeakness());
 	}
 
 	// ---- multipliers ----

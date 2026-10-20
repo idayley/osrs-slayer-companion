@@ -95,14 +95,22 @@ public class DpsCalculatorTest
 	@Test
 	public void waterWaveVsFireGiantGetsWeaknessBonus()
 	{
+		Loadout l = waterWave();
+		l.getBySlot().get("weapon").getBonuses().put("magic_str", 100); // +10%
 		Monster m = monster();
 		m.setElementalWeakness("water");
 		m.setElementalWeaknessPercent(50);
-		double with = DpsCalculator.dps(MAXED, waterWave(), m, false);
+		// base 18 -> floor(18*1.1)=19, plus trunc(18*50/100)=9 -> 28
+		assertEquals(28, DpsCalculator.maxHit(MAXED, l, m, false));
+		double chanceWith = DpsCalculator.hitChance(MAXED, l, m, false);
+		double dpsWith = DpsCalculator.dps(MAXED, l, m, false);
+		// attack roll 108*(10+64)=7992, +trunc(7992*50/100)=3996 -> 11988
+		assertEquals(11988L, DpsCalculator.attackRoll(MAXED, l, m, false));
 		m.setElementalWeakness(null);
-		double without = DpsCalculator.dps(MAXED, waterWave(), m, false);
-		assertTrue(with > without);
-		assertEquals(18, DpsCalculator.maxHit(MAXED, waterWave(), m, false));
+		assertEquals(19, DpsCalculator.maxHit(MAXED, l, m, false));
+		assertEquals(7992L, DpsCalculator.attackRoll(MAXED, l, m, false));
+		assertTrue(chanceWith > DpsCalculator.hitChance(MAXED, l, m, false));
+		assertTrue(dpsWith > DpsCalculator.dps(MAXED, l, m, false));
 	}
 
 	@Test

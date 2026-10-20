@@ -52,6 +52,16 @@ public class GearOptimizer
 				pool.add(e);
 			}
 		}
+		// Shield vs two-hander interact, so search each family separately and keep the better.
+		Loadout oneHand = search(stats, style, m, onTask, pool, false);
+		Loadout twoHand = search(stats, style, m, onTask, pool, true);
+		double d1 = tune(stats, oneHand, m, onTask);
+		double d2 = tune(stats, twoHand, m, onTask);
+		return Optional.of(d2 > d1 + 1e-9 ? twoHand : oneHand);
+	}
+
+	private Loadout search(CombatStats stats, Style style, Monster m, boolean onTask, List<Equipment> pool, boolean twoHanded)
+	{
 		Loadout cur = new Loadout();
 		cur.setStyle(style);
 		double curDps = tune(stats, cur, m, onTask);
@@ -61,7 +71,8 @@ public class GearOptimizer
 			// weapon first
 			for (Equipment w : pool)
 			{
-				if (!"weapon".equals(w.getSlot()) || classify(w) != style || !ammoOk(cur, w, pool))
+				if (!"weapon".equals(w.getSlot()) || classify(w) != style || w.isTwoHanded() != twoHanded
+					|| !ammoOk(cur, w, pool))
 				{
 					continue;
 				}
@@ -82,7 +93,7 @@ public class GearOptimizer
 				}
 				for (Equipment e : pool)
 				{
-					if (!slot.equals(e.getSlot()))
+					if (!slot.equals(e.getSlot()) || ("ammo".equals(slot) && !ammoCompatible(cur.getBySlot().get("weapon"), e)))
 					{
 						continue;
 					}
@@ -101,7 +112,7 @@ public class GearOptimizer
 				break;
 			}
 		}
-		return Optional.of(cur);
+		return cur;
 	}
 
 	public Optional<Upgrade> biggestUpgrade(CombatStats stats, Set<String> questsDone, Loadout current, Monster m,
@@ -124,12 +135,16 @@ public class GearOptimizer
 			}
 			if ("weapon".equals(e.getSlot()))
 			{
-				if (classify(e) != base.getStyle() || !ammoOk(base, e, new ArrayList<>(base.getBySlot().values())))
+				if (classify(e) != base.getStyle() || !ammoOk(base, e, ownedPool(owned)))
 				{
 					continue;
 				}
 			}
-			Loadout t = with(base, e, new ArrayList<>());
+			if ("ammo".equals(e.getSlot()) && !ammoCompatible(curW, e))
+			{
+				continue;
+			}
+			Loadout t = with(base, e, ownedPool(owned));
 			double d = tune(stats, t, m, onTask);
 			if (d > bestDps + 1e-9)
 			{
@@ -212,13 +227,15 @@ public class GearOptimizer
 			{
 				t.getBySlot().remove("shield");
 			}
-			if (!usesAmmo(e))
+			String need = ammoNeeded(e);
+			if (need == null)
 			{
 				t.getBySlot().remove("ammo");
 			}
-			else if (t.getBySlot().get("ammo") == null)
+			else if (!ammoCompatible(e, t.getBySlot().get("ammo")))
 			{
-				Equipment a = bestAmmo(pool);
+				t.getBySlot().remove("ammo");
+				Equipment a = bestAmmo(pool, e);
 				if (a != null)
 				{
 					t.getBySlot().put("ammo", a);
@@ -228,12 +245,25 @@ public class GearOptimizer
 		return t;
 	}
 
-	private static Equipment bestAmmo(List<Equipment> pool)
+	private List<Equipment> ownedPool(OwnedItems owned)
+	{
+		List<Equipment> pool = new ArrayList<>();
+		for (Equipment e : catalogue)
+		{
+			if (owned.count(e.getItemId()) > 0)
+			{
+				pool.add(e);
+			}
+		}
+		return pool;
+	}
+
+	private static Equipment bestAmmo(List<Equipment> pool, Equipment weapon)
 	{
 		Equipment best = null;
 		for (Equipment a : pool)
 		{
-			if ("ammo".equals(a.getSlot()) && (best == null
+			if ("ammo".equals(a.getSlot()) && ammoCompatible(weapon, a) && (best == null
 				|| a.getBonuses().getOrDefault("ranged_str", 0) > best.getBonuses().getOrDefault("ranged_str", 0)))
 			{
 				best = a;
@@ -242,32 +272,98 @@ public class GearOptimizer
 		return best;
 	}
 
+	/** True if the weapon can be used with the current ammo, or has/needs a compatible ammo in the pool. */
 	private static boolean ammoOk(Loadout cur, Equipment w, List<Equipment> pool)
 	{
-		if (!usesAmmo(w))
+		if (ammoNeeded(w) == null)
 		{
 			return true;
 		}
-		return cur.getBySlot().get("ammo") != null || bestAmmo(pool) != null;
+		return ammoCompatible(w, cur.getBySlot().get("ammo")) || bestAmmo(pool, w) != null;
 	}
 
-	private static boolean usesAmmo(Equipment w)
+	/** Ammo family a weapon fires: arrow, bolt, javelin, ogre; null if it takes no (identifiable) ammo. */
+	static String ammoNeeded(Equipment w)
 	{
+		if (w == null || classify(w) != Style.RANGED)
+		{
+			return null;
+		}
 		String c = w.getCategory() == null ? "" : w.getCategory().toLowerCase(Locale.ROOT);
-		return c.contains("bow");
+		String n = w.getName() == null ? "" : w.getName().toLowerCase(Locale.ROOT);
+		if (n.contains("ballista"))
+		{
+			return "javelin";
+		}
+		if (n.contains("ogre bow"))
+		{
+			return "ogre";
+		}
+		if (n.contains("crystal bow") || n.contains("faerdhinen") || n.contains("craw's bow") || n.contains("webweaver")
+			|| n.contains("venator") || n.contains("atlatl") || n.contains("blowpipe"))
+		{
+			return null;
+		}
+		if (c.equals("crossbow"))
+		{
+			return "bolt";
+		}
+		if (c.equals("bow"))
+		{
+			return "arrow";
+		}
+		return null;
 	}
 
+	static String ammoType(Equipment a)
+	{
+		String n = a.getName() == null ? "" : a.getName().toLowerCase(Locale.ROOT);
+		if (n.contains("javelin"))
+		{
+			return "javelin";
+		}
+		if (n.contains("brutal") || n.contains("ogre arrow"))
+		{
+			return "ogre";
+		}
+		if (n.contains("bolt"))
+		{
+			return "bolt";
+		}
+		if (n.contains("arrow"))
+		{
+			return "arrow";
+		}
+		return null;
+	}
+
+	/** Ammo is only compatible when both families are identified and equal. */
+	private static boolean ammoCompatible(Equipment weapon, Equipment ammo)
+	{
+		String need = ammoNeeded(weapon);
+		return need != null && ammo != null && need.equals(ammoType(ammo));
+	}
+
+	/** Combat style a weapon is used for; null if unsupported in v1 (e.g. non-trident powered staves). */
 	static Style classify(Equipment w)
 	{
 		String c = w.getCategory() == null ? "" : w.getCategory().toLowerCase(Locale.ROOT);
 		String n = w.getName() == null ? "" : w.getName().toLowerCase(Locale.ROOT);
-		if (c.contains("staff") || c.contains("wand") || n.startsWith("trident"))
+		if (c.equals("powered staff"))
+		{
+			return n.startsWith("trident of the seas") || n.startsWith("trident of the swamp") ? Style.MAGIC : null;
+		}
+		if (c.equals("staff") || c.equals("bladed staff"))
 		{
 			return Style.MAGIC;
 		}
-		if (c.contains("bow") || c.contains("thrown") || c.contains("chinchompa") || n.contains("blowpipe"))
+		if (c.equals("bow") || c.equals("crossbow") || c.equals("thrown") || c.equals("chinchompas"))
 		{
 			return Style.RANGED;
+		}
+		if (c.isEmpty() || c.equals("unarmed") || c.equals("salamander") || c.equals("blaster") || c.equals("gun"))
+		{
+			return null;
 		}
 		return Style.MELEE;
 	}

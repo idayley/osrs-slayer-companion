@@ -75,8 +75,9 @@ def test_berserker_ring_has_no_reqs():
     assert r["skillReqs"] == {} and r["questReqs"] == []
 
 
-def test_black_mask_has_no_strength_req():
-    assert "strength" not in equipment()[8919]["skillReqs"]
+def test_black_mask_uses_wiki_values():
+    r = equipment()[8919]["skillReqs"]
+    assert r["strength"] == 20 and r["defence"] == 10
 
 
 def test_whip_or_inherits_attack_70():

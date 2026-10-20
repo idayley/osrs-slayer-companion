@@ -69,8 +69,7 @@ _SENT_SKIP = re.compile(r"creat|craft|make|made|enchant|smith|imbu|process|kill|
 # Skills that can gate wielding or wearing gear (this excludes crafting, smithing, slayer-to-kill etc.).
 EQUIP_SKILLS = {"attack", "strength", "defence", "ranged", "magic", "prayer", "hitpoints",
                 "mining", "woodcutting", "agility"}
-# Wiki prose that is wrong or about another item; keyed by page title.
-REQ_OVERRIDES = {"Black mask": ({}, [])}
+
 _SKILL_PATTERNS = [
     re.compile(r"(?:\[\[)?(%s)(?:\|[^\]]*)?(?:\]\])?\s+levels?\s+(?:of\s+)?(\d+)" % _SKILL_RE),
     re.compile(r"levels?\s+(\d+)\s+(?:\[\[)?(%s)\b" % _SKILL_RE),
@@ -385,8 +384,6 @@ def build_equipment(src):
     pages = src.wikitext(sorted(titles))
 
     def reqs_for(title):
-        if title in REQ_OVERRIDES:
-            return REQ_OVERRIDES[title]
         text = pages.get(title)
         return parse_requirements(intro_of(text)) if text else ({}, [])
 

@@ -17,7 +17,7 @@ OSRS Wiki Bucket `dropsline` (drops) and `infobox_item` (item name to id), and W
 Notes
 - Slayer XP = base hitpoints (the Wiki rule); monsters are those flagged `is_slayer_monster` by the calc.
 - `poisonous`/`venomous` come from the Wiki `infobox_monster` bucket's `poisonous` text per NPC id ("Yes (4)" = poisons, "Yes ([[venom]])" = venoms).
-- Equipment requirements: only wield/wear/equip sentences, only equip-gating skills, creation/kill sentences skipped; `(or)`/`(a)`/`(bh)` variants inherit the base item's requirements; `REQ_OVERRIDES` fixes wrong wiki prose (black mask).
+- Equipment requirements: only wield/wear/equip sentences, only equip-gating skills, creation/kill sentences skipped; `(or)`/`(a)`/`(bh)` variants inherit the base item's requirements.
 - Quest names are filtered through `tools/quests.txt` (RuneLite `Quest` enum constants). Refresh with
   `javap -cp runelite-api.jar net.runelite.api.Quest | grep 'public static final'`.
 - Tests: `python3 -m pytest tools -q` (offline, uses `tools/samples/`; `--samples` runs the build on them).

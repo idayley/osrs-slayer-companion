@@ -23,6 +23,7 @@ public class FormatTest
 	{
 		assertEquals("~1m 20s", Format.travel(80));
 		assertEquals("~45s", Format.travel(45));
+		assertEquals("~2m", Format.travel(120));
 	}
 
 	@Test

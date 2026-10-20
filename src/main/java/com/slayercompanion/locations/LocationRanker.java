@@ -16,7 +16,9 @@ public final class LocationRanker
 {
 	static final double SECONDS_PER_TILE = 0.3;
 	static final double FAR_TRAVEL_SECONDS = 120;
-	static final int SAME_REGION_MAX_TILES = 200;
+	static final double PLANE_CHANGE_SECONDS = 30;
+	/** Underground areas mostly sit 6400 tiles north of the overworld spot they lie under. */
+	static final int UNDERGROUND_Y_OFFSET = 6400;
 	static final String KONAR_REASON = "Konar sent you elsewhere";
 
 	private LocationRanker()
@@ -63,14 +65,14 @@ public final class LocationRanker
 		{
 			RankedLocation top = out.get(0);
 			top.setRecommended(true);
-			double minTravel = out.stream().filter(RankedLocation::isUsable)
-				.mapToDouble(RankedLocation::getTravelSeconds).min().getAsDouble();
+			boolean strictlyClosest = out.stream().skip(1).filter(RankedLocation::isUsable)
+				.allMatch(r -> top.getTravelSeconds() < r.getTravelSeconds());
 			List<String> reasons = new ArrayList<>();
 			if (safespotMatters && top.isHasSafespot())
 			{
 				reasons.add("has a safespot");
 			}
-			if (top.getTravelSeconds() <= minTravel)
+			if (strictlyClosest)
 			{
 				reasons.add("is closest");
 			}
@@ -80,20 +82,37 @@ public final class LocationRanker
 		return out;
 	}
 
+	/**
+	 * Coarse estimate: Chebyshev distance between overworld-equivalent points x 0.3 s, plus a fixed
+	 * penalty when the level differs (another plane, or going above/below ground). The player point
+	 * is expected in template space already (WorldPoint.fromLocalInstance), so instances are handled.
+	 */
 	static double travelSeconds(WorldPoint player, WorldPointDto entrance)
 	{
 		if (entrance == null)
 		{
 			return FAR_TRAVEL_SECONDS;
 		}
+		boolean playerUnder = isUnderground(player.getY());
+		boolean entranceUnder = isUnderground(entrance.getY());
 		int dx = Math.abs(player.getX() - entrance.getX());
-		int dy = Math.abs(player.getY() - entrance.getY());
-		int dist = Math.max(dx, dy);
-		if (player.getPlane() != entrance.getPlane() || dist > SAME_REGION_MAX_TILES)
+		int dy = Math.abs(overworldY(player.getY()) - overworldY(entrance.getY()));
+		double seconds = Math.max(dx, dy) * SECONDS_PER_TILE;
+		if (player.getPlane() != entrance.getPlane() || playerUnder != entranceUnder)
 		{
-			return FAR_TRAVEL_SECONDS;
+			seconds += PLANE_CHANGE_SECONDS;
 		}
-		return dist * SECONDS_PER_TILE;
+		return seconds;
+	}
+
+	private static boolean isUnderground(int y)
+	{
+		return y >= UNDERGROUND_Y_OFFSET;
+	}
+
+	private static int overworldY(int y)
+	{
+		return isUnderground(y) ? y - UNDERGROUND_Y_OFFSET : y;
 	}
 
 	private static boolean matchesKonar(Location l, String konar)

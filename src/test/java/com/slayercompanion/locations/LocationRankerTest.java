@@ -101,14 +101,41 @@ public class LocationRankerTest
 	}
 
 	@Test
-	public void differentPlaneOrFarRegionIsFixed120Seconds()
+	public void farLocationsAreStillOrderedByDistance()
 	{
-		Location plane = loc("p", "P", 3000, 3000, 1);
 		Location far = loc("f", "F", 3300, 3000, 0);
-		List<RankedLocation> r = rank(Arrays.asList(plane, far), Style.MELEE, OPEN, Optional.empty(),
+		Location farther = loc("ff", "FF", 3600, 3000, 0);
+		List<RankedLocation> r = rank(Arrays.asList(farther, far), Style.MELEE, OPEN, Optional.empty(),
 			Collections.emptySet());
-		assertEquals(120, r.get(0).getTravelSeconds(), 0.001);
-		assertEquals(120, r.get(1).getTravelSeconds(), 0.001);
+		assertEquals("f", r.get(0).getLocation().getId());
+		assertEquals(90, r.get(0).getTravelSeconds(), 0.001);
+		assertEquals(180, r.get(1).getTravelSeconds(), 0.001);
+	}
+
+	@Test
+	public void planeChangeAddsThirtySeconds()
+	{
+		Location plane = loc("p", "P", 3010, 3000, 1);
+		List<RankedLocation> r = rank(Arrays.asList(plane), Style.MELEE, OPEN, Optional.empty(), Collections.emptySet());
+		assertEquals(3 + 30, r.get(0).getTravelSeconds(), 0.001);
+	}
+
+	@Test
+	public void undergroundEntranceUsesOverworldEquivalent()
+	{
+		// 3020,9400 underground lies under 3020,3000: 20 tiles east -> 6 s, plus 30 s level change
+		Location dungeon = loc("d", "D", 3020, 9400, 0);
+		List<RankedLocation> r = rank(Arrays.asList(dungeon), Style.MELEE, OPEN, Optional.empty(), Collections.emptySet());
+		assertEquals(6 + 30, r.get(0).getTravelSeconds(), 0.001);
+	}
+
+	@Test
+	public void tiedTravelIsNotCalledClosest()
+	{
+		Location a = loc("a", "A", 3010, 3000, 0);
+		Location b = loc("b", "B", 2990, 3000, 0);
+		List<RankedLocation> r = rank(Arrays.asList(a, b), Style.MELEE, OPEN, Optional.empty(), Collections.emptySet());
+		assertEquals("Picked because it's the best available.", r.get(0).getWhy());
 	}
 
 	@Test

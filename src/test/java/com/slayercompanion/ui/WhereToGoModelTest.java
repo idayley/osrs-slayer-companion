@@ -30,7 +30,7 @@ public class WhereToGoModelTest
 		assertTrue(top.isSelected());
 		assertEquals("fire-giants--waterfall-dungeon", m.getSelectedId());
 		assertEquals("~1m 20s away", top.getTravel());
-		assertEquals("~2m 0s", m.getRows().get(1).getTravel());
+		assertEquals("~2m", m.getRows().get(1).getTravel());
 	}
 
 	@Test

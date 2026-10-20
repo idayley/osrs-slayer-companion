@@ -36,11 +36,15 @@ final class Format
 		return s.endsWith(".0") ? s.substring(0, s.length() - 2) : s;
 	}
 
-	/** ~1m 20s / ~45s. */
+	/** ~1m 20s / ~2m / ~45s. */
 	static String travel(double seconds)
 	{
 		long s = Math.round(seconds);
-		return s < 60 ? "~" + s + "s" : "~" + (s / 60) + "m " + (s % 60) + "s";
+		if (s < 60)
+		{
+			return "~" + s + "s";
+		}
+		return "~" + (s / 60) + "m" + (s % 60 == 0 ? "" : " " + (s % 60) + "s");
 	}
 
 	static String ordinal(int n)

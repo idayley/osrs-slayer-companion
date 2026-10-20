@@ -551,7 +551,7 @@ public class SlayerCompanionPlugin extends Plugin
 		{
 			selectedLocation = null;
 			selectedMonster = null;
-			safespotMenu.setContext(null, 0);
+			safespotMenu.setContext(null, 0, Collections.emptyList());
 			safespotOverlay.setLocationId(null);
 			bankHighlightOverlay.setItems(Collections.emptySet());
 			prepModel = PrepModel.noTask();
@@ -588,7 +588,7 @@ public class SlayerCompanionPlugin extends Plugin
 
 		session.setMonster(selectedMonster);
 		String locationId = selectedLocation == null ? null : selectedLocation.getId();
-		safespotMenu.setContext(locationId, selectedMonster == null ? 0 : selectedMonster.getId());
+		safespotMenu.setContext(selectedLocation, selectedMonster == null ? 0 : selectedMonster.getId(), locations);
 		safespotOverlay.setLocationId(locationId);
 
 		Optional<Loadout> best = selectedMonster == null ? Optional.empty() : bestGear(stats, selectedMonster, key);

@@ -44,3 +44,11 @@ tasks.register('panelShots', JavaExec) {
 	systemProperty 'java.awt.headless', 'true'
 	args layout.buildDirectory.dir('panel-shots').get().asFile.absolutePath
 }
+
+tasks.register('runClient', JavaExec) {
+	group = 'application'
+	description = 'Launches RuneLite with Slayer Companion loaded'
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass = 'com.slayercompanion.SlayerCompanionPluginTest'
+	jvmArgs '-ea'
+}

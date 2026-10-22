@@ -2,6 +2,10 @@
 
 A RuneLite plugin that helps with the whole slayer task: what to bring, where to go, and how the task is going.
 
+| Prep | Where to go | On task |
+|:---:|:---:|:---:|
+| ![Prep tab](docs/screenshots/prep.png) | ![Where to go tab](docs/screenshots/where.png) | ![On task tab](docs/screenshots/ontask.png) |
+
 - **Prep** — the task monster's weaknesses, the slayer items it needs, the best gear you own for each combat style,
   and the biggest upgrade to aim for next.
 - **Where to go** — every location for the task, ranked by XP/hr, GP/hr and travel time, with safespots marked.

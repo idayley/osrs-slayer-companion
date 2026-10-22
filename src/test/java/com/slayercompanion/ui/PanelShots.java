@@ -1,5 +1,6 @@
 package com.slayercompanion.ui;
 
+import com.google.gson.Gson;
 import com.slayercompanion.data.GameData;
 import com.slayercompanion.data.Monster;
 import com.slayercompanion.gear.CombatStats;
@@ -36,6 +37,8 @@ import net.runelite.client.ui.PluginPanel;
  */
 public final class PanelShots
 {
+	private static final Gson GSON = new Gson();
+
 	private PanelShots()
 	{
 	}
@@ -335,7 +338,7 @@ public final class PanelShots
 	/** Prints how long a full gear search takes on the bundled data, since the plugin runs it on the client thread. */
 	private static void timeOptimizer()
 	{
-		GameData data = GameData.load("/com/slayercompanion");
+		GameData data = GameData.load(GSON, "/com/slayercompanion");
 		GearOptimizer optimizer = new GearOptimizer(data.allEquipment());
 		Monster m = data.monster(2075).orElseThrow(IllegalStateException::new);
 		Map<Integer, Integer> bank = new HashMap<>();

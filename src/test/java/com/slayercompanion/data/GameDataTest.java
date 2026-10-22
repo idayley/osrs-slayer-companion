@@ -1,5 +1,6 @@
 package com.slayercompanion.data;
 
+import com.google.gson.Gson;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -8,12 +9,14 @@ import org.junit.Test;
 
 public class GameDataTest
 {
+	private static final Gson GSON = new Gson();
+
 	private static final String FIXTURE = "/com/slayercompanion/fixture/";
 
 	@Test
 	public void loadsFixture()
 	{
-		GameData data = GameData.load(FIXTURE);
+		GameData data = GameData.load(GSON, FIXTURE);
 		Monster m = data.monster(2075).get();
 		assertEquals("Fire giant", m.getName());
 		assertEquals(111, m.getHitpoints());
@@ -29,7 +32,7 @@ public class GameDataTest
 	@Test
 	public void chargedTridentPricesFromItsUnchargedState()
 	{
-		GameData data = GameData.load("/com/slayercompanion/");
+		GameData data = GameData.load(GSON, "/com/slayercompanion/");
 		java.util.List<Integer> ids = new java.util.ArrayList<>();
 		data.otherStates(12899).forEach(e -> ids.add(e.getItemId()));
 		assertEquals(java.util.Collections.singletonList(12900), ids); // not the (e) or (o) versions
@@ -42,7 +45,7 @@ public class GameDataTest
 	{
 		try
 		{
-			GameData.load("/com/slayercompanion/nonexistent/");
+			GameData.load(GSON, "/com/slayercompanion/nonexistent/");
 			fail("expected IllegalStateException");
 		}
 		catch (IllegalStateException e)

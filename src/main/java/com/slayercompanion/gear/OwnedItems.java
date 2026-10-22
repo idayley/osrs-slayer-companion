@@ -10,7 +10,6 @@ import java.util.function.IntUnaryOperator;
 /** Items the player has: bank + inventory + worn. Plain Java so it is unit-testable. */
 public class OwnedItems
 {
-	private static final Gson GSON = new Gson();
 
 	private transient IntUnaryOperator canonical;
 	private Map<Integer, Integer> bank = new HashMap<>();
@@ -67,19 +66,19 @@ public class OwnedItems
 		return bankSeenEpochMillis == null ? Optional.empty() : Optional.of(Instant.ofEpochMilli(bankSeenEpochMillis));
 	}
 
-	public String toJson()
+	public String toJson(Gson gson)
 	{
-		return GSON.toJson(this);
+		return gson.toJson(this);
 	}
 
-	public static OwnedItems fromJson(String json)
+	public static OwnedItems fromJson(Gson gson, String json)
 	{
-		return fromJson(json, IntUnaryOperator.identity());
+		return fromJson(gson, json, IntUnaryOperator.identity());
 	}
 
-	public static OwnedItems fromJson(String json, IntUnaryOperator canonical)
+	public static OwnedItems fromJson(Gson gson, String json, IntUnaryOperator canonical)
 	{
-		OwnedItems o = json == null || json.isEmpty() ? null : GSON.fromJson(json, OwnedItems.class);
+		OwnedItems o = json == null || json.isEmpty() ? null : gson.fromJson(json, OwnedItems.class);
 		if (o == null)
 		{
 			o = new OwnedItems();

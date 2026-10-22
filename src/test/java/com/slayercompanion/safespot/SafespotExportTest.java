@@ -13,6 +13,8 @@ import org.junit.Test;
 
 public class SafespotExportTest
 {
+	private static final Gson GSON = new Gson();
+
 	private static List<Safespot> parse(String json)
 	{
 		return new Gson().fromJson(json, new TypeToken<List<Safespot>>() {}.getType());
@@ -21,9 +23,9 @@ public class SafespotExportTest
 	@Test
 	public void exportMatchesBundledFormat()
 	{
-		SafespotStore store = new SafespotStore(Collections.emptyList(), null);
+		SafespotStore store = new SafespotStore(GSON, Collections.emptyList(), null);
 		store.mark("loc", 5, new WorldPoint(10, 20, 1), "behind rock");
-		List<Safespot> parsed = parse(SafespotExport.export(store));
+		List<Safespot> parsed = parse(SafespotExport.export(GSON, store));
 		assertEquals(1, parsed.size());
 		assertEquals(store.forLocation("loc"), parsed);
 		Safespot s = parsed.get(0);
@@ -35,16 +37,16 @@ public class SafespotExportTest
 	@Test
 	public void exportExcludesUntouchedBuiltin()
 	{
-		SafespotStore store = new SafespotStore(List.of(SafespotStoreTest.builtin("loc", 1, 3, 4)), null);
-		assertEquals(0, parse(SafespotExport.export(store)).size());
+		SafespotStore store = new SafespotStore(GSON, List.of(SafespotStoreTest.builtin("loc", 1, 3, 4)), null);
+		assertEquals(0, parse(SafespotExport.export(GSON, store)).size());
 	}
 
 	@Test
 	public void exportIncludesConfirmedBuiltin()
 	{
-		SafespotStore store = new SafespotStore(List.of(SafespotStoreTest.builtin("loc", 1, 3, 4)), null);
+		SafespotStore store = new SafespotStore(GSON, List.of(SafespotStoreTest.builtin("loc", 1, 3, 4)), null);
 		store.confirm(new WorldPoint(3, 4, 0));
-		List<Safespot> parsed = parse(SafespotExport.export(store));
+		List<Safespot> parsed = parse(SafespotExport.export(GSON, store));
 		assertEquals(1, parsed.size());
 		assertTrue(parsed.get(0).isVerified());
 		assertEquals("builtin", parsed.get(0).getSource());

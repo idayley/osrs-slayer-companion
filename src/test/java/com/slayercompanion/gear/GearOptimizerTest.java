@@ -1,5 +1,6 @@
 package com.slayercompanion.gear;
 
+import com.google.gson.Gson;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -17,6 +18,8 @@ import org.junit.Test;
 
 public class GearOptimizerTest
 {
+	private static final Gson GSON = new Gson();
+
 	private static final Equipment WHIP = eq(4151, "Abyssal whip", "weapon", 4, "slash", 82, "str", 82, null);
 	private static final Equipment SCIM = eq(1333, "Rune scimitar", "weapon", 4, "slash", 45, "str", 44, null);
 	private static final Equipment PRICEY = eq(9999, "Scythe of Vitur", "weapon", 5, "slash", 110, "str", 130, null);
@@ -366,7 +369,7 @@ public class GearOptimizerTest
 	@Test
 	public void smokeRealEquipmentUnder500ms()
 	{
-		com.slayercompanion.data.GameData data = com.slayercompanion.data.GameData.load("/com/slayercompanion");
+		com.slayercompanion.data.GameData data = com.slayercompanion.data.GameData.load(GSON, "/com/slayercompanion");
 		Monster m = data.monster(2084).orElseGet(GearOptimizerTest::giant);
 		GearOptimizer g = new GearOptimizer(data.allEquipment());
 		List<Equipment> all = new ArrayList<>(data.allEquipment());

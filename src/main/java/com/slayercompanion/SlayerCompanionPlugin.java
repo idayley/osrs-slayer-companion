@@ -1,5 +1,6 @@
 package com.slayercompanion;
 
+import com.google.gson.Gson;
 import com.google.inject.Provides;
 import com.slayercompanion.data.Equipment;
 import com.slayercompanion.data.GameData;
@@ -151,6 +152,8 @@ public class SlayerCompanionPlugin extends Plugin
 	@Inject
 	private ItemManager itemManager;
 	@Inject
+	private Gson gson;
+	@Inject
 	private EventBus eventBus;
 	@Inject
 	private PluginManager pluginManager;
@@ -236,7 +239,7 @@ public class SlayerCompanionPlugin extends Plugin
 	@Override
 	protected void startUp()
 	{
-		data = GameData.load("/com/slayercompanion");
+		data = GameData.load(gson, "/com/slayercompanion");
 		optimizer = new GearOptimizer(data.allEquipment());
 		equipmentQuests = new HashSet<>();
 		catalogueIds = new HashSet<>();
@@ -256,7 +259,7 @@ public class SlayerCompanionPlugin extends Plugin
 		session = new TaskSession(Clock.systemUTC(), new SupplyTracker(itemManager::getItemPrice,
 			id -> itemManager.getItemComposition(id).getName()));
 		owned = new OwnedItems(itemManager::canonicalize);
-		safespots = new SafespotStore(data.builtinSafespots(), null);
+		safespots = new SafespotStore(gson, data.builtinSafespots(), null);
 		safespotMenu = new SafespotMenu(client, safespots, chatboxPanelManager);
 		safespotMenu.setOnChange(this::saveSafespots);
 		safespotOverlay = new SafespotOverlay(client, safespots);
@@ -330,7 +333,7 @@ public class SlayerCompanionPlugin extends Plugin
 
 	private void loadProfile()
 	{
-		owned = OwnedItems.fromJson(configManager.getRSProfileConfiguration(SlayerCompanionConfig.GROUP,
+		owned = OwnedItems.fromJson(gson, configManager.getRSProfileConfiguration(SlayerCompanionConfig.GROUP,
 			SlayerCompanionConfig.OWNED_ITEMS_KEY), itemManager::canonicalize);
 		// The inventory and worn containers may have arrived before the profile did.
 		ItemContainer inv = client.getItemContainer(InventoryID.INV);
@@ -375,7 +378,7 @@ public class SlayerCompanionPlugin extends Plugin
 		if (configManager.getRSProfileKey() != null)
 		{
 			configManager.setRSProfileConfiguration(SlayerCompanionConfig.GROUP, SlayerCompanionConfig.OWNED_ITEMS_KEY,
-				owned.toJson());
+				owned.toJson(gson));
 		}
 	}
 
@@ -926,7 +929,7 @@ public class SlayerCompanionPlugin extends Plugin
 		if (!snapshotKey.equals(gearSnapshotKey))
 		{
 			// Canonical ids are already applied, so the copy needs no ItemManager (safe off-thread).
-			gearSnapshot = OwnedItems.fromJson(owned.toJson());
+			gearSnapshot = OwnedItems.fromJson(gson, owned.toJson(gson));
 			gearSnapshotKey = snapshotKey;
 		}
 		OwnedItems snapshot = gearSnapshot;
@@ -1195,7 +1198,7 @@ public class SlayerCompanionPlugin extends Plugin
 		{
 			clientThread.invoke(() ->
 			{
-				String json = SafespotExport.export(safespots);
+				String json = SafespotExport.export(gson, safespots);
 				int count = safespots.exportableCount();
 				SlayerCompanionPanel target = panel;
 				SwingUtilities.invokeLater(() ->

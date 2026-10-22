@@ -1,5 +1,6 @@
 package com.slayercompanion.task;
 
+import com.google.gson.Gson;
 import com.slayercompanion.data.GameData;
 import com.slayercompanion.data.SlayerTask;
 import java.util.Arrays;
@@ -20,6 +21,8 @@ import static org.mockito.Mockito.when;
 
 public class TaskTrackerTest
 {
+	private static final Gson GSON = new Gson();
+
 	private static final int TASK_ROW = 7001;
 	private static final int AREA_ROW = 8001;
 
@@ -31,7 +34,7 @@ public class TaskTrackerTest
 	public void setUp()
 	{
 		client = mock(Client.class);
-		data = GameData.load("/com/slayercompanion/fixture");
+		data = GameData.load(GSON, "/com/slayercompanion/fixture");
 		tracker = new TaskTracker(client, data);
 	}
 

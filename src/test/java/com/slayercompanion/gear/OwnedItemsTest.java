@@ -1,5 +1,6 @@
 package com.slayercompanion.gear;
 
+import com.google.gson.Gson;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -11,6 +12,8 @@ import org.junit.Test;
 
 public class OwnedItemsTest
 {
+	private static final Gson GSON = new Gson();
+
 	@Test
 	public void ownedItemsRoundTripJson()
 	{
@@ -19,7 +22,7 @@ public class OwnedItemsTest
 		o.updateBank(Map.of(4151, 1, 995, 500), t);
 		o.updateInventory(Map.of(4151, 1));
 		o.updateWorn(Map.of(1234, 1));
-		OwnedItems back = OwnedItems.fromJson(o.toJson());
+		OwnedItems back = OwnedItems.fromJson(GSON, o.toJson(GSON));
 		assertEquals(2, back.count(4151));
 		assertEquals(500, back.count(995));
 		assertEquals(1, back.count(1234));

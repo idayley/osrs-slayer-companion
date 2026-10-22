@@ -19,6 +19,8 @@ import static org.junit.Assert.assertTrue;
 /** Integrity checks on the bundled Chaeldar task, location and safespot data. */
 public class BundledDataTest
 {
+	private static final Gson GSON = new Gson();
+
 	private static final String DIR = "/com/slayercompanion/";
 	private static final Set<String> ALLOWED_TAGS = new HashSet<>(java.util.Arrays.asList(
 		"Safespot", "Multi-combat", "Single-combat", "Catacombs bonus drops", "Wilderness", "Cannon allowed"));
@@ -50,7 +52,7 @@ public class BundledDataTest
 	@Test
 	public void everyChaeldarTaskIsCovered() throws Exception
 	{
-		GameData data = GameData.load(DIR);
+		GameData data = GameData.load(GSON, DIR);
 		Map<String, Location> byId = new HashMap<>();
 		for (Location l : locations())
 		{
@@ -150,7 +152,7 @@ public class BundledDataTest
 	@Test
 	public void untradeableGearSaysHowToGetIt() throws Exception
 	{
-		GameData data = GameData.load(DIR);
+		GameData data = GameData.load(GSON, DIR);
 		Equipment fireCape = data.equipment(6570).get();
 		assertTrue(fireCape.getSource(), fireCape.getSource().contains("Fight Cave"));
 		assertTrue(data.equipment(8850).get().getSource().contains("Warriors' Guild"));

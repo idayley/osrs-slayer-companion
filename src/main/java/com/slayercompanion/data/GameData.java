@@ -19,8 +19,6 @@ import java.util.Optional;
 /** Immutable-after-load bundle of the static game data shipped in the plugin jar. */
 public class GameData
 {
-	private static final Gson GSON = new Gson();
-
 	private final Map<Integer, Monster> monsters = new HashMap<>();
 	private final Map<Integer, Equipment> equipment = new HashMap<>();
 	private final Map<String, SlayerTask> tasksByName = new HashMap<>();
@@ -40,22 +38,22 @@ public class GameData
 	}
 
 	/**
-	 * Loads all data files from a classpath directory.
+	 * Loads all data files from a classpath directory, using the client's shared Gson.
 	 *
 	 * @throws IllegalStateException naming the file if one is missing or unreadable
 	 */
-	public static GameData load(String resourceDir)
+	public static GameData load(Gson gson, String resourceDir)
 	{
 		String dir = resourceDir.endsWith("/") ? resourceDir : resourceDir + "/";
 		return new GameData(
-			read(dir, "monsters.json", new TypeToken<List<Monster>>() {}.getType()),
-			read(dir, "equipment.json", new TypeToken<List<Equipment>>() {}.getType()),
-			read(dir, "tasks.json", new TypeToken<List<SlayerTask>>() {}.getType()),
-			read(dir, "locations.json", new TypeToken<List<Location>>() {}.getType()),
-			read(dir, "safespots.json", new TypeToken<List<Safespot>>() {}.getType()));
+			read(gson, dir, "monsters.json", new TypeToken<List<Monster>>() {}.getType()),
+			read(gson, dir, "equipment.json", new TypeToken<List<Equipment>>() {}.getType()),
+			read(gson, dir, "tasks.json", new TypeToken<List<SlayerTask>>() {}.getType()),
+			read(gson, dir, "locations.json", new TypeToken<List<Location>>() {}.getType()),
+			read(gson, dir, "safespots.json", new TypeToken<List<Safespot>>() {}.getType()));
 	}
 
-	private static <T> List<T> read(String dir, String file, Type type)
+	private static <T> List<T> read(Gson gson, String dir, String file, Type type)
 	{
 		String path = dir + file;
 		try (InputStream in = GameData.class.getResourceAsStream(path))
@@ -64,7 +62,7 @@ public class GameData
 			{
 				throw new IllegalStateException("Missing game data resource: " + file + " (" + path + ")");
 			}
-			List<T> result = GSON.fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), type);
+			List<T> result = gson.fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), type);
 			return result == null ? Collections.emptyList() : result;
 		}
 		catch (IOException | RuntimeException e)

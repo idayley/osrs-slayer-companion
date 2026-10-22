@@ -1,5 +1,6 @@
 package com.slayercompanion.gear;
 
+import com.google.gson.Gson;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -16,6 +17,8 @@ import org.junit.Test;
  */
 public class WeaponEffectsTest
 {
+	private static final Gson GSON = new Gson();
+
 	private static final CombatStats MAXED = new CombatStats(99, 99, 99, 99, 99, 99, 99, 99);
 
 	private static final int KURASK = 410;
@@ -350,7 +353,7 @@ public class WeaponEffectsTest
 	@Test
 	public void taskMonstersInBundledDataHaveTraits()
 	{
-		com.slayercompanion.data.GameData data = com.slayercompanion.data.GameData.load("/com/slayercompanion");
+		com.slayercompanion.data.GameData data = com.slayercompanion.data.GameData.load(GSON, "/com/slayercompanion");
 		assertTrue(MonsterTraits.isLeafy(data.monster(KURASK).get()));
 		assertTrue(MonsterTraits.isLeafy(data.monster(TUROTH).get()));
 		assertTrue(MonsterTraits.isKalphite(data.monster(KALPHITE_WORKER).get()));

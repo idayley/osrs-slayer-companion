@@ -15,8 +15,6 @@ import net.runelite.api.coords.WorldPoint;
 /** Builtin safespots plus the player's own marks and verify/reject decisions. */
 public class SafespotStore
 {
-	private static final Gson GSON = new Gson();
-
 	/** Persisted form: only what the player changed. */
 	private static class Saved
 	{
@@ -25,13 +23,15 @@ public class SafespotStore
 		List<WorldPointDto> rejected = new ArrayList<>();
 	}
 
+	private final Gson gson;
 	private final List<Safespot> builtin;
 	private final List<Safespot> player = new ArrayList<>();
 	private final Set<WorldPoint> confirmed = new LinkedHashSet<>();
 	private final Set<WorldPoint> rejected = new LinkedHashSet<>();
 
-	public SafespotStore(List<Safespot> builtin, String savedJson)
+	public SafespotStore(Gson gson, List<Safespot> builtin, String savedJson)
 	{
+		this.gson = gson;
 		this.builtin = new ArrayList<>(builtin);
 		load(savedJson);
 	}
@@ -48,7 +48,7 @@ public class SafespotStore
 		}
 		try
 		{
-			Saved saved = GSON.fromJson(savedJson, Saved.class);
+			Saved saved = gson.fromJson(savedJson, Saved.class);
 			if (saved == null)
 			{
 				return;
@@ -189,6 +189,6 @@ public class SafespotStore
 		saved.player = new ArrayList<>(player);
 		confirmed.forEach(p -> saved.confirmed.add(dto(p)));
 		rejected.forEach(p -> saved.rejected.add(dto(p)));
-		return GSON.toJson(saved);
+		return gson.toJson(saved);
 	}
 }

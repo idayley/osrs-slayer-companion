@@ -1,0 +1,184 @@
+// 4151
+[abyssal_whip]
+model=model_5412
+2dxof=-2
+2dyof=56
+2dzoom=840
+2dxan=280
+iop2=Wield
+wearpos=righthand
+manwear=model_5409,0
+womanwear=model_5409,6
+category=category_150
+weight=1lb
+cost=120001
+members=yes
+stockmarket=yes
+unlockable=yes
+name=Abyssal whip
+desc=A weapon from the Abyss.
+certlink=cert_abyssal_whip
+placeholderlink=placeholder_abyssal_whip
+param=param_1564,3
+param=param_434,attack
+param=param_436,70
+param=param_10,82
+param=param_14,4
+param=param_1,82
+param=param_258,24
+
+// 6585
+[enchanted_onyx_amulet]
+model=model_9633
+2dxof=1
+2dyof=16
+2dzoom=620
+2dyan=68
+2dxan=424
+iop2=Wear
+wearpos=front
+manwear=model_9642,0
+womanwear=model_9644,0
+weight=10g
+cost=202000
+members=yes
+stockmarket=yes
+unlockable=yes
+recol1s=15857
+recol1d=15392
+recol2s=19028
+recol2d=19619
+name=Amulet of fury
+desc=A very powerful onyx amulet.
+certlink=cert_enchanted_onyx_amulet
+placeholderlink=placeholder_enchanted_onyx_amulet
+param=param_1564,2
+param=param_0,10
+param=param_1,10
+param=param_2,10
+param=param_4,10
+param=param_3,10
+param=param_10,8
+param=param_5,15
+param=param_6,15
+param=param_7,15
+param=param_9,15
+param=param_8,15
+param=param_11,5
+
+// 6737
+[berzerker_ring]
+cost=10000
+model=model_9931
+iop2=Wear
+wearpos=ring
+weight=4g
+members=yes
+2dxof=3
+2dyof=-15
+2dzoom=600
+2dyan=1916
+2dxan=324
+stockmarket=yes
+unlockable=yes
+name=Berserker ring
+desc=A ring reputed to bring out a berserk fury in its wearer.
+certlink=cert_berzerker_ring
+placeholderlink=placeholder_berzerker_ring
+param=param_10,4
+param=param_7,4
+
+// 8919
+[harmless_black_mask_1]
+model=model_15615
+2dxof=-1
+2dyof=3
+2dzoom=854
+2dyan=1892
+2dxan=387
+wearpos=hat
+manwear=model_15935,0
+womanwear=model_15946,0
+manhead=model_15921
+womanhead=model_15924
+category=category_510
+weight=10kg
+cost=3000
+iop2=Wear
+iop4=Uncharge
+members=yes
+name=Black mask (1)
+desc=A magic cave horror mask.
+certlink=cert_harmless_black_mask_1
+param=param_11,0
+param=param_0,0
+param=param_1,0
+param=param_2,0
+param=param_4,-1
+param=param_3,-3
+param=param_5,9
+param=param_6,10
+param=param_7,8
+param=param_9,9
+param=param_8,-1
+
+// 24539
+[easter20_carrot_sword_gold]
+iop2=Wield
+model=model_39533
+iop2=Wield
+wearpos=righthand
+manwear=model_32910,0
+womanwear=model_32909,0
+2dxof=6
+2dyof=33
+2dzoom=1894
+2dyan=989
+2dxan=323
+category=category_55
+weight=1lb
+iop5=Destroy
+tradeable=no
+recol1s=29322
+recol1d=28352
+recol2s=28231
+recol2d=26272
+recol3s=27140
+recol3d=23104
+name='24-carat' sword
+desc=A carrot sword painted gold!
+placeholderlink=placeholder_easter20_carrot_sword_gold
+param=param_10,-10
+param=param_14,4
+param=param_0,-100
+param=param_1,-100
+param=param_2,-50
+param=param_295,1
+
+// 26482
+[league_3_whip]
+model=model_43428
+2dxof=3
+2dyof=-7
+2dzoom=921
+2dxan=505
+2dyan=2042
+iop2=Wield
+iop5=Dismantle kit
+wearpos=righthand
+manwear=model_43321,0
+womanwear=model_43325,0
+category=category_150
+weight=1lb
+cost=120001
+members=yes
+tradeable=no
+name=Abyssal whip (or)
+desc=A weapon plucked from the shattered abyss.
+placeholderlink=placeholder_league_3_whip
+param=param_434,attack
+param=param_436,70
+param=param_10,82
+param=param_14,4
+param=param_1,82
+param=param_258,24

@@ -6,11 +6,13 @@ import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.events.PluginMessage;
 import net.runelite.client.plugins.PluginManager;
 
-/** Asks the Shortest Path plugin (if installed and enabled) to draw a route, via PluginMessage. */
+/** Asks the Shortest Path plugin (if installed and enabled) to draw or time a route, via PluginMessage. */
 public class ShortestPath
 {
 	private static final String PLUGIN_NAME = "Shortest Path";
-	private static final String NAMESPACE = "shortestpath";
+	public static final String NAMESPACE = "shortestpath";
+	/** Shortest Path's answer to a {@link #query}; carries the query's "id" and the route "cost" in ticks. */
+	public static final String RESULT = "result";
 
 	private final EventBus eventBus;
 	private final PluginManager pluginManager;
@@ -36,6 +38,20 @@ public class ShortestPath
 			return false;
 		}
 		eventBus.post(new PluginMessage(NAMESPACE, "path", Map.of("target", target)));
+		return true;
+	}
+
+	/**
+	 * Finds a route from the player's location to target without drawing it; Shortest Path answers with a
+	 * {@link #RESULT} message carrying this id. False (nothing posted) if unavailable.
+	 */
+	public boolean query(String id, WorldPoint target)
+	{
+		if (target == null || !available())
+		{
+			return false;
+		}
+		eventBus.post(new PluginMessage(NAMESPACE, "query", Map.of("id", id, "target", target)));
 		return true;
 	}
 }

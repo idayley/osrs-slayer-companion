@@ -15,19 +15,21 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.chatbox.ChatboxPanelManager;
+import net.runelite.client.ui.JagexColors;
+import net.runelite.client.util.ColorUtil;
 
 /**
  * Adds safespot options on the "Walk here" entry, modelled on RuneLite's Ground Markers plugin:
- * shift + right-click offers "Mark safespot"; a tile with a shown spot offers "Looks right" (unverified
- * builtin only) and "Wrong spot". Existing menu entries are never changed or removed.
+ * shift + right-click offers "Mark safespot"; a tile with a shown spot offers "Safespot looks right" (unverified
+ * builtin only) and "Wrong safespot", each targeting "Slayer Companion". Existing menu entries are never changed or removed.
  */
 public class SafespotMenu
 {
 	private static final String WALK_HERE = "Walk here";
 	private static final String MARK = "Mark safespot";
-	private static final String LOOKS_RIGHT = "Looks right";
-	private static final String WRONG_SPOT = "Wrong spot";
-	private static final String TARGET = "Safespot";
+	private static final String LOOKS_RIGHT = "Safespot looks right";
+	private static final String WRONG_SPOT = "Wrong safespot";
+	private static final String TARGET = ColorUtil.wrapWithColorTag("Slayer Companion", JagexColors.MENU_TARGET);
 	/** A mark goes to the task location whose entrance is within this many tiles of the player. */
 	static final int NEAR_ENTRANCE_TILES = 150;
 

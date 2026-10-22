@@ -272,6 +272,97 @@ public class GearOptimizerTest
 		assertFalse(u.isPresent() && u.get().getItem().getName().startsWith("Sanguinesti"));
 	}
 
+	// ---- monster-specific damage rules ----
+
+	private static Monster kurask()
+	{
+		Monster m = rangedTarget();
+		m.setId(410);
+		m.setName("Kurask (Normal)");
+		return m;
+	}
+
+	@Test
+	public void kuraskPicksLeafBladedWeaponOverStrongerWhip()
+	{
+		Equipment spear = item(4158, "Leaf-bladed spear", "weapon", "Spear", 5, false, "stab", 47, "slash", 42, "str", 50);
+		GearOptimizer g = new GearOptimizer(List.of(WHIP, spear));
+		assertEquals("Leaf-bladed spear",
+			g.best(stats(99), Style.MELEE, kurask(), true, owned(WHIP, spear)).get().getBySlot().get("weapon").getName());
+		assertEquals("Abyssal whip",
+			g.best(stats(99), Style.MELEE, giant(), true, owned(WHIP, spear)).get().getBySlot().get("weapon").getName());
+	}
+
+	@Test
+	public void kuraskWithNoValidWeaponRecommendsNothing()
+	{
+		Equipment helm = item(10, "Helm of neitiznot", "head", "", 0, false, "str", 3);
+		GearOptimizer g = new GearOptimizer(List.of(WHIP, helm));
+		Loadout l = g.best(stats(99), Style.MELEE, kurask(), true, owned(WHIP, helm)).get();
+		assertTrue(l.getBySlot().isEmpty());
+		assertTrue(WeaponEffects.isImmune(l, kurask()));
+	}
+
+	@Test
+	public void kuraskRangedPicksBroadBolts()
+	{
+		Equipment xbow = item(2, "Rune crossbow", "weapon", "Crossbow", 6, false, "ranged", 90);
+		Equipment runite = item(4, "Runite bolts", "ammo", "", 0, false, "ranged_str", 115);
+		Equipment broad = item(11875, "Broad bolts", "ammo", "", 0, false, "ranged_str", 100);
+		GearOptimizer g = new GearOptimizer(List.of(xbow, runite, broad));
+		Loadout l = g.best(stats(99), Style.RANGED, kurask(), true, owned(xbow, runite, broad)).get();
+		assertEquals("Rune crossbow", l.getBySlot().get("weapon").getName());
+		assertEquals("Broad bolts", l.getBySlot().get("ammo").getName());
+		l = g.best(stats(99), Style.RANGED, rangedTarget(), true, owned(xbow, runite, broad)).get();
+		assertEquals("Runite bolts", l.getBySlot().get("ammo").getName());
+	}
+
+	@Test
+	public void kuraskMagicUsesMagicDartWithSlayerStaff()
+	{
+		Equipment slayerStaff = item(4170, "Slayer's staff", "weapon", "Staff", 4, false, "magic", 10);
+		slayerStaff.getSkillReqs().put("magic", 50);
+		slayerStaff.getSkillReqs().put("slayer", 55);
+		GearOptimizer g = new GearOptimizer(List.of(slayerStaff));
+		Loadout l = g.best(stats(99), Style.MAGIC, kurask(), true, owned(slayerStaff)).get();
+		assertEquals("Magic Dart", l.getSpell());
+		// Magic Dart needs 55 Slayer; without it, nothing hurts Kurask by magic
+		CombatStats lowSlayer = new CombatStats(99, 99, 99, 99, 99, 99, 99, 40);
+		slayerStaff.getSkillReqs().clear();
+		l = g.best(lowSlayer, Style.MAGIC, kurask(), true, owned(slayerStaff)).get();
+		assertFalse(l.getBySlot().containsKey("weapon"));
+	}
+
+	@Test
+	public void upgradeSuggestsLeafBladedWeaponWhenNothingOwnedWorks()
+	{
+		Equipment sword = item(11902, "Leaf-bladed sword", "weapon", "Stab Sword", 4, false, "stab", 67, "str", 70);
+		GearOptimizer g = new GearOptimizer(List.of(WHIP, sword));
+		Loadout cur = g.best(stats(99), Style.MELEE, kurask(), true, owned(WHIP)).get();
+		GearOptimizer.Upgrade u = g.biggestUpgrade(stats(99), new HashSet<>(), cur, kurask(), true, owned(WHIP)).get();
+		assertEquals("Leaf-bladed sword", u.getItem().getName());
+	}
+
+	@Test
+	public void ivandisAndBlisterwoodFlailsAreMeleeWeapons()
+	{
+		assertEquals(Style.MELEE, GearOptimizer.classify(item(22398, "Ivandis flail", "weapon", "Staff", 5, false)));
+		assertEquals(Style.MELEE, GearOptimizer.classify(item(24699, "Blisterwood flail", "weapon", "Staff", 5, false)));
+		assertEquals(Style.MELEE, GearOptimizer.classify(item(7639, "Rod of Ivandis (10)", "weapon", "Staff", 5, false)));
+		assertEquals(Style.MAGIC, GearOptimizer.classify(item(1, "Staff of air", "weapon", "Staff", 4, false)));
+	}
+
+	@Test
+	public void juvinatePicksIvandisFlailOverWhip()
+	{
+		Equipment flail = item(22398, "Ivandis flail", "weapon", "Staff", 5, false, "crush", 33, "str", 40);
+		Monster juvinate = giant();
+		juvinate.setId(3694);
+		GearOptimizer g = new GearOptimizer(List.of(WHIP, flail));
+		assertEquals("Ivandis flail",
+			g.best(stats(99), Style.MELEE, juvinate, true, owned(WHIP, flail)).get().getBySlot().get("weapon").getName());
+	}
+
 	@Test
 	public void smokeRealEquipmentUnder500ms()
 	{
@@ -287,6 +378,7 @@ public class GearOptimizerTest
 		}
 		o.updateBank(bank, Instant.now());
 		CombatStats s = stats(80);
+		s.setAssumeBoosts(true);
 		long t0 = System.nanoTime();
 		Loadout l = null;
 		for (Style st : Style.values())
@@ -300,5 +392,82 @@ public class GearOptimizerTest
 		long ms = (System.nanoTime() - t0) / 1_000_000;
 		System.out.println("SMOKE_TIMING_MS=" + ms + " catalogue=" + all.size());
 		assertTrue("took " + ms + " ms", ms < 500);
+	}
+
+	// ---- set bonuses ----
+
+	private static Equipment piece(int id, String name, String slot, int bonus)
+	{
+		return eq(id, name, slot, 0, "slash", bonus, "str", bonus, null);
+	}
+
+	private static final Equipment VOID_HELM = piece(11665, "Void melee helm (Normal)", "head", 0);
+	private static final Equipment VOID_TOP = piece(8839, "Void knight top (Normal)", "body", 0);
+	private static final Equipment VOID_ROBE = piece(8840, "Void knight robe (Normal)", "legs", 0);
+	private static final Equipment VOID_GLOVES = piece(8842, "Void knight gloves (Normal)", "hands", 0);
+	private static final Equipment[] PLUS_ONE = {piece(101, "Plus helm", "head", 1), piece(102, "Plus body", "body", 1),
+		piece(103, "Plus legs", "legs", 1), piece(104, "Plus gloves", "hands", 1)};
+
+	/** Each +1 piece beats a lone void piece, so slot-by-slot swaps alone would never find the set. */
+	@Test
+	public void picksCompleteOwnedVoidSet()
+	{
+		List<Equipment> cat = new ArrayList<>(List.of(WHIP, VOID_HELM, VOID_TOP, VOID_ROBE, VOID_GLOVES));
+		cat.addAll(List.of(PLUS_ONE));
+		List<Equipment> own = new ArrayList<>(cat);
+		GearOptimizer g = new GearOptimizer(cat);
+		Loadout l = g.best(stats(99), Style.MELEE, giant(), false, owned(own.toArray(new Equipment[0]))).get();
+		assertEquals("Void melee helm (Normal)", l.getBySlot().get("head").getName());
+		assertEquals("Void knight gloves (Normal)", l.getBySlot().get("hands").getName());
+		assertEquals("Abyssal whip", l.getBySlot().get("weapon").getName());
+	}
+
+	@Test
+	public void ignoresVoidSetWhenPiecesAreBetter()
+	{
+		Equipment[] strong = {piece(201, "Strong helm", "head", 15), piece(202, "Strong body", "body", 15),
+			piece(203, "Strong legs", "legs", 15), piece(204, "Strong gloves", "hands", 15)};
+		List<Equipment> cat = new ArrayList<>(List.of(WHIP, VOID_HELM, VOID_TOP, VOID_ROBE, VOID_GLOVES));
+		cat.addAll(List.of(strong));
+		GearOptimizer g = new GearOptimizer(cat);
+		Loadout l = g.best(stats(99), Style.MELEE, giant(), false, owned(cat.toArray(new Equipment[0]))).get();
+		assertEquals("Strong helm", l.getBySlot().get("head").getName());
+	}
+
+	/** The missing helm is the upgrade, valued with the owned void pieces it completes. */
+	@Test
+	public void upgradeCompletesAnOwnedSet()
+	{
+		List<Equipment> cat = new ArrayList<>(List.of(WHIP, VOID_HELM, VOID_TOP, VOID_ROBE, VOID_GLOVES));
+		cat.addAll(List.of(PLUS_ONE));
+		OwnedItems o = owned(WHIP, VOID_TOP, VOID_ROBE, VOID_GLOVES, PLUS_ONE[0], PLUS_ONE[1], PLUS_ONE[2], PLUS_ONE[3]);
+		GearOptimizer g = new GearOptimizer(cat);
+		Loadout best = g.best(stats(99), Style.MELEE, giant(), false, o).get();
+		assertEquals("Plus helm", best.getBySlot().get("head").getName());
+		GearOptimizer.Upgrade u = g.biggestUpgrade(stats(99), new HashSet<>(), best, giant(), false, o).get();
+		assertEquals("Void melee helm (Normal)", u.getItem().getName());
+		assertTrue(u.getDpsGainPercent() > 0);
+	}
+
+	/** Prayers and potions apply to both sides of the comparison, so the gain is upgrade vs best under the same boosts. */
+	@Test
+	public void upgradePercentUsesTheSameBoostsOnBothSides()
+	{
+		CombatStats s = stats(99);
+		s.setAssumeBoosts(true);
+		s.setPietyUnlocked(true);
+		GearOptimizer g = new GearOptimizer(List.of(SCIM, WHIP));
+		Loadout cur = g.best(s, Style.MELEE, giant(), false, owned(SCIM)).get();
+		GearOptimizer.Upgrade u = g.biggestUpgrade(s, new HashSet<>(), cur, giant(), false, owned(SCIM)).get();
+		Loadout up = new Loadout();
+		up.getBySlot().put("weapon", WHIP);
+		up.setMeleeType("slash");
+		double before = DpsCalculator.dps(s, cur, giant(), false);
+		double after = DpsCalculator.dps(s, up, giant(), false);
+		assertEquals((after - before) / before * 100.0, u.getDpsGainPercent(), 1e-6);
+		// And it differs from the unboosted figure (boosted strength scales bonuses differently).
+		Loadout curPlain = g.best(stats(99), Style.MELEE, giant(), false, owned(SCIM)).get();
+		double plain = g.biggestUpgrade(stats(99), new HashSet<>(), curPlain, giant(), false, owned(SCIM)).get().getDpsGainPercent();
+		assertTrue(Math.abs(plain - u.getDpsGainPercent()) > 0.01);
 	}
 }

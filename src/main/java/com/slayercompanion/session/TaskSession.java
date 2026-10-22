@@ -6,10 +6,12 @@ import com.slayercompanion.task.CurrentTask;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.Optional;
 import lombok.Value;
+import net.runelite.api.ItemID;
 
 /**
  * Stats for the current slayer task. Timing starts at the first kill and excludes time spent logged out.
@@ -19,6 +21,7 @@ public class TaskSession
 	@Value
 	public static class BestDrop
 	{
+		int itemId;
 		String name;
 		long value;
 		double rate;
@@ -38,16 +41,89 @@ public class TaskSession
 	private boolean loggedIn = true;
 	private Instant runningSince;
 	private Duration accumulated = Duration.ZERO;
-	private long lootTotal;
 	private int superiors;
 	private BestDrop best;
-	private int lastFood = -1;
-	private int foodEaten;
-	private boolean bankOpen;
+	private final SupplyTracker supplies;
+	private final PrayerRunway prayer = new PrayerRunway();
+	private final CannonRunway cannon = new CannonRunway();
+	private final WeaponCharges charges = new WeaponCharges();
+	private final PickedUpLoot pickedUp = new PickedUpLoot();
+	private final BagPickups bags = new BagPickups();
 
+	/** Supplies are tracked without prices or item names (no cost, no dose families). */
 	public TaskSession(Clock clock)
 	{
+		this(clock, new SupplyTracker(id -> 0, id -> null));
+	}
+
+	public TaskSession(Clock clock, SupplyTracker supplies)
+	{
 		this.clock = clock;
+		this.supplies = supplies;
+		// Loading the cannon is not using balls; fired balls are reported by the cannon runway instead.
+		supplies.ignore(CannonRunway.BALL_IDS);
+		// Charging a weapon is not using its materials; spent charges are reported by the weapon charges instead.
+		supplies.ignore(WeaponCharges.MATERIAL_IDS);
+		supplies.ignoreWhileCarried(WeaponCharges.BLOWPIPE_IDS, WeaponCharges.DART_IDS);
+	}
+
+	/** How long prayer lasts this task. */
+	public PrayerRunway prayer()
+	{
+		return prayer;
+	}
+
+	/** How long cannonballs last this task. */
+	public CannonRunway cannon()
+	{
+		return cannon;
+	}
+
+	/** @param current prayer points now (boosted level) */
+	public void onPrayerPoints(int current)
+	{
+		prayer.onPrayerPoints(current);
+	}
+
+	/**
+	 * Once per game tick, after {@link #onSupplies}: takes the cannon reading and costs fired balls as supplies.
+	 *
+	 * @param placed cannon set up
+	 * @param ammo   balls in the cannon
+	 */
+	public void onCannon(boolean placed, int ammo)
+	{
+		cannon.update(placed, ammo, supplies.count(ItemID.STEEL_CANNONBALL), supplies.count(ItemID.GRANITE_CANNONBALL))
+			.forEach(supplies::addUsed);
+	}
+
+	/** Attacks made with charged weapons this task, and the blowpipe's dart type. */
+	public WeaponCharges weaponCharges()
+	{
+		return charges;
+	}
+
+	/**
+	 * Once per game tick: counts a charged-weapon attack and costs the charge's materials as supplies.
+	 * See {@link WeaponCharges#onTick} for the parameters.
+	 */
+	public void onWeaponTick(int weaponId, int capeId, int animation, int animationFrame, boolean animationStarted,
+		int graphic, boolean graphicStarted)
+	{
+		charges.onTick(weaponId, capeId, animation, animationFrame, animationStarted, graphic, graphicStarted)
+			.forEach(supplies::addChargeUsed);
+	}
+
+	/** A game message (tags removed); the blowpipe's "Check" message names its darts. */
+	public void onGameMessage(String message)
+	{
+		charges.onChatMessage(message);
+	}
+
+	/** What the player has used up this task. */
+	public SupplyTracker supplies()
+	{
+		return supplies;
 	}
 
 	/** Sets the monster being killed so drop rates can be looked up by item id. */
@@ -91,6 +167,11 @@ public class TaskSession
 				}
 			}
 			kills += delta;
+			supplies.onKill(delta);
+			prayer.onKill(delta);
+			cannon.onKill(delta);
+			charges.onKill(delta);
+			pickedUp.onKill(now());
 		}
 	}
 
@@ -103,10 +184,13 @@ public class TaskSession
 		started = false;
 		runningSince = null;
 		accumulated = Duration.ZERO;
-		lootTotal = 0;
+		pickedUp.reset();
 		superiors = 0;
 		best = null;
-		foodEaten = 0;
+		supplies.reset();
+		prayer.reset();
+		cannon.reset();
+		charges.reset();
 	}
 
 	/**
@@ -116,10 +200,10 @@ public class TaskSession
 	public void onLoot(int itemId, String itemName, int qty, long gpEach)
 	{
 		long value = qty * gpEach;
-		lootTotal += value;
+		pickedUp.onDrop(itemId, itemName, qty, gpEach, now());
 		if (best == null || value > best.getValue())
 		{
-			best = new BestDrop(nameOf(itemId, itemName), value, rateOf(itemId));
+			best = new BestDrop(itemId, nameOf(itemId, itemName), value, rateOf(itemId));
 		}
 	}
 
@@ -179,26 +263,61 @@ public class TaskSession
 		}
 	}
 
-	/**
-	 * While a bank or deposit box is open, food leaving the inventory was banked, not eaten.
-	 * On close the count is re-baselined to {@code foodInInventory}.
-	 */
-	public void setBankOpen(boolean open, int foodInInventory)
+	/** The player chose "Take" on a ground item; an open gem bag's message doesn't say which. */
+	public void onGroundTake(int itemId)
 	{
-		bankOpen = open;
-		if (!open)
+		bags.onTake(itemId);
+	}
+
+	/** A game message, in case an open herb sack, gem bag or seed box took task loot off the floor. */
+	public void onBagMessage(String message)
+	{
+		BagPickups.Bagged b = bags.parse(message);
+		if (b == null)
 		{
-			lastFood = foodInInventory;
+			return;
+		}
+		if (b.name != null)
+		{
+			pickedUp.onBagged(b.name, b.qty, now());
+		}
+		else
+		{
+			pickedUp.onBagged(b.itemId, b.qty, now());
 		}
 	}
 
-	public void onFoodCount(int foodInInventory)
+	/**
+	 * While a bank or deposit box is open, items leaving the player were banked, not used. Snapshots taken
+	 * while it is open become the new baseline.
+	 */
+	public void setBankOpen(boolean open)
 	{
-		if (lastFood >= 0 && started && !bankOpen && foodInInventory < lastFood)
-		{
-			foodEaten += lastFood - foodInInventory;
-		}
-		lastFood = foodInInventory;
+		supplies.setBankOpen(open);
+		cannon.setBankOpen(open);
+		pickedUp.setBankOpen(open);
+	}
+
+	/**
+	 * @param counts item id to quantity across inventory, worn equipment and rune pouch
+	 * @param looted the same plus the looting bag, for loot picked up
+	 */
+	public void onSupplies(Map<Integer, Integer> counts, Map<Integer, Integer> looted)
+	{
+		supplies.onSnapshot(counts);
+		charges.onCarried(counts);
+		pickedUp.onCarried(looted, now());
+	}
+
+	/** Inventory, worn and rune pouch only (no looting bag). */
+	public void onSupplies(Map<Integer, Integer> counts)
+	{
+		onSupplies(counts, counts);
+	}
+
+	private Duration now()
+	{
+		return Duration.between(Instant.EPOCH, clock.instant());
 	}
 
 	public int remaining()
@@ -254,12 +373,13 @@ public class TaskSession
 
 	public OptionalDouble gpPerKill()
 	{
-		return kills > 0 ? OptionalDouble.of((double) lootTotal / kills) : OptionalDouble.empty();
+		return kills > 0 ? OptionalDouble.of((double) pickedUp.total() / kills) : OptionalDouble.empty();
 	}
 
+	/** GP value of task drops picked up so far (left on the floor doesn't count). */
 	public long lootTotal()
 	{
-		return lootTotal;
+		return pickedUp.total();
 	}
 
 	public double slayerXpPerHour(int xpPerKill)
@@ -280,12 +400,7 @@ public class TaskSession
 
 	public OptionalInt killsUntilFoodRunsOut()
 	{
-		if (kills <= 0 || foodEaten <= 0 || lastFood < 0)
-		{
-			return OptionalInt.empty();
-		}
-		double perKill = (double) foodEaten / kills;
-		return OptionalInt.of((int) Math.floor(lastFood / perKill));
+		return supplies.killsUntilFoodRunsOut();
 	}
 
 	/** Fraction (0-1) of the way to the next level after finishing the task. */

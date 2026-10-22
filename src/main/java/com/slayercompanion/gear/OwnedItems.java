@@ -51,6 +51,12 @@ public class OwnedItems
 		return bank.getOrDefault(id, 0) + inventory.getOrDefault(id, 0) + worn.getOrDefault(id, 0);
 	}
 
+	/** Whether the item (or a variant of it) is equipped right now. */
+	public boolean isWorn(int itemId)
+	{
+		return worn.getOrDefault(canonical.applyAsInt(itemId), 0) > 0;
+	}
+
 	public boolean bankSeen()
 	{
 		return bankSeenEpochMillis != null;

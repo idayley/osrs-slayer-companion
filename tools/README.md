@@ -23,3 +23,13 @@ Notes
 - Quest names are filtered through `tools/quests.txt` (RuneLite `Quest` enum constants). Refresh with
   `javap -cp runelite-api.jar net.runelite.api.Quest | grep 'public static final'`.
 - Tests: `python3 -m pytest tools -q` (offline, uses `tools/samples/`; `--samples` runs the build on them).
+
+## Take me there targets
+
+`route_targets.py` checks every location's tile against Shortest Path's own map and transports, and writes
+a `route` tile wherever Shortest Path couldn't reach it (a wall, the wrong floor, or a cave it has no way
+into). Caves it can't enter at all route to the outside entrance listed in `route_entrances.json`. Rerun
+after editing locations.json or when Shortest Path updates; it warns about anything still unreachable.
+
+    git clone --depth 1 https://github.com/Skretzo/shortest-path.git /tmp/shortest-path
+    python3 tools/route_targets.py --shortest-path /tmp/shortest-path/src/main/resources --locations $R/locations.json

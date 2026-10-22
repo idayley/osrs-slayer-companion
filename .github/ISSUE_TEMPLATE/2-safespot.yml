@@ -1,0 +1,22 @@
+name: Share safespots
+description: Send the safespots you've marked so everyone gets them.
+title: "[Safespot] "
+labels: ["safespot"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        In game, open **Where to go** and press **Export safespots**. It copies your marked
+        safespots; paste them below.
+  - type: textarea
+    id: export
+    attributes:
+      label: Exported safespots
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything to know
+      description: e.g. which monsters it works on, combat style, or "stand on the north side of the rock".

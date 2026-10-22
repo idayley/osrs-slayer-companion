@@ -6,6 +6,7 @@ import com.slayercompanion.data.GameData;
 import com.slayercompanion.data.Location;
 import com.slayercompanion.data.Monster;
 import com.slayercompanion.data.SlayerTask;
+import com.slayercompanion.gear.Boosts;
 import com.slayercompanion.gear.CombatStats;
 import com.slayercompanion.gear.DpsCalculator;
 import com.slayercompanion.gear.GearOptimizer;
@@ -13,6 +14,7 @@ import com.slayercompanion.gear.Loadout;
 import com.slayercompanion.gear.OwnedItems;
 import com.slayercompanion.gear.Style;
 import com.slayercompanion.integration.ShortestPath;
+import com.slayercompanion.integration.TravelTimes;
 import com.slayercompanion.locations.Estimates;
 import com.slayercompanion.locations.LocationRanker;
 import com.slayercompanion.locations.RankedLocation;
@@ -21,11 +23,16 @@ import com.slayercompanion.safespot.SafespotExport;
 import com.slayercompanion.safespot.SafespotMenu;
 import com.slayercompanion.safespot.SafespotOverlay;
 import com.slayercompanion.safespot.SafespotStore;
+import com.slayercompanion.session.CannonRunway;
 import com.slayercompanion.session.FoodItems;
+import com.slayercompanion.session.SlayerPoints;
+import com.slayercompanion.session.SupplyTracker;
 import com.slayercompanion.session.TaskSession;
 import com.slayercompanion.task.CurrentTask;
 import com.slayercompanion.task.TaskTracker;
 import com.slayercompanion.ui.BankHighlightOverlay;
+import com.slayercompanion.ui.BankSetupTab;
+import com.slayercompanion.ui.ItemManagerIcons;
 import com.slayercompanion.ui.OnTaskModel;
 import com.slayercompanion.ui.PrepModel;
 import com.slayercompanion.ui.SlayerCompanionPanel;
@@ -37,6 +44,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,9 +62,14 @@ import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
+import net.runelite.api.MenuAction;
+import net.runelite.api.EnumComposition;
+import net.runelite.api.EnumID;
+import net.runelite.api.EquipmentInventorySlot;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Item;
+import net.runelite.api.ItemComposition;
 import net.runelite.api.ItemContainer;
 import net.runelite.api.NPC;
 import net.runelite.api.Player;
@@ -64,10 +77,13 @@ import net.runelite.api.Quest;
 import net.runelite.api.QuestState;
 import net.runelite.api.Skill;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.GraphicChanged;
 import net.runelite.api.events.ItemContainerChanged;
+import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.StatChanged;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.events.WidgetClosed;
@@ -81,13 +97,16 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.NpcLootReceived;
+import net.runelite.client.events.PluginMessage;
 import net.runelite.client.events.RuneScapeProfileChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.ItemStack;
 import net.runelite.client.game.chatbox.ChatboxPanelManager;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
+import net.runelite.client.plugins.banktags.BankTagsPlugin;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -104,11 +123,24 @@ import net.runelite.client.util.Text;
 	description = "Prep, where to go and live stats for your slayer task",
 	tags = {"slayer", "task", "gear", "safespot", "loot"}
 )
+// Makes the Bank Tags services injectable (as Inventory Setups does); BankSetupTab falls back when it is disabled.
+@PluginDependency(BankTagsPlugin.class)
 public class SlayerCompanionPlugin extends Plugin
 {
 	private static final String SUPERIOR_MESSAGE = "A superior foe has appeared";
+	private static final Set<MenuAction> GROUND_ITEM_OPTIONS = EnumSet.of(MenuAction.GROUND_ITEM_FIRST_OPTION,
+		MenuAction.GROUND_ITEM_SECOND_OPTION, MenuAction.GROUND_ITEM_THIRD_OPTION, MenuAction.GROUND_ITEM_FOURTH_OPTION,
+		MenuAction.GROUND_ITEM_FIFTH_OPTION);
 	/** Rebuild Prep / Where to go about once a minute even without changes, so "{n} min ago" stays current. */
 	private static final int PLAN_REFRESH_TICKS = 100;
+	/** KR_KNIGHTWAVES_STATE once all eight Knight Waves are beaten (as Quest Helper reads it). */
+	private static final int KNIGHT_WAVES_DONE = 8;
+	private static final int[] RUNE_POUCH_TYPES = {
+		VarbitID.RUNE_POUCH_TYPE_1, VarbitID.RUNE_POUCH_TYPE_2, VarbitID.RUNE_POUCH_TYPE_3,
+		VarbitID.RUNE_POUCH_TYPE_4, VarbitID.RUNE_POUCH_TYPE_5, VarbitID.RUNE_POUCH_TYPE_6};
+	private static final int[] RUNE_POUCH_QUANTITIES = {
+		VarbitID.RUNE_POUCH_QUANTITY_1, VarbitID.RUNE_POUCH_QUANTITY_2, VarbitID.RUNE_POUCH_QUANTITY_3,
+		VarbitID.RUNE_POUCH_QUANTITY_4, VarbitID.RUNE_POUCH_QUANTITY_5, VarbitID.RUNE_POUCH_QUANTITY_6};
 
 	@Inject
 	private Client client;
@@ -130,6 +162,8 @@ public class SlayerCompanionPlugin extends Plugin
 	private ChatboxPanelManager chatboxPanelManager;
 	@Inject
 	private BankHighlightOverlay bankHighlightOverlay;
+	@Inject
+	private BankSetupTab bankSetupTab;
 
 	private GameData data;
 	private GearOptimizer optimizer;
@@ -141,6 +175,7 @@ public class SlayerCompanionPlugin extends Plugin
 	private SafespotMenu safespotMenu;
 	private SafespotOverlay safespotOverlay;
 	private ShortestPath shortestPath;
+	private TravelTimes travelTimes = new TravelTimes();
 	private SlayerCompanionPanel panel;
 	private NavigationButton navButton;
 
@@ -158,6 +193,16 @@ public class SlayerCompanionPlugin extends Plugin
 	private int ownedVersion;
 	private final Map<Integer, Set<Integer>> containerGearIds = new HashMap<>();
 	private int inventoryFood = -1;
+	/**
+	 * Inventory, worn or rune pouch changed. The supply snapshot is taken once per tick so that equipping an
+	 * item (it leaves the inventory and reaches the worn container in separate events) nets out.
+	 */
+	private boolean suppliesDirty;
+	/** The local player's animation and graphic as last set, and the tick they were set on (charged weapons). */
+	private int animationId = -1;
+	private int animationTick = -1;
+	private int graphicId = -1;
+	private int graphicTick = -1;
 	private final Map<Skill, Integer> levels = new EnumMap<>(Skill.class);
 	private String savedInitialTask;
 	private int savedInitialAmount;
@@ -207,20 +252,25 @@ public class SlayerCompanionPlugin extends Plugin
 			return t;
 		});
 		tracker = new TaskTracker(client, data);
-		session = new TaskSession(Clock.systemUTC());
+		// Both lookups run on the client thread (supply snapshots are taken in client events).
+		session = new TaskSession(Clock.systemUTC(), new SupplyTracker(itemManager::getItemPrice,
+			id -> itemManager.getItemComposition(id).getName()));
 		owned = new OwnedItems(itemManager::canonicalize);
 		safespots = new SafespotStore(data.builtinSafespots(), null);
 		safespotMenu = new SafespotMenu(client, safespots, chatboxPanelManager);
 		safespotMenu.setOnChange(this::saveSafespots);
 		safespotOverlay = new SafespotOverlay(client, safespots);
 		shortestPath = new ShortestPath(eventBus, pluginManager);
+		travelTimes = new TravelTimes();
 
 		eventBus.register(safespotMenu);
+		eventBus.register(bankSetupTab);
+		bankSetupTab.clearLeftovers();
 		overlayManager.add(safespotOverlay);
 		overlayManager.add(bankHighlightOverlay);
 
-		panel = new SlayerCompanionPanel(new PanelActions());
-		BufferedImage icon = ImageUtil.loadImageResource(SlayerCompanionPlugin.class, "/skill_icons_small/slayer.png");
+		panel = new SlayerCompanionPanel(new PanelActions(), new ItemManagerIcons(itemManager));
+		BufferedImage icon = ImageUtil.loadImageResource(SlayerCompanionPlugin.class, "icon.png");
 		navButton = NavigationButton.builder()
 			.tooltip("Slayer Companion")
 			.icon(icon)
@@ -244,18 +294,27 @@ public class SlayerCompanionPlugin extends Plugin
 	protected void shutDown()
 	{
 		eventBus.unregister(safespotMenu);
+		eventBus.unregister(bankSetupTab);
+		clientThread.invoke(bankSetupTab::hide);
 		overlayManager.remove(safespotOverlay);
 		overlayManager.remove(bankHighlightOverlay);
 		bankHighlightOverlay.setItems(Collections.emptySet());
-		clientToolbar.removeNavigation(navButton);
+		if (navButton != null)
+		{
+			clientToolbar.removeNavigation(navButton);
+		}
 		current = Optional.empty();
 		preferredLocationId = null;
 		selectedLocation = null;
 		selectedMonster = null;
 		highlighting = false;
 		inventoryFood = -1;
+		suppliesDirty = false;
 		levels.clear();
-		gearExecutor.shutdownNow();
+		if (gearExecutor != null)
+		{
+			gearExecutor.shutdownNow();
+		}
 		gearExecutor = null;
 		gearGeneration++;
 		clearGearResults();
@@ -374,11 +433,23 @@ public class SlayerCompanionPlugin extends Plugin
 		{
 			taskDirty = true;
 		}
+		for (int i = 0; i < RUNE_POUCH_TYPES.length; i++)
+		{
+			if (varbit == RUNE_POUCH_TYPES[i] || varbit == RUNE_POUCH_QUANTITIES[i])
+			{
+				suppliesDirty = true;
+				break;
+			}
+		}
 	}
 
 	@Subscribe
 	public void onStatChanged(StatChanged e)
 	{
+		if (e.getSkill() == Skill.PRAYER)
+		{
+			session.onPrayerPoints(e.getBoostedLevel());
+		}
 		Integer before = levels.put(e.getSkill(), e.getLevel());
 		if (before == null || before != e.getLevel())
 		{
@@ -412,11 +483,18 @@ public class SlayerCompanionPlugin extends Plugin
 				}
 			}
 			inventoryFood = food;
-			session.onFoodCount(food);
+			suppliesDirty = true;
 		}
 		else if (id == InventoryID.WORN)
 		{
 			owned.updateWorn(items);
+			suppliesDirty = true;
+		}
+		else if (id == InventoryID.LOOTING_BAG)
+		{
+			// Loot picked straight into an open looting bag; doesn't change owned gear.
+			suppliesDirty = true;
+			return;
 		}
 		else
 		{
@@ -445,7 +523,9 @@ public class SlayerCompanionPlugin extends Plugin
 	{
 		if (isBankInterface(e.getGroupId()))
 		{
-			session.setBankOpen(true, inventoryFood);
+			// Count anything used this tick before the bank starts swallowing decreases.
+			flushSupplies();
+			session.setBankOpen(true);
 		}
 	}
 
@@ -454,7 +534,9 @@ public class SlayerCompanionPlugin extends Plugin
 	{
 		if (isBankInterface(e.getGroupId()))
 		{
-			session.setBankOpen(false, inventoryFood);
+			// Re-baseline on what was carried out of the bank, while deposits still count as banking.
+			flushSupplies();
+			session.setBankOpen(false);
 		}
 	}
 
@@ -477,14 +559,44 @@ public class SlayerCompanionPlugin extends Plugin
 		}
 	}
 
+	/** The gem bag's message doesn't name the gem, so remember which ground item the player took. */
+	@Subscribe
+	public void onMenuOptionClicked(MenuOptionClicked e)
+	{
+		if ("Take".equals(e.getMenuOption()) && GROUND_ITEM_OPTIONS.contains(e.getMenuAction()))
+		{
+			session.onGroundTake(e.getId());
+		}
+	}
+
 	@Subscribe
 	public void onChatMessage(ChatMessage e)
 	{
 		String message = Text.removeTags(e.getMessage());
 		tracker.onChatMessage(message);
+		if (e.getType() == ChatMessageType.GAMEMESSAGE)
+		{
+			session.onGameMessage(message);
+		}
 		if (e.getType() == ChatMessageType.GAMEMESSAGE && message.contains(SUPERIOR_MESSAGE) && current.isPresent())
 		{
 			session.onSuperior();
+		}
+		// Open herb sacks, gem bags and seed boxes take loot straight off the floor; only a game message says so.
+		if (current.isPresent() && (e.getType() == ChatMessageType.GAMEMESSAGE || e.getType() == ChatMessageType.SPAM))
+		{
+			session.onBagMessage(message);
+		}
+	}
+
+	/** Shortest Path's route times arrive one location at a time; re-rank as each lands. */
+	@Subscribe
+	public void onPluginMessage(PluginMessage e)
+	{
+		if (ShortestPath.NAMESPACE.equals(e.getNamespace()) && ShortestPath.RESULT.equals(e.getName())
+			&& travelTimes.onResult(e.getData()))
+		{
+			planDirty = true;
 		}
 	}
 
@@ -501,13 +613,115 @@ public class SlayerCompanionPlugin extends Plugin
 			questCache.clear();
 			planDirty = true;
 		}
+		if (current.isPresent() && travelTimes.isStale(playerPoint()))
+		{
+			planDirty = true;
+		}
 		if (planDirty)
 		{
 			planDirty = false;
 			ticksSincePlan = 0;
 			rebuildPlan();
 		}
+		flushSupplies();
+		// After the supply snapshot, so the cannon and carried balls are read on the same tick.
+		session.onCannon(CannonRunway.isPlaced(client.getVarpValue(CannonRunway.STATE_VARP)),
+			client.getVarpValue(CannonRunway.AMMO_VARP));
+		readWeaponAttack();
 		push();
+	}
+
+	/** Ahead of plugins that swap animations, so the game's own attack animation is seen. */
+	@Subscribe(priority = 10)
+	public void onAnimationChanged(AnimationChanged e)
+	{
+		if (e.getActor() == client.getLocalPlayer())
+		{
+			animationId = e.getActor().getAnimation();
+			animationTick = client.getTickCount();
+		}
+	}
+
+	@Subscribe(priority = 10)
+	public void onGraphicChanged(GraphicChanged e)
+	{
+		if (e.getActor() == client.getLocalPlayer())
+		{
+			graphicId = e.getActor().getGraphic();
+			graphicTick = client.getTickCount();
+		}
+	}
+
+	/** Counts a charged-weapon attack started this tick and costs its charge as supplies (see WeaponCharges). */
+	private void readWeaponAttack()
+	{
+		Player p = client.getLocalPlayer();
+		ItemContainer worn = client.getItemContainer(InventoryID.WORN);
+		if (p == null || worn == null)
+		{
+			return;
+		}
+		int tick = client.getTickCount();
+		boolean animationStarted = animationTick == tick;
+		session.onWeaponTick(wornId(worn, EquipmentInventorySlot.WEAPON), wornId(worn, EquipmentInventorySlot.CAPE),
+			animationStarted ? animationId : p.getAnimation(), p.getAnimationFrame(), animationStarted,
+			graphicId, graphicTick == tick);
+	}
+
+	private static int wornId(ItemContainer worn, EquipmentInventorySlot slot)
+	{
+		Item item = worn.getItem(slot.getSlotIdx());
+		return item == null ? -1 : item.getId();
+	}
+
+	// ---- supplies ----
+
+	private void flushSupplies()
+	{
+		if (!suppliesDirty)
+		{
+			return;
+		}
+		suppliesDirty = false;
+		Map<Integer, Integer> carried = carriedItems();
+		Map<Integer, Integer> looted = new HashMap<>(carried);
+		ItemContainer bag = client.getItemContainer(InventoryID.LOOTING_BAG);
+		if (bag != null)
+		{
+			toMap(bag).forEach((itemId, qty) -> looted.merge(itemId, qty, Integer::sum));
+		}
+		session.onSupplies(carried, looted);
+	}
+
+	/** Item counts across the inventory, worn equipment and rune pouch. */
+	private Map<Integer, Integer> carriedItems()
+	{
+		Map<Integer, Integer> out = new HashMap<>();
+		ItemContainer inv = client.getItemContainer(InventoryID.INV);
+		if (inv != null)
+		{
+			toMap(inv).forEach((id, qty) -> out.merge(id, qty, Integer::sum));
+		}
+		ItemContainer worn = client.getItemContainer(InventoryID.WORN);
+		if (worn != null)
+		{
+			toMap(worn).forEach((id, qty) -> out.merge(id, qty, Integer::sum));
+		}
+		EnumComposition runes = client.getEnum(EnumID.RUNEPOUCH_RUNE);
+		for (int i = 0; i < RUNE_POUCH_TYPES.length; i++)
+		{
+			int type = client.getVarbitValue(RUNE_POUCH_TYPES[i]);
+			int qty = client.getVarbitValue(RUNE_POUCH_QUANTITIES[i]);
+			if (type > 0 && qty > 0 && runes != null)
+			{
+				int itemId = runes.getIntValue(type);
+				if (itemId > 0)
+				{
+					out.merge(itemId, qty, Integer::sum);
+				}
+			}
+		}
+		return out;
 	}
 
 	// ---- task ----
@@ -520,6 +734,8 @@ public class SlayerCompanionPlugin extends Plugin
 		if (tracker.isNewTask(current, now) || !Objects.equals(before, after))
 		{
 			preferredLocationId = null;
+			// The setup was for the old task; rebuildPlan closes the bank tab.
+			highlighting = false;
 		}
 		if (!now.equals(current))
 		{
@@ -581,6 +797,7 @@ public class SlayerCompanionPlugin extends Plugin
 			safespotMenu.setContext(null, 0, Collections.emptyList());
 			safespotOverlay.setLocationId(null);
 			bankHighlightOverlay.setItems(Collections.emptySet());
+			bankSetupTab.hide();
 			prepModel = PrepModel.noTask();
 			whereModel = WhereToGoModel.noTask();
 			return;
@@ -597,12 +814,14 @@ public class SlayerCompanionPlugin extends Plugin
 		WorldPoint player = playerPoint();
 		if (player != null && !locations.isEmpty())
 		{
+			travelTimes.refresh(locations, player, shortestPath);
 			ranked = LocationRanker.rank(locations, style, player,
 				l -> Requirements.lockReason(l, this::skillLevel, questsDone::contains, SlayerCompanionPlugin::questName, owned),
 				c.getKonarLocation().filter(s -> !s.trim().isEmpty()),
 				l -> safespots.hasAny(l.getId()),
 				l -> xpPerHour(stats, l, key),
-				l -> gpPerHour(stats, l, key));
+				l -> gpPerHour(stats, l, key),
+				l -> travelTimes.seconds(l.getId()));
 		}
 
 		String selectedId = WhereToGoModel.effectiveSelection(ranked, preferredLocationId);
@@ -622,10 +841,25 @@ public class SlayerCompanionPlugin extends Plugin
 		Optional<GearOptimizer.Upgrade> upgrade = selectedMonster == null ? Optional.empty()
 			: upgrade(stats, questsDone, selectedMonster, key);
 		boolean safespot = selectedLocation != null && safespots.hasAny(selectedLocation.getId());
-		prepModel = PrepModel.build(c, selectedMonster, safespot, owned, style, best, upgrade, highlighting,
-			Instant.now());
-		bankHighlightOverlay.setItems(highlighting ? prepModel.getHighlightIds() : Collections.emptySet());
-		whereModel = WhereToGoModel.build(ranked, selectedId);
+		PrepModel.UpgradeFacts upgradeFacts = upgrade.map(u -> new PrepModel.UpgradeFacts(
+			upgradePrice(u.getItem().getItemId()), this::skillLevel, questsDone::contains,
+			SlayerCompanionPlugin::questName)).orElse(null);
+		prepModel = PrepModel.build(c, selectedMonster, safespot, owned, style, best, upgrade, upgradeFacts,
+			highlighting, Instant.now(), Boosts.note(stats, style));
+		showSetupInBank();
+		whereModel = WhereToGoModel.build(ranked, selectedId, task.getName(), style);
+	}
+
+	/** Bank Tags tab when available, else the highlight overlay. */
+	private void showSetupInBank()
+	{
+		boolean tab = highlighting && prepModel.getSetupLayout().length > 0 && bankSetupTab.isAvailable()
+			&& bankSetupTab.show(prepModel.getSetupLayout());
+		if (!tab)
+		{
+			bankSetupTab.hide();
+		}
+		bankHighlightOverlay.setItems(highlighting && !tab ? prepModel.getHighlightIds() : Collections.emptySet());
 	}
 
 	private void clearGearResults()
@@ -752,13 +986,43 @@ public class SlayerCompanionPlugin extends Plugin
 			.orElse(0.0);
 	}
 
+	/** Real levels, assuming the best prayer the account has unlocked and the standard potion for the style. */
 	private CombatStats stats()
 	{
 		return new CombatStats(
 			client.getRealSkillLevel(Skill.ATTACK), client.getRealSkillLevel(Skill.STRENGTH),
 			client.getRealSkillLevel(Skill.DEFENCE), client.getRealSkillLevel(Skill.RANGED),
 			client.getRealSkillLevel(Skill.MAGIC), client.getRealSkillLevel(Skill.HITPOINTS),
-			client.getRealSkillLevel(Skill.PRAYER), client.getRealSkillLevel(Skill.SLAYER));
+			client.getRealSkillLevel(Skill.PRAYER), client.getRealSkillLevel(Skill.SLAYER),
+			true,
+			// Knight Waves training ground (Camelot) done unlocks Chivalry and Piety.
+			client.getVarbitValue(VarbitID.KR_KNIGHTWAVES_STATE) >= KNIGHT_WAVES_DONE,
+			client.getVarbitValue(VarbitID.PRAYER_RIGOUR_UNLOCKED) == 1,
+			client.getVarbitValue(VarbitID.PRAYER_AUGURY_UNLOCKED) == 1,
+			client.getVarbitValue(VarbitID.PRAYER_DEADEYE_UNLOCKED) == 1,
+			client.getVarbitValue(VarbitID.PRAYER_MYSTIC_VIGOUR_UNLOCKED) == 1);
+	}
+
+	/** GE price of an item, 0 when untradeable. Client thread only. */
+	/** GE price of the item, or of another state of it that trades (charged items only sell uncharged). */
+	private long upgradePrice(int itemId)
+	{
+		long price = tradeablePrice(itemId);
+		for (Equipment other : data.otherStates(itemId))
+		{
+			long p = tradeablePrice(other.getItemId());
+			if (p > 0 && (price <= 0 || p < price))
+			{
+				price = p;
+			}
+		}
+		return price;
+	}
+
+	private long tradeablePrice(int itemId)
+	{
+		ItemComposition item = itemManager.getItemComposition(itemId);
+		return item.isTradeable() ? itemManager.getItemPrice(itemId) : 0;
 	}
 
 	private int skillLevel(String name)
@@ -846,10 +1110,15 @@ public class SlayerCompanionPlugin extends Plugin
 			return OnTaskModel.noTask();
 		}
 		CurrentTask c = current.get();
+		String master = c.getMaster().orElse(null);
+		// Krystilia keeps a separate wilderness streak.
+		int pointsStreak = "krystilia".equals(master)
+			? client.getVarbitValue(SlayerPoints.WILDERNESS_STREAK_VARBIT) : c.getStreak();
 		return OnTaskModel.build(c.getTask().getName(), selectedLocation == null ? null : selectedLocation.getName(),
 			session, selectedMonster, inventoryFood,
 			client.getBoostedSkillLevel(Skill.PRAYER), client.getRealSkillLevel(Skill.PRAYER),
-			client.getSkillExperience(Skill.SLAYER), c.getStreak());
+			client.getSkillExperience(Skill.SLAYER), c.getStreak(),
+			client.getVarbitValue(SlayerPoints.POINTS_VARBIT), master, pointsStreak);
 	}
 
 	private static Map<Integer, Integer> toMap(ItemContainer c)
@@ -903,9 +1172,16 @@ public class SlayerCompanionPlugin extends Plugin
 		{
 			clientThread.invoke(() ->
 			{
+				if (planDirty)
+				{
+					// A card's own Take me there selects it first; route to that one, not the old pick.
+					planDirty = false;
+					ticksSincePlan = 0;
+					rebuildPlan();
+				}
 				Location l = selectedLocation;
-				String message = l == null || l.getEntrance() == null ? null
-					: WhereToGoModel.takeMeThereMessage(shortestPath.pathTo(l.getEntrance().toWorldPoint()));
+				String message = l == null || l.routeTarget() == null ? null
+					: WhereToGoModel.takeMeThereMessage(shortestPath.pathTo(l.routeTarget().toWorldPoint()));
 				SlayerCompanionPanel target = panel;
 				if (target != null)
 				{

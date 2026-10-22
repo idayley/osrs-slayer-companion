@@ -14,10 +14,13 @@ import javax.swing.JScrollPane;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 import net.runelite.client.ui.PluginPanel;
+import net.runelite.client.util.LinkBrowser;
 
 /** The side panel: a Prep / Where to go / On task tab bar over scrollable tab content. Swing thread only. */
 public class SlayerCompanionPanel extends PluginPanel
 {
+	static final String ISSUES_URL = "https://github.com/idayley/osrs-slayer-companion/issues/new/choose";
+
 	public interface Actions
 	{
 		void selectStyle(Style style);
@@ -50,21 +53,23 @@ public class SlayerCompanionPanel extends PluginPanel
 	private final JLabel[] tabLabels = new JLabel[Tab.values().length];
 	private final ScrollContent content = new ScrollContent();
 	private final JScrollPane scroll;
+	private final JLabel report = reportLink();
 
 	private PrepModel lastPrep;
 	private WhereToGoModel lastWhere;
 	private OnTaskModel lastOnTask;
 
-	public SlayerCompanionPanel(Actions actions)
+	/** @param icons item pictures for the tabs (ItemManager-backed in the client). */
+	public SlayerCompanionPanel(Actions actions, IconSource icons)
 	{
 		super(false);
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder());
 		setBackground(Ui.BG);
 
-		prep = new PrepTab(actions::selectStyle, actions::toggleBankHighlight);
-		where = new WhereToGoTab(actions::selectLocation, actions::takeMeThere, actions::sendSafespots);
-		onTask = new OnTaskTab();
+		prep = new PrepTab(icons, actions::selectStyle, actions::toggleBankHighlight);
+		where = new WhereToGoTab(icons, actions::selectLocation, actions::takeMeThere, actions::sendSafespots);
+		onTask = new OnTaskTab(icons);
 
 		add(tabBar(), BorderLayout.NORTH);
 
@@ -89,14 +94,16 @@ public class SlayerCompanionPanel extends PluginPanel
 	private JPanel tabBar()
 	{
 		JPanel bar = new JPanel(new GridLayout(1, Tab.values().length));
-		bar.setBackground(Ui.BG);
+		bar.setBackground(Ui.TAB_BG);
+		bar.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Ui.EDGE_DARK));
 		for (Tab t : Tab.values())
 		{
-			JLabel l = new JLabel(t.title, SwingConstants.CENTER);
-			l.setFont(Ui.small());
+			ShadowLabel l = new ShadowLabel(t.title);
+			l.setHorizontalAlignment(SwingConstants.CENTER);
+			l.setFont(Ui.pixelFont());
+			Ui.aa(l);
 			l.setOpaque(true);
-			l.setBackground(Ui.BG);
-			l.setBorder(BorderFactory.createEmptyBorder(8, 0, 6, 0));
+			l.setBackground(Ui.TAB_BG);
 			Ui.onClick(l, () -> select(t));
 			tabLabels[t.ordinal()] = l;
 			bar.add(l);
@@ -104,19 +111,31 @@ public class SlayerCompanionPanel extends PluginPanel
 		return bar;
 	}
 
+	/** Faint "wrong info?" line under every tab that opens the GitHub issue forms. */
+	private static JLabel reportLink()
+	{
+		JLabel l = Ui.note("");
+		l.setText("<html><center>Something wrong, or a safespot to share?<br><u>Report it on GitHub</u></center></html>");
+		Ui.onClick(l, () -> LinkBrowser.browse(ISSUES_URL));
+		return l;
+	}
+
 	public void select(Tab tab)
 	{
 		// Only the shown tab is in the scroll content, so the scroll range fits it.
 		content.removeAll();
 		content.add(tabPages[tab.ordinal()], BorderLayout.NORTH);
+		content.add(report, BorderLayout.SOUTH);
 		for (Tab t : Tab.values())
 		{
 			boolean on = t == tab;
 			JLabel l = tabLabels[t.ordinal()];
-			l.setForeground(on ? Ui.ORANGE : Ui.FAINT);
+			l.setForeground(on ? Ui.YELLOW : Ui.FAINT);
+			l.setBackground(on ? Ui.TAB_ACTIVE : Ui.TAB_BG);
+			boolean last = t.ordinal() == Tab.values().length - 1;
 			l.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createMatteBorder(0, 0, on ? 2 : 1, 0, on ? Ui.ORANGE : Ui.LINE),
-				BorderFactory.createEmptyBorder(8, 0, on ? 5 : 6, 0)));
+				BorderFactory.createMatteBorder(0, 0, 0, last ? 0 : 1, Ui.EDGE_DARK),
+				BorderFactory.createEmptyBorder(7, 0, 6, 0)));
 		}
 		content.revalidate();
 		content.repaint();
@@ -160,6 +179,11 @@ public class SlayerCompanionPanel extends PluginPanel
 			default:
 				return onTask;
 		}
+	}
+
+	JComponent reportComponent()
+	{
+		return report;
 	}
 
 	JComponent tabBarComponent()

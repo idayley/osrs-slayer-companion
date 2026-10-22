@@ -104,6 +104,36 @@ public class GameData
 		return Optional.ofNullable(equipment.get(itemId));
 	}
 
+	/**
+	 * Other states of the same item, e.g. "Trident of the Swamp (Uncharged)" for "(Charged)": entries whose name
+	 * matches once the last "(...)" is dropped. Excludes the item itself.
+	 */
+	public List<Equipment> otherStates(int itemId)
+	{
+		Equipment item = equipment.get(itemId);
+		if (item == null || item.getName() == null)
+		{
+			return Collections.emptyList();
+		}
+		String base = withoutLastParens(item.getName());
+		List<Equipment> out = new ArrayList<>();
+		for (Equipment e : equipment.values())
+		{
+			if (e.getItemId() != itemId && e.getName() != null && !e.getName().equals(base)
+				&& withoutLastParens(e.getName()).equals(base))
+			{
+				out.add(e);
+			}
+		}
+		return out;
+	}
+
+	private static String withoutLastParens(String name)
+	{
+		int paren = name.lastIndexOf(" (");
+		return paren > 0 && name.endsWith(")") ? name.substring(0, paren) : name;
+	}
+
 	public Collection<Equipment> allEquipment()
 	{
 		return Collections.unmodifiableCollection(equipment.values());

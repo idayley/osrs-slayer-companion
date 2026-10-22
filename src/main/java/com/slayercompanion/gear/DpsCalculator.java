@@ -6,7 +6,11 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/** DPS maths following the OSRS Wiki DPS calculator; v1 assumes no prayers or boosts. */
+/**
+ * DPS maths following the OSRS Wiki DPS calculator, integer rounding in its order. Assumed prayer and potion come from
+ * {@link Boosts}, armour sets from {@link SetBonuses}, monster-specific weapon rules (immunities, dragon hunter,
+ * demonbane, ...) from {@link WeaponEffects}.
+ */
 public final class DpsCalculator
 {
 	private static final Map<String, Integer> SPELL_MAX = new HashMap<>();
@@ -30,8 +34,19 @@ public final class DpsCalculator
 	{
 	}
 
+	/** Top hit as shown in game, after per-hit effects such as the berserker necklace. */
 	public static int maxHit(CombatStats s, Loadout l, Monster m, boolean onTask)
 	{
+		return SetBonuses.shownMax(l, rawMax(s, l, m, onTask));
+	}
+
+	/** Max hit before per-hit set effects (the top of the uniform roll). */
+	private static int rawMax(CombatStats s, Loadout l, Monster m, boolean onTask)
+	{
+		if (WeaponEffects.isImmune(l, m))
+		{
+			return 0;
+		}
 		switch (l.getStyle())
 		{
 			case RANGED:
@@ -50,7 +65,12 @@ public final class DpsCalculator
 
 	public static double dps(CombatStats s, Loadout l, Monster m, boolean onTask)
 	{
-		return hitChance(s, l, m, onTask) * maxHit(s, l, m, onTask) / 2.0 / (speedTicks(l) * 0.6);
+		if (WeaponEffects.isImmune(l, m))
+		{
+			return 0;
+		}
+		double hit = SetBonuses.expectedHit(l, hitChance(s, l, m, onTask), rawMax(s, l, m, onTask));
+		return hit / (speedTicks(l) * 0.6);
 	}
 
 	/** Wiki hit chance from an attack roll and a defence roll. */
@@ -85,15 +105,25 @@ public final class DpsCalculator
 		{
 			case RANGED:
 			{
-				long eff = s.getRanged() + 8 + 3;
+				// Accurate style: +3.
+				long eff = Boosts.prayAccuracy(Boosts.ranged(s, Style.RANGED), Boosts.prayer(s, Style.RANGED)) + 3 + 8;
+				if (SetBonuses.rangedVoid(l))
+				{
+					eff = eff * 11 / 10;
+				}
 				long roll = eff * (sum(l, "ranged") + 64);
-				return (long) Math.floor(roll * accuracyMult(l, m, onTask));
+				roll = roll * (20 + SetBonuses.crystalPieces(l)) / 20;
+				return WeaponEffects.applyAccuracy(scale(roll, accuracyMult(l, m, onTask)), l, m);
 			}
 			case MAGIC:
 			{
-				long eff = s.getMagic() + 9;
+				long eff = Boosts.prayAccuracy(Boosts.magic(s, Style.MAGIC), Boosts.prayer(s, Style.MAGIC)) + 9;
+				if (SetBonuses.magicVoid(l))
+				{
+					eff = eff * 29 / 20;
+				}
 				long roll = eff * (sum(l, "magic") + 64);
-				long attack = (long) Math.floor(roll * accuracyMult(l, m, onTask));
+				long attack = WeaponEffects.applyAccuracy(scale(roll, accuracyMult(l, m, onTask)), l, m);
 				if (weaknessApplies(l, m))
 				{
 					// Wiki: bonus is a percentage of the unmodified base roll, added last.
@@ -104,9 +134,19 @@ public final class DpsCalculator
 			default:
 			{
 				// Aggressive style: +0 attack, +3 strength.
-				long eff = s.getAttack() + 8;
-				long roll = eff * (sum(l, meleeType(l)) + 64);
-				return (long) Math.floor(roll * accuracyMult(l, m, onTask));
+				long eff = Boosts.prayAccuracy(Boosts.attack(s, Style.MELEE), Boosts.prayer(s, Style.MELEE)) + 8;
+				if (SetBonuses.meleeVoid(l))
+				{
+					eff = eff * 11 / 10;
+				}
+				long base = eff * (sum(l, meleeType(l)) + 64);
+				long roll = scale(base, accuracyMult(l, m, onTask));
+				if (SetBonuses.obsidian(l))
+				{
+					roll += base / 10;
+				}
+				roll = WeaponEffects.applyAccuracy(roll, l, m);
+				return roll * (200 + SetBonuses.inquisitorBonus(l)) / 200;
 			}
 		}
 	}
@@ -133,37 +173,66 @@ public final class DpsCalculator
 
 	private static int meleeMax(CombatStats s, Loadout l, Monster m, boolean onTask)
 	{
-		long eff = s.getStrength() + 8 + 3;
-		int base = (int) Math.floor(0.5 + eff * (sum(l, "str") + 64) / 640.0);
-		return (int) Math.floor(base * damageMult(l, m, onTask));
+		long eff = Boosts.prayStrength(Boosts.strength(s, Style.MELEE), Boosts.prayer(s, Style.MELEE)) + 3 + 8;
+		if (SetBonuses.meleeVoid(l))
+		{
+			eff = eff * 11 / 10;
+		}
+		int base = (int) ((eff * (sum(l, "str") + 64) + 320) / 640);
+		int max = (int) scale(base, damageMult(l, m, onTask));
+		if (SetBonuses.obsidian(l))
+		{
+			max += base / 10;
+		}
+		max = WeaponEffects.applyMaxHit(max, l, m, false);
+		return max * (200 + SetBonuses.inquisitorBonus(l)) / 200;
 	}
 
 	private static int rangedMax(CombatStats s, Loadout l, boolean onTask, Monster m)
 	{
-		long eff = s.getRanged() + 8 + 3;
-		int base = (int) Math.floor(0.5 + eff * (sum(l, "ranged_str") + 64) / 640.0);
-		return (int) Math.floor(base * damageMult(l, m, onTask));
+		long eff = Boosts.prayStrength(Boosts.ranged(s, Style.RANGED), Boosts.prayer(s, Style.RANGED)) + 3 + 8;
+		if (SetBonuses.eliteRangedVoid(l))
+		{
+			eff = eff * 9 / 8;
+		}
+		else if (SetBonuses.rangedVoid(l))
+		{
+			eff = eff * 11 / 10;
+		}
+		int base = (int) ((eff * (sum(l, "ranged_str") + 64) + 320) / 640);
+		// Calculator (tested in game): the crystal armour bonus comes before the slayer helm.
+		base = base * (40 + SetBonuses.crystalPieces(l)) / 40;
+		// Wiki: with an imbued slayer helm, dragon hunter crossbow / scorching bow add to its 23/20 factor.
+		int addend = WeaponEffects.rangedHelmAddend(l, m);
+		boolean inHelm = addend > 0 && salveMult(l, m) == 1.0 && slayerHelmMult(l, onTask) > 1.0;
+		int max = inHelm ? base * (23 + addend) / 20 : (int) scale(base, damageMult(l, m, onTask));
+		return WeaponEffects.applyMaxHit(max, l, m, inHelm);
 	}
 
 	private static int magicMax(CombatStats s, Loadout l, Monster m, boolean onTask)
 	{
 		int base;
-		if (l.getSpell() != null)
+		if (WeaponEffects.MAGIC_DART.equalsIgnoreCase(l.getSpell()))
+		{
+			base = magicDartBase(Boosts.magic(s, Style.MAGIC), l, onTask);
+		}
+		else if (l.getSpell() != null)
 		{
 			Integer b = SPELL_MAX.get(l.getSpell().toLowerCase(Locale.ROOT));
 			base = b == null ? 0 : b;
 		}
 		else
 		{
+			int magic = Boosts.magic(s, Style.MAGIC);
 			Equipment w = l.getBySlot().get("weapon");
 			String n = w == null || w.getName() == null ? "" : w.getName().toLowerCase(Locale.ROOT);
 			if (n.startsWith("trident of the seas"))
 			{
-				base = s.getMagic() / 3 - 5;
+				base = magic / 3 - 5;
 			}
 			else if (n.startsWith("trident of the swamp"))
 			{
-				base = s.getMagic() / 3 - 2;
+				base = magic / 3 - 2;
 			}
 			else
 			{
@@ -174,14 +243,29 @@ public final class DpsCalculator
 		{
 			return 0;
 		}
-		int withBonus = (int) Math.floor(base * (1.0 + sum(l, "magic_str") / 1000.0));
-		int max = (int) Math.floor(withBonus * damageMult(l, m, onTask));
+		// Gear, prayer and elite void magic damage add together, in tenths of a percent.
+		int damage = sum(l, "magic_str") + Boosts.prayer(s, Style.MAGIC).getMagicDamage() + SetBonuses.magicDamageBonus(l);
+		int boosted = WeaponEffects.applyMagicBase(base, l, m);
+		int withBonus = boosted + boosted * damage / 1000;
+		int max = WeaponEffects.applyMaxHit((int) scale(withBonus, damageMult(l, m, onTask)), l, m, false);
 		if (weaknessApplies(l, m))
 		{
 			// Wiki: weakness is added last, as a percentage of the pre-bonus base max.
 			max += base * m.getElementalWeaknessPercent() / 100;
 		}
 		return max;
+	}
+
+	/** Wiki: floor(magic / 10) + 10, or floor(magic / 6) + 13 with a Slayer's staff (e) on task; 0 without a valid staff. */
+	private static int magicDartBase(int magic, Loadout l, boolean onTask)
+	{
+		Equipment w = l.getBySlot().get("weapon");
+		if (w == null || !WeaponEffects.canCastMagicDart(w))
+		{
+			return 0;
+		}
+		boolean enchanted = w.getName().toLowerCase(Locale.ROOT).startsWith("slayer's staff (e)");
+		return enchanted && onTask ? 13 + magic / 6 : 10 + magic / 10;
 	}
 
 	private static boolean weaknessApplies(Loadout l, Monster m)
@@ -202,52 +286,69 @@ public final class DpsCalculator
 		return damageMult(l, m, onTask);
 	}
 
-	/** Slayer helm / salve multiplier (best applicable; same value for accuracy and damage). */
+	/** Salve beats the slayer helm (they do not stack); same value for accuracy and damage. */
 	private static double damageMult(Loadout l, Monster m, boolean onTask)
 	{
-		double best = 1.0;
-		boolean melee = l.getStyle() == Style.MELEE;
+		double salve = salveMult(l, m);
+		return salve > 1.0 ? salve : slayerHelmMult(l, onTask);
+	}
+
+	/** Slayer helmet / black mask on task: 7/6 melee; imbued 1.15 ranged and magic. */
+	private static double slayerHelmMult(Loadout l, boolean onTask)
+	{
 		Equipment head = l.getBySlot().get("head");
-		if (onTask && head != null && head.getName() != null)
+		if (!onTask || head == null || head.getName() == null)
 		{
-			String n = head.getName().toLowerCase(Locale.ROOT);
-			if (n.contains("slayer helmet") || n.contains("black mask"))
-			{
-				boolean imbued = n.contains("(i)");
-				if (melee)
-				{
-					best = 7.0 / 6.0;
-				}
-				else if (imbued)
-				{
-					best = 1.15;
-				}
-			}
+			return 1.0;
 		}
+		String n = head.getName().toLowerCase(Locale.ROOT);
+		if (!n.contains("slayer helmet") && !n.contains("black mask"))
+		{
+			return 1.0;
+		}
+		if (l.getStyle() == Style.MELEE)
+		{
+			return 7.0 / 6.0;
+		}
+		return n.contains("(i)") ? 1.15 : 1.0;
+	}
+
+	/** Salve amulet vs undead: 7/6 (1.2 enhanced) melee; imbued versions also for ranged and magic. */
+	private static double salveMult(Loadout l, Monster m)
+	{
 		Equipment neck = l.getBySlot().get("neck");
-		if (m.isUndead() && neck != null && neck.getName() != null)
+		if (!m.isUndead() || neck == null || neck.getName() == null)
 		{
-			String n = neck.getName().toLowerCase(Locale.ROOT).replace(" ", "");
-			if (n.startsWith("salveamulet"))
-			{
-				boolean imbued = n.contains("(i)") || n.contains("(ei)");
-				boolean enhanced = n.contains("(e)") || n.contains("(ei)");
-				double salve = 1.0;
-				if (melee)
-				{
-					salve = enhanced ? 1.2 : 7.0 / 6.0;
-				}
-				else if (imbued)
-				{
-					salve = enhanced ? 1.2 : 1.15;
-				}
-				best = Math.max(best, salve);
-			}
+			return 1.0;
 		}
-		return best;
+		String n = neck.getName().toLowerCase(Locale.ROOT).replace(" ", "");
+		if (!n.startsWith("salveamulet"))
+		{
+			return 1.0;
+		}
+		boolean imbued = n.contains("(i)") || n.contains("(ei)");
+		boolean enhanced = n.contains("(e)") || n.contains("(ei)");
+		if (l.getStyle() == Style.MELEE)
+		{
+			return enhanced ? 1.2 : 7.0 / 6.0;
+		}
+		if (imbued)
+		{
+			return enhanced ? 1.2 : 1.15;
+		}
+		return 1.0;
 	}
 
 	// ---- helpers ----
+
+	/**
+	 * floor(v * mult) for the calculator's integer fractions (7/6, 23/20, 6/5): the nudge stops 26400 * 1.15 landing on
+	 * 30359.999...; a real fraction of these is at least 1/20 off a whole number, so it is never rounded up.
+	 */
+	private static long scale(long v, double mult)
+	{
+		return mult == 1.0 ? v : (long) Math.floor(v * mult + 1e-6);
+	}
 
 	private static String meleeType(Loadout l)
 	{

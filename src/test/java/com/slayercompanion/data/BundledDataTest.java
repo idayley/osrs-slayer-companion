@@ -130,4 +130,38 @@ public class BundledDataTest
 			assertFalse(s.getNote() == null || s.getNote().isEmpty());
 		}
 	}
+
+	@Test
+	public void takeMeThereUsesTheOutsideEntranceForCavesShortestPathCantEnter() throws Exception
+	{
+		Location kraken = locations().stream().filter(l -> l.getId().equals("cave-kraken--kraken-cove")).findFirst().get();
+		assertTrue("routes to the surface", kraken.routeTarget().getY() < 5000);
+		assertTrue("monster tile is unchanged", kraken.getEntrance().getY() > 9000);
+	}
+
+	@Test
+	public void kalphiteCaveRoutesToItsOwnEntranceNotTheNeighbouringDungeon() throws Exception
+	{
+		Location cave = locations().stream().filter(l -> l.getId().equals("kalphite--kalphite-cave-task-only")).findFirst().get();
+		assertEquals(3321, cave.routeTarget().getX());
+		assertEquals(3122, cave.routeTarget().getY());
+	}
+
+	@Test
+	public void untradeableGearSaysHowToGetIt() throws Exception
+	{
+		GameData data = GameData.load(DIR);
+		Equipment fireCape = data.equipment(6570).get();
+		assertTrue(fireCape.getSource(), fireCape.getSource().contains("Fight Cave"));
+		assertTrue(data.equipment(8850).get().getSource().contains("Warriors' Guild"));
+		assertEquals(65, (int) data.equipment(11832).get().getSkillReqs().get("defence"));
+		assertEquals(null, data.equipment(11832).get().getSource());
+		Map<String, Integer> pegasian = data.equipment(13237).get().getSkillReqs();
+		assertEquals(75, (int) pegasian.get("ranged"));
+		assertEquals(75, (int) pegasian.get("defence"));
+		for (Equipment e : data.allEquipment())
+		{
+			assertTrue(e.getName(), e.getSource() == null || e.getSource().length() <= 40);
+		}
+	}
 }

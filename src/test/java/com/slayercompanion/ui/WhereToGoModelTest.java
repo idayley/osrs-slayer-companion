@@ -26,7 +26,7 @@ public class WhereToGoModelTest
 		WhereToGoModel m = WhereToGoModel.build(Samples.fireGiantRanking(), null);
 		WhereToGoModel.Row top = m.getRows().get(0);
 		assertTrue(top.isRecommended());
-		assertEquals("Picked because it has a safespot and is closest.", top.getWhy());
+		assertEquals("Safespot · Closest", top.getWhy());
 		assertTrue(top.isSelected());
 		assertEquals("fire-giants--waterfall-dungeon", m.getSelectedId());
 		assertEquals("~1m 20s away", top.getTravel());
@@ -60,7 +60,7 @@ public class WhereToGoModelTest
 		assertEquals("No known safespot", second.get(0));
 		// The data's own "Safespot" tag is replaced by what the safespot store knows.
 		assertEquals(1, second.stream().filter(t -> t.contains("afespot")).count());
-		assertTrue(second.contains("Catacombs bonus drops"));
+		assertTrue(second.contains("Bonus drops"));
 	}
 
 	@Test
@@ -71,9 +71,9 @@ public class WhereToGoModelTest
 		assertEquals(1.0, catacombs.getXpFraction(), 1e-9);
 		assertEquals(1.0, catacombs.getGpFraction(), 1e-9);
 		assertEquals(31.0 / 39.0, m.getRows().get(0).getXpFraction(), 1e-9);
-		assertEquals("31k/hr", m.getRows().get(0).getXpText());
-		assertEquals("180k/hr", m.getRows().get(0).getGpText());
-		assertTrue(m.getNote().contains("estimated"));
+		assertEquals("31k", m.getRows().get(0).getXpText());
+		assertEquals("180k", m.getRows().get(0).getGpText());
+		assertTrue(m.getNote().contains("estimates"));
 	}
 
 	@Test
@@ -90,8 +90,32 @@ public class WhereToGoModelTest
 	@Test
 	public void actionMessages()
 	{
-		assertEquals("Shortest Path isn't installed", WhereToGoModel.takeMeThereMessage(false));
+		assertEquals("Shortest Path plugin not installed", WhereToGoModel.takeMeThereMessage(false));
 		assertNull(WhereToGoModel.takeMeThereMessage(true));
 		assertEquals("Copied 3 safespots", WhereToGoModel.copiedMessage(3));
+	}
+
+	@Test
+	public void dataTagsGetShortTextAndColour()
+	{
+		assertEquals(new WhereToGoModel.Tag("Multi", WhereToGoModel.TagKind.BLUE), WhereToGoModel.tag("Multi-combat"));
+		assertEquals(new WhereToGoModel.Tag("Bonus drops", WhereToGoModel.TagKind.GOLD),
+			WhereToGoModel.tag("Catacombs bonus drops"));
+		assertEquals(new WhereToGoModel.Tag("Cannon", WhereToGoModel.TagKind.NORMAL), WhereToGoModel.tag("Cannon allowed"));
+		assertEquals(WhereToGoModel.TagKind.RISK, WhereToGoModel.tag("Wilderness").getKind());
+		assertEquals(new WhereToGoModel.Tag("Single-combat", WhereToGoModel.TagKind.NORMAL),
+			WhereToGoModel.tag("Single-combat"));
+	}
+
+	@Test
+	public void headerShowsTaskAndSortOrder()
+	{
+		WhereToGoModel m = WhereToGoModel.build(Samples.fireGiantRanking(), null, "Fire giants",
+			com.slayercompanion.gear.Style.MELEE);
+		assertEquals("Fire giants", m.getTitle());
+		assertEquals("Melee · sorted by travel time", m.getSubtitle());
+		assertEquals("Ranged · safespots first, then travel time",
+			WhereToGoModel.subtitle(com.slayercompanion.gear.Style.RANGED));
+		assertNull(WhereToGoModel.build(Samples.fireGiantRanking(), null).getTitle());
 	}
 }

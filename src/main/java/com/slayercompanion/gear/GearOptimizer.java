@@ -5,13 +5,19 @@ import com.slayercompanion.data.Monster;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
-/** Greedy per-slot best-in-slot search over owned items, plus a "biggest upgrade" suggestion. */
+/**
+ * Greedy per-slot best-in-slot search over owned items, plus a "biggest upgrade" suggestion. Set bonuses need several
+ * pieces at once, so the search also starts from each complete owned set ({@link SetBonuses#ownedKits}), and an
+ * upgrade that completes an owned set is valued with the rest of it.
+ */
 public class GearOptimizer
 {
 	private static final String[] SLOTS = {"head", "cape", "neck", "ammo", "body", "shield", "legs", "hands", "feet", "ring"};
@@ -22,6 +28,9 @@ public class GearOptimizer
 		{"Wind Blast", "41"}, {"Water Blast", "47"}, {"Earth Blast", "53"}, {"Fire Blast", "59"},
 		{"Wind Wave", "62"}, {"Water Wave", "65"}, {"Earth Wave", "70"}, {"Fire Wave", "75"},
 		{"Wind Surge", "81"}, {"Water Surge", "90"}, {"Earth Surge", "95"}, {"Fire Surge", "99"}};
+	/** Wiki: Magic Dart needs 50 Magic and 55 Slayer, and a staff from {@link WeaponEffects#canCastMagicDart}. */
+	private static final int MAGIC_DART_MAGIC = 50;
+	private static final int MAGIC_DART_SLAYER = 55;
 
 	@Value
 	@AllArgsConstructor
@@ -52,18 +61,46 @@ public class GearOptimizer
 				pool.add(e);
 			}
 		}
-		// Shield vs two-hander interact, so search each family separately and keep the better.
-		Loadout oneHand = search(stats, style, m, onTask, pool, false);
-		Loadout twoHand = search(stats, style, m, onTask, pool, true);
-		double d1 = tune(stats, oneHand, m, onTask);
-		double d2 = tune(stats, twoHand, m, onTask);
-		return Optional.of(d2 > d1 + 1e-9 ? twoHand : oneHand);
+		List<Map<String, Equipment>> seeds = new ArrayList<>();
+		seeds.add(Collections.emptyMap());
+		seeds.addAll(SetBonuses.ownedKits(style, pool));
+		// Shield vs two-hander interact, so search each family separately; keep the best over every start.
+		Loadout best = null;
+		double bestDps = -1;
+		for (Map<String, Equipment> seed : seeds)
+		{
+			for (boolean twoHanded : new boolean[]{false, true})
+			{
+				Loadout l = search(stats, style, m, onTask, pool, twoHanded, seed);
+				if (l == null)
+				{
+					continue;
+				}
+				double d = tune(stats, l, m, onTask);
+				if (best == null || d > bestDps + 1e-9)
+				{
+					best = l;
+					bestDps = d;
+				}
+			}
+		}
+		return Optional.of(best);
 	}
 
-	private Loadout search(CombatStats stats, Style style, Monster m, boolean onTask, List<Equipment> pool, boolean twoHanded)
+	/** Greedy swaps from {@code seed} (a set to start in); null if the seed's weapon is the wrong hand count. */
+	private Loadout search(CombatStats stats, Style style, Monster m, boolean onTask, List<Equipment> pool, boolean twoHanded,
+		Map<String, Equipment> seed)
 	{
 		Loadout cur = new Loadout();
 		cur.setStyle(style);
+		for (Equipment e : seed.values())
+		{
+			if ("weapon".equals(e.getSlot()) && (e.isTwoHanded() != twoHanded || classify(e) != style))
+			{
+				return null;
+			}
+			cur = with(cur, e, pool, m);
+		}
 		double curDps = tune(stats, cur, m, onTask);
 		for (int pass = 0; pass < 3; pass++)
 		{
@@ -72,11 +109,11 @@ public class GearOptimizer
 			for (Equipment w : pool)
 			{
 				if (!"weapon".equals(w.getSlot()) || classify(w) != style || w.isTwoHanded() != twoHanded
-					|| !ammoOk(cur, w, pool))
+					|| !ammoOk(cur, w, pool, m))
 				{
 					continue;
 				}
-				Loadout t = with(cur, w, pool);
+				Loadout t = with(cur, w, pool, m);
 				double d = tune(stats, t, m, onTask);
 				if (d > curDps + 1e-9)
 				{
@@ -97,7 +134,7 @@ public class GearOptimizer
 					{
 						continue;
 					}
-					Loadout t = with(cur, e, pool);
+					Loadout t = with(cur, e, pool, m);
 					double d = tune(stats, t, m, onTask);
 					if (d > curDps + 1e-9)
 					{
@@ -120,6 +157,7 @@ public class GearOptimizer
 	{
 		Loadout base = copy(current);
 		double baseDps = tune(stats, copy(base), m, onTask);
+		List<Equipment> ownedPool = ownedPool(owned);
 		Equipment bestItem = null;
 		double bestDps = baseDps;
 		for (Equipment e : catalogue)
@@ -135,7 +173,7 @@ public class GearOptimizer
 			}
 			if ("weapon".equals(e.getSlot()))
 			{
-				if (classify(e) != base.getStyle() || !ammoOk(base, e, ownedPool(owned)))
+				if (classify(e) != base.getStyle() || !ammoOk(base, e, ownedPool, m))
 				{
 					continue;
 				}
@@ -144,8 +182,17 @@ public class GearOptimizer
 			{
 				continue;
 			}
-			Loadout t = with(base, e, ownedPool(owned));
-			double d = tune(stats, t, m, onTask);
+			double d = tune(stats, with(base, e, ownedPool, m), m, onTask);
+			// Also with the owned rest of any set it completes (e.g. the void helm a player is missing).
+			for (Map<String, Equipment> kit : SetBonuses.kitsCompletedBy(e, base.getStyle(), ownedPool))
+			{
+				Loadout t = base;
+				for (Equipment piece : kit.values())
+				{
+					t = with(t, piece, ownedPool, m);
+				}
+				d = Math.max(d, tune(stats, t, m, onTask));
+			}
 			if (d > bestDps + 1e-9)
 			{
 				bestDps = d;
@@ -156,6 +203,7 @@ public class GearOptimizer
 		{
 			return Optional.empty();
 		}
+		// Both sides use the same assumed prayer and potion, so this is the gain the item gives a boosted player.
 		double gain = baseDps <= 0 ? 100.0 : (bestDps - baseDps) / baseDps * 100.0;
 		return Optional.of(new Upgrade(bestItem, gain));
 	}
@@ -208,6 +256,17 @@ public class GearOptimizer
 						bestSpell = sp[0];
 					}
 				}
+				if (w != null && WeaponEffects.canCastMagicDart(w) && s.getMagic() >= MAGIC_DART_MAGIC
+					&& s.getSlayer() >= MAGIC_DART_SLAYER)
+				{
+					l.setSpell(WeaponEffects.MAGIC_DART);
+					double d = DpsCalculator.dps(s, l, m, onTask);
+					if (d > best + 1e-9)
+					{
+						best = d;
+						bestSpell = WeaponEffects.MAGIC_DART;
+					}
+				}
 				l.setSpell(bestSpell);
 				return Math.max(best, 0);
 			}
@@ -217,7 +276,7 @@ public class GearOptimizer
 	}
 
 	/** Copy of l with e in its slot; two-handers drop the shield; ammo weapons get the best ammo from pool. */
-	private static Loadout with(Loadout l, Equipment e, List<Equipment> pool)
+	private static Loadout with(Loadout l, Equipment e, List<Equipment> pool, Monster m)
 	{
 		Loadout t = copy(l);
 		t.getBySlot().put(e.getSlot(), e);
@@ -232,10 +291,11 @@ public class GearOptimizer
 			{
 				t.getBySlot().remove("ammo");
 			}
-			else if (!ammoCompatible(e, t.getBySlot().get("ammo")))
+			else if (!ammoCompatible(e, t.getBySlot().get("ammo"))
+				|| !WeaponEffects.ammoCanHurt(m, t.getBySlot().get("ammo")))
 			{
 				t.getBySlot().remove("ammo");
-				Equipment a = bestAmmo(pool, e);
+				Equipment a = bestAmmo(pool, e, m);
 				if (a != null)
 				{
 					t.getBySlot().put("ammo", a);
@@ -258,13 +318,13 @@ public class GearOptimizer
 		return pool;
 	}
 
-	private static Equipment bestAmmo(List<Equipment> pool, Equipment weapon)
+	/** Strongest compatible ammo, preferring ammo that can hurt the monster at all (e.g. broad bolts vs Kurask). */
+	private static Equipment bestAmmo(List<Equipment> pool, Equipment weapon, Monster m)
 	{
 		Equipment best = null;
 		for (Equipment a : pool)
 		{
-			if ("ammo".equals(a.getSlot()) && ammoCompatible(weapon, a) && (best == null
-				|| a.getBonuses().getOrDefault("ranged_str", 0) > best.getBonuses().getOrDefault("ranged_str", 0)))
+			if ("ammo".equals(a.getSlot()) && ammoCompatible(weapon, a) && (best == null || betterAmmo(a, best, m)))
 			{
 				best = a;
 			}
@@ -272,14 +332,24 @@ public class GearOptimizer
 		return best;
 	}
 
+	private static boolean betterAmmo(Equipment a, Equipment best, Monster m)
+	{
+		boolean hurts = WeaponEffects.ammoCanHurt(m, a);
+		if (hurts != WeaponEffects.ammoCanHurt(m, best))
+		{
+			return hurts;
+		}
+		return a.getBonuses().getOrDefault("ranged_str", 0) > best.getBonuses().getOrDefault("ranged_str", 0);
+	}
+
 	/** True if the weapon can be used with the current ammo, or has/needs a compatible ammo in the pool. */
-	private static boolean ammoOk(Loadout cur, Equipment w, List<Equipment> pool)
+	private static boolean ammoOk(Loadout cur, Equipment w, List<Equipment> pool, Monster m)
 	{
 		if (ammoNeeded(w) == null)
 		{
 			return true;
 		}
-		return ammoCompatible(w, cur.getBySlot().get("ammo")) || bestAmmo(pool, w) != null;
+		return ammoCompatible(w, cur.getBySlot().get("ammo")) || bestAmmo(pool, w, m) != null;
 	}
 
 	/** Ammo family a weapon fires: arrow, bolt, javelin, ogre; null if it takes no (identifiable) ammo. */
@@ -349,6 +419,10 @@ public class GearOptimizer
 	{
 		String c = w.getCategory() == null ? "" : w.getCategory().toLowerCase(Locale.ROOT);
 		String n = w.getName() == null ? "" : w.getName().toLowerCase(Locale.ROOT);
+		if (WeaponEffects.isMeleeStaff(w))
+		{
+			return Style.MELEE;
+		}
 		if (c.equals("powered staff"))
 		{
 			return n.startsWith("trident of the seas") || n.startsWith("trident of the swamp") ? Style.MAGIC : null;

@@ -1,0 +1,19 @@
+{
+  "_comment": "Where Take me there goes for caves Shortest Path can't route into: the outside entrance, or the furthest point inside it can reach. Keyed by location name prefix. From the OSRS Wiki dungeon pages and Shortest Path's transport data.",
+  "Brine Rat Cavern": {"x": 2740, "y": 3736, "plane": 0},
+  "Kraken Cove": {"x": 2278, "y": 3611, "plane": 0},
+  "Karuulm Slayer Dungeon": {"x": 1324, "y": 3824, "plane": 0},
+  "Wyvern Cave (task only)": {"x": 3680, "y": 3853, "plane": 0},
+  "Chasm of Fire": {"x": 1435, "y": 3671, "plane": 0},
+  "Witchaven Dungeon": {"x": 2696, "y": 3283, "plane": 0},
+  "Iorwerth Dungeon": {"x": 3225, "y": 6045, "plane": 0},
+  "Ruins of Tapoyauik": {"x": 1694, "y": 3232, "plane": 0},
+  "Lizardman Temple": {"x": 1304, "y": 3663, "plane": 0},
+  "Poison Waste Dungeon": {"x": 2337, "y": 3111, "plane": 0},
+  "Kalphite Cave": {"x": 3321, "y": 3122, "plane": 0},
+  "Kalphite Lair": {"x": 3228, "y": 3108, "plane": 0},
+  "Waterfall Dungeon": {"x": 2511, "y": 3463, "plane": 0},
+  "Brimhaven Dungeon": {"x": 2713, "y": 9564, "plane": 0},
+  "Neypotzli": {"x": 1393, "y": 9567, "plane": 1},
+  "Wilderness God Wars Dungeon": {"x": 3066, "y": 10150, "plane": 0}
+}

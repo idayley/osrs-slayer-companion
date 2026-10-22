@@ -1,5 +1,6 @@
 package com.slayercompanion.ui;
 
+import com.slayercompanion.gear.Style;
 import com.slayercompanion.locations.RankedLocation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +17,7 @@ public class WhereToGoModel
 
 	public enum TagKind
 	{
-		NORMAL, SAFE, NO_SAFE, BLUE, RISK, LOCK
+		NORMAL, SAFE, NO_SAFE, BLUE, GOLD, RISK, LOCK
 	}
 
 	@Value
@@ -45,18 +46,33 @@ public class WhereToGoModel
 
 	boolean noTask;
 	String message;
+	/** Task name for the header ("Fire giants"); null hides the header. */
+	String title;
+	/** "Melee · sorted by travel time". */
+	String subtitle;
 	List<Row> rows;
 	String selectedId;
 	String note;
 
 	public static WhereToGoModel noTask()
 	{
-		return new WhereToGoModel(true, PrepModel.NO_TASK, Collections.emptyList(), null, null);
+		return new WhereToGoModel(true, PrepModel.NO_TASK, null, null, Collections.emptyList(), null, null);
+	}
+
+	/** Header subtitle: the combat style and how the list is ordered (mirrors LocationRanker). */
+	public static String subtitle(Style style)
+	{
+		if (style == null)
+		{
+			return "Sorted by travel time";
+		}
+		String name = style.name().charAt(0) + style.name().substring(1).toLowerCase();
+		return name + (style == Style.MELEE ? " · sorted by travel time" : " · safespots first, then travel time");
 	}
 
 	public static String takeMeThereMessage(boolean routed)
 	{
-		return routed ? null : "Shortest Path isn't installed";
+		return routed ? null : "Shortest Path plugin not installed";
 	}
 
 	public static String copiedMessage(int count)
@@ -78,6 +94,12 @@ public class WhereToGoModel
 	}
 
 	public static WhereToGoModel build(List<RankedLocation> ranked, String preferredId)
+	{
+		return build(ranked, preferredId, null, null);
+	}
+
+	/** @param taskName shown as the header title (null for no header); style picks the subtitle. */
+	public static WhereToGoModel build(List<RankedLocation> ranked, String preferredId, String taskName, Style style)
 	{
 		String selected = effectiveSelection(ranked, preferredId);
 		double maxXp = 0;
@@ -105,12 +127,12 @@ public class WhereToGoModel
 			}
 			rows.add(new Row(id, r.getLocation().getName(),
 				Format.travel(r.getTravelSeconds()) + (r.isRecommended() ? " away" : ""),
-				tags(r), Format.compact(r.getXpPerHour()) + "/hr", Format.compact(r.getGpPerHour()) + "/hr",
+				tags(r), Format.compact(r.getXpPerHour()), Format.compact(r.getGpPerHour()),
 				maxXp > 0 ? r.getXpPerHour() / maxXp : 0, maxGp > 0 ? r.getGpPerHour() / maxGp : 0,
 				r.isRecommended(), r.isRecommended() ? r.getWhy() : null, false, isSelected));
 		}
-		return new WhereToGoModel(false, null, rows, selected,
-			"XP and GP per hour are estimated from your gear and levels");
+		return new WhereToGoModel(false, null, taskName, taskName == null ? null : subtitle(style), rows, selected,
+			"XP/hr and GP/hr are estimates");
 	}
 
 	private static List<Tag> tags(RankedLocation r)
@@ -124,10 +146,30 @@ public class WhereToGoModel
 				// Whether we can show a spot comes from the safespot store, not the wiki tag.
 				continue;
 			}
-			TagKind kind = t.startsWith("Catacombs") ? TagKind.BLUE
-				: "Wilderness".equalsIgnoreCase(t) ? TagKind.RISK : TagKind.NORMAL;
-			out.add(new Tag(t, kind));
+			out.add(tag(t));
 		}
 		return out;
+	}
+
+	/** A data tag with its short display text and colour ("Multi-combat" -> blue "Multi"). */
+	static Tag tag(String t)
+	{
+		if ("Multi-combat".equalsIgnoreCase(t))
+		{
+			return new Tag("Multi", TagKind.BLUE);
+		}
+		if (t.startsWith("Catacombs"))
+		{
+			return new Tag("Bonus drops", TagKind.GOLD);
+		}
+		if ("Cannon allowed".equalsIgnoreCase(t))
+		{
+			return new Tag("Cannon", TagKind.NORMAL);
+		}
+		if ("Wilderness".equalsIgnoreCase(t))
+		{
+			return new Tag(t, TagKind.RISK);
+		}
+		return new Tag(t, TagKind.NORMAL);
 	}
 }

@@ -12,7 +12,7 @@ import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.overlay.WidgetItemOverlay;
 
-/** Outlines the Prep tab's gear and slayer items in the bank while "Highlight these in my bank" is on. */
+/** Fallback for "Show setup in bank" when Bank Tags is unavailable: outlines the setup items in the bank. */
 public class BankHighlightOverlay extends WidgetItemOverlay
 {
 	private final ItemManager itemManager;

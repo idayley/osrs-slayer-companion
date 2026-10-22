@@ -102,7 +102,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.0,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 3436,
+   "y": 9964,
+   "plane": 3
+  }
  },
  {
   "id": "abyssal-demons--catacombs-of-kourend",
@@ -167,7 +172,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 2855,
+   "y": 5283,
+   "plane": 2
+  }
  },
  {
   "id": "basilisks--fremennik-slayer-dungeon",
@@ -255,7 +265,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.4,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 1435,
+   "y": 3671,
+   "plane": 0
+  }
  },
  {
   "id": "black-demons--catacombs-of-kourend",
@@ -364,7 +379,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.0,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 3412,
+   "y": 9935,
+   "plane": 3
+  }
  },
  {
   "id": "bloodveld--stronghold-slayer-cave",
@@ -476,7 +496,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 2743,
+   "y": 3732,
+   "plane": 0
+  }
  },
  {
   "id": "cave-horrors--mos-le-harmless-cave",
@@ -521,7 +546,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 2278,
+   "y": 3611,
+   "plane": 0
+  }
  },
  {
   "id": "crabs--rock-crabs-north-of-rellekka",
@@ -610,7 +640,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.0,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 1324,
+   "y": 3364,
+   "plane": 0
+  }
  },
  {
   "id": "custodian-stalkers--stalker-den-multi-combat",
@@ -634,7 +669,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 1324,
+   "y": 3364,
+   "plane": 0
+  }
  },
  {
   "id": "dagannoth--lighthouse-dungeon",
@@ -814,7 +854,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 3225,
+   "y": 6046,
+   "plane": 0
+  }
  },
  {
   "id": "fever-spiders--braindeath-island",
@@ -837,7 +882,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 2146,
+   "y": 5098,
+   "plane": 1
+  }
  },
  {
   "id": "fire-giants--waterfall-dungeon",
@@ -861,7 +911,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 2513,
+   "y": 3465,
+   "plane": 0
+  }
  },
  {
   "id": "fire-giants--stronghold-slayer-cave",
@@ -936,7 +991,12 @@
   ],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 1324,
+   "y": 3824,
+   "plane": 0
+  }
  },
  {
   "id": "fossil-island-wyverns--wyvern-cave-task-only",
@@ -960,7 +1020,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.0,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 3680,
+   "y": 3853,
+   "plane": 0
+  }
  },
  {
   "id": "gargoyles--slayer-tower-top-floor",
@@ -1002,7 +1067,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.0,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 3432,
+   "y": 9937,
+   "plane": 3
+  }
  },
  {
   "id": "greater-demons--brimhaven-dungeon-upper-level",
@@ -1024,7 +1094,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 2713,
+   "y": 9564,
+   "plane": 0
+  }
  },
  {
   "id": "greater-demons--chasm-of-fire",
@@ -1046,7 +1121,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.4,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 1435,
+   "y": 3671,
+   "plane": 0
+  }
  },
  {
   "id": "greater-demons--catacombs-of-kourend",
@@ -1122,7 +1202,12 @@
   ],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 1324,
+   "y": 3824,
+   "plane": 0
+  }
  },
  {
   "id": "gryphons--gryphon-dungeon-western",
@@ -1239,7 +1324,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 2696,
+   "y": 3282,
+   "plane": 0
+  }
  },
  {
   "id": "hellhounds--catacombs-of-kourend",
@@ -1315,7 +1405,12 @@
   ],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 1324,
+   "y": 3824,
+   "plane": 0
+  }
  },
  {
   "id": "jellies--fremennik-slayer-dungeon",
@@ -1432,7 +1527,12 @@
   ],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 3228,
+   "y": 3107,
+   "plane": 0
+  }
  },
  {
   "id": "kalphite--kalphite-cave-task-only",
@@ -1453,7 +1553,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 3321,
+   "y": 3122,
+   "plane": 0
+  }
  },
  {
   "id": "kurask--fremennik-slayer-dungeon",
@@ -1498,7 +1603,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 3225,
+   "y": 6046,
+   "plane": 0
+  }
  },
  {
   "id": "lesser-demons--chasm-of-fire",
@@ -1520,7 +1630,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 1435,
+   "y": 3671,
+   "plane": 0
+  }
  },
  {
   "id": "lesser-demons--catacombs-of-kourend",
@@ -1611,7 +1726,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 1393,
+   "y": 9567,
+   "plane": 1
+  }
  },
  {
   "id": "lesser-nagua--ruins-of-tapoyauik",
@@ -1635,7 +1755,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 1693,
+   "y": 3232,
+   "plane": 0
+  }
  },
  {
   "id": "lizardmen--lizardman-canyon-east",
@@ -1696,7 +1821,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.0,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 1304,
+   "y": 3663,
+   "plane": 0
+  }
  },
  {
   "id": "mutated-zygomites--zanaris-east-of-the-furnace",
@@ -1809,7 +1939,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.0,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 3413,
+   "y": 9965,
+   "plane": 3
+  }
  },
  {
   "id": "nechryael--catacombs-of-kourend-greater-nechryael",
@@ -1943,7 +2078,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 3066,
+   "y": 10150,
+   "plane": 0
+  }
  },
  {
   "id": "trolls--death-plateau",
@@ -2139,7 +2279,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.4,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 2885,
+   "y": 5312,
+   "plane": 2
+  }
  },
  {
   "id": "warped-creatures--poison-waste-dungeon-main-level-tortoises",
@@ -2163,7 +2308,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 2337,
+   "y": 3111,
+   "plane": 0
+  }
  },
  {
   "id": "warped-creatures--poison-waste-dungeon-main-level-terrorbirds",
@@ -2186,7 +2336,12 @@
   "itemReqs": [],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.2,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 2337,
+   "y": 3111,
+   "plane": 0
+  }
  },
  {
   "id": "wyrms--karuulm-slayer-dungeon-lower-level",
@@ -2216,7 +2371,12 @@
   ],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.0,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 1324,
+   "y": 3824,
+   "plane": 0
+  }
  },
  {
   "id": "wyrms--karuulm-slayer-dungeon-task-only-area",
@@ -2246,6 +2406,11 @@
   ],
   "overheadSeconds": 4.0,
   "killSpeedFactor": 1.0,
-  "bonusGpPerKill": 0.0
+  "bonusGpPerKill": 0.0,
+  "route": {
+   "x": 1324,
+   "y": 3824,
+   "plane": 0
+  }
  }
 ]

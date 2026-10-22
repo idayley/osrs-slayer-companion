@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import net.runelite.api.coords.WorldPoint;
@@ -19,7 +20,7 @@ public final class LocationRanker
 	static final double PLANE_CHANGE_SECONDS = 30;
 	/** Underground areas mostly sit 6400 tiles north of the overworld spot they lie under. */
 	static final int UNDERGROUND_Y_OFFSET = 6400;
-	static final String KONAR_REASON = "Konar sent you elsewhere";
+	static final String KONAR_REASON = "Not your Konar location";
 
 	private LocationRanker()
 	{
@@ -32,6 +33,16 @@ public final class LocationRanker
 	public static List<RankedLocation> rank(List<Location> locations, Style style, WorldPoint player,
 		Function<Location, Optional<String>> lockReason, Optional<String> konarLocation,
 		Function<Location, Boolean> hasSafespot, ToDoubleFunction<Location> xpHr, ToDoubleFunction<Location> gpHr)
+	{
+		return rank(locations, style, player, lockReason, konarLocation, hasSafespot, xpHr, gpHr,
+			l -> OptionalDouble.empty());
+	}
+
+	/** @param routedSeconds Shortest Path's route time per location; the straight-line estimate is used where empty */
+	public static List<RankedLocation> rank(List<Location> locations, Style style, WorldPoint player,
+		Function<Location, Optional<String>> lockReason, Optional<String> konarLocation,
+		Function<Location, Boolean> hasSafespot, ToDoubleFunction<Location> xpHr, ToDoubleFunction<Location> gpHr,
+		Function<Location, OptionalDouble> routedSeconds)
 	{
 		boolean konarActive = konarLocation.isPresent() && locations.stream().anyMatch(l -> matchesKonar(l, konarLocation.get()));
 		boolean safespotMatters = style != Style.MELEE;
@@ -47,7 +58,9 @@ public final class LocationRanker
 			r.setUsable(!reason.isPresent());
 			r.setLockedReason(reason.orElse(null));
 			r.setHasSafespot(Boolean.TRUE.equals(hasSafespot.apply(l)));
-			r.setTravelSeconds(travelSeconds(player, l.getEntrance()));
+			OptionalDouble routed = routedSeconds.apply(l);
+			r.setTravelRouted(routed.isPresent());
+			r.setTravelSeconds(routed.isPresent() ? routed.getAsDouble() : travelSeconds(player, l.getEntrance()));
 			r.setXpPerHour(xpHr.applyAsDouble(l));
 			r.setGpPerHour(gpHr.applyAsDouble(l));
 			out.add(r);
@@ -70,14 +83,13 @@ public final class LocationRanker
 			List<String> reasons = new ArrayList<>();
 			if (safespotMatters && top.isHasSafespot())
 			{
-				reasons.add("has a safespot");
+				reasons.add("Safespot");
 			}
 			if (strictlyClosest)
 			{
-				reasons.add("is closest");
+				reasons.add("Closest");
 			}
-			top.setWhy(reasons.isEmpty() ? "Picked because it's the best available."
-				: "Picked because it " + String.join(" and ", reasons) + ".");
+			top.setWhy(reasons.isEmpty() ? "Best available" : String.join(" · ", reasons));
 		}
 		return out;
 	}

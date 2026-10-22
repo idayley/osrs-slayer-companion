@@ -1,0 +1,17 @@
+name: Something's broken
+description: The panel shows an error, gets stuck, or something doesn't work.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead. Screenshots welcome.
+    validations:
+      required: true
+  - type: input
+    id: task
+    attributes:
+      label: Your task at the time
+      placeholder: e.g. 120 fire giants from Chaeldar

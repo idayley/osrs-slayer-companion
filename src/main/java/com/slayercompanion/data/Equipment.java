@@ -23,4 +23,6 @@ public class Equipment
 	/** RuneLite Quest enum names. */
 	private List<String> questReqs = new ArrayList<>();
 	private boolean twoHanded;
+	/** How to get it when untradeable ("TzHaar Fight Cave reward", "Made with 55 Crafting"); null otherwise. */
+	private String source;
 }

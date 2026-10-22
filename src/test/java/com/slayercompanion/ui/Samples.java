@@ -172,7 +172,7 @@ final class Samples
 		return Arrays.asList(
 			ranked(location("fire-giants--waterfall-dungeon", "Waterfall Dungeon",
 				Arrays.asList("Single-combat", "Safespot", "Cannon allowed")),
-				true, null, true, 80, 31_000, 180_000, true, "Picked because it has a safespot and is closest."),
+				true, null, true, 80, 31_000, 180_000, true, "Safespot · Closest"),
 			ranked(location("fire-giants--catacombs-of-kourend", "Catacombs of Kourend",
 				Arrays.asList("Multi-combat", "Safespot", "Catacombs bonus drops")),
 				true, null, false, 120, 39_000, 320_000, false, null),

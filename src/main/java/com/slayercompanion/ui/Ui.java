@@ -8,8 +8,6 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -23,50 +21,128 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
-import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
-/** Shared look for the panel: mockup colours on RuneLite's ColorScheme greys, and small building blocks. */
+/**
+ * Shared look for the panel: the in-game "stone" theme (brown frames, gold text) and small building blocks.
+ * Pixel font only for titles, tabs and section headers; everything else is an antialiased sans.
+ */
 final class Ui
 {
-	static final Color BG = ColorScheme.DARKER_GRAY_COLOR;
-	static final Color ROW = ColorScheme.DARK_GRAY_COLOR;
-	static final Color ROW2 = new Color(50, 50, 50);
-	static final Color LINE = new Color(58, 58, 58);
-	static final Color TEXT = new Color(226, 226, 226);
-	static final Color MUTED = ColorScheme.LIGHT_GRAY_COLOR;
-	static final Color FAINT = new Color(110, 110, 110);
-	static final Color ORANGE = ColorScheme.BRAND_ORANGE;
-	static final Color GREEN = new Color(79, 191, 106);
-	static final Color BLUE = new Color(90, 160, 216);
-	static final Color GOLD = new Color(217, 181, 74);
-	static final Color RISK = new Color(201, 106, 74);
-	static final Color SELECTED_BG = new Color(36, 31, 22);
-	static final Color WARN_BG = new Color(42, 33, 20);
-	static final Color WARN_TEXT = new Color(240, 180, 74);
+	// Stone surfaces
+	static final Color PANEL = new Color(0x3e3529);
+	static final Color CARD = new Color(0x2e271e);
+	static final Color EDGE_DARK = new Color(0x1c1712);
+	static final Color EDGE_LIGHT = new Color(0x5a4d3b);
+	static final Color HEADER_BG = new Color(0x4a3f30);
+	static final Color TAB_BG = new Color(0x2b241b);
+	static final Color TAB_ACTIVE = new Color(0x5a4d3b);
+	/** Divider under a section (.sec border). */
+	static final Color SECTION_LINE = new Color(0x2b241b);
+	static final Color BUTTON_TOP = new Color(0x6b5a42);
+	static final Color BUTTON_BOTTOM = new Color(0x4a3f30);
+	static final Color BUTTON_SHINE = new Color(0x8a7656);
+	/** Inner line of the orange "best pick" card. */
+	static final Color BEST_INNER = new Color(0x6b4a1c);
 
-	static final int PAD = 8;
+	// Text and accents
+	static final Color TEXT = new Color(0xffcc33);
+	static final Color MUTED = new Color(0xd6c6a0);
+	static final Color FAINT = new Color(0x9c8a66);
+	static final Color ORANGE = new Color(0xff981f);
+	static final Color YELLOW = new Color(0xffff00);
+	static final Color OK = new Color(0x3dd34b);
+	static final Color BAD = new Color(0xff4d3d);
+	static final Color BLUE = new Color(0x4fc3ff);
+	static final Color WARN_BG = new Color(0x5a1f12);
+	static final Color WARN_TEXT = new Color(0xffb38a);
+
+	// Older names, kept so existing call sites read the stone palette.
+	static final Color BG = PANEL;
+	static final Color ROW = CARD;
+	static final Color ROW2 = HEADER_BG;
+	static final Color LINE = EDGE_DARK;
+	static final Color GREEN = OK;
+	static final Color GOLD = YELLOW;
+	static final Color RISK = BAD;
+	static final Color SELECTED_BG = CARD;
+
+	static final int PAD = 9;
 	/** Width available inside a padded section. */
 	static final int INNER_WIDTH = PluginPanel.PANEL_WIDTH - 2 * PAD;
+
+	private static final String SANS = Font.SANS_SERIF;
+	private static final Font BODY = new Font(SANS, Font.PLAIN, 12);
+	private static final Font BODY_BOLD = new Font(SANS, Font.BOLD, 12);
+	private static final Font SMALL = new Font(SANS, Font.PLAIN, 10);
+	private static final Font SMALL_BOLD = new Font(SANS, Font.BOLD, 10);
 
 	private Ui()
 	{
 	}
 
+	/** Body text: sans 12. */
 	static Font body()
 	{
-		return FontManager.getRunescapeFont();
+		return BODY;
 	}
 
+	/** Small labels (slot names, stat captions, tags): sans 10. */
 	static Font small()
 	{
-		return FontManager.getRunescapeSmallFont();
+		return SMALL;
 	}
 
+	static Font smallBold()
+	{
+		return SMALL_BOLD;
+	}
+
+	/** Bold body (names, buttons): sans bold 12. */
 	static Font bold()
 	{
-		return FontManager.getRunescapeBoldFont();
+		return BODY_BOLD;
+	}
+
+	/** Sans at any size, for big numbers (stat values 16, ring number 22). */
+	static Font sans(int style, float size)
+	{
+		return BODY.deriveFont(style, size);
+	}
+
+	/** Pixel font for titles (RuneScape bold, 16). */
+	static Font titleFont()
+	{
+		// deriveFont drops the UIResource marker, so the look and feel can't swap the font back out.
+		Font f = FontManager.getRunescapeBoldFont();
+		return f.deriveFont(f.getStyle(), f.getSize2D());
+	}
+
+	/** Pixel font for section headers (RuneScape bold). */
+	static Font headerFont()
+	{
+		return titleFont();
+	}
+
+	/** Pixel font for the tab strip (RuneScape regular). */
+	static Font pixelFont()
+	{
+		Font f = FontManager.getRunescapeFont();
+		return f.deriveFont(f.getStyle(), f.getSize2D());
+	}
+
+	static boolean isPixel(Font f)
+	{
+		return f != null && f.getFamily().toLowerCase().contains("runescape");
+	}
+
+	/** Text antialiasing on for sans text, off for the pixel fonts (they are drawn at their native size). */
+	static <T extends JComponent> T aa(T c)
+	{
+		c.putClientProperty(RenderingHints.KEY_TEXT_ANTIALIASING, isPixel(c.getFont())
+			? RenderingHints.VALUE_TEXT_ANTIALIAS_OFF : RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		return c;
 	}
 
 	static JLabel label(String text, Font font, Color color)
@@ -74,7 +150,35 @@ final class Ui
 		JLabel l = new JLabel(text);
 		l.setFont(font);
 		l.setForeground(color);
-		return l;
+		return aa(l);
+	}
+
+	/** Pixel-font title with a 1px black shadow, word-wrapped to width. */
+	static ShadowLabel title(String text, Color color, int width)
+	{
+		ShadowLabel l = new ShadowLabel(text).wrap(width);
+		l.setFont(titleFont());
+		l.setForeground(color);
+		return aa(l);
+	}
+
+	/** Section header: pixel font, orange, upper case, 1px shadow. */
+	static ShadowLabel header(String text)
+	{
+		ShadowLabel l = new ShadowLabel(text.toUpperCase());
+		l.setFont(headerFont());
+		l.setForeground(ORANGE);
+		return aa(l);
+	}
+
+	/** Section header with a faint note on the right ("bar end = task end"). */
+	static JPanel header(String text, String note)
+	{
+		JPanel p = new JPanel(new BorderLayout(6, 0));
+		p.setOpaque(false);
+		p.add(header(text), BorderLayout.WEST);
+		p.add(label(note, small(), FAINT), BorderLayout.EAST);
+		return p;
 	}
 
 	/** A label showing plain text word-wrapped to width (measured with the font, so pixel fonts wrap right). */
@@ -107,9 +211,10 @@ final class Ui
 		return html.append(center ? "</center></html>" : "</html>").toString();
 	}
 
+	/** Old name for {@link #header(String)}. */
 	static JLabel caption(String text)
 	{
-		return label(text.toUpperCase(), small(), MUTED);
+		return header(text);
 	}
 
 	static String esc(String s)
@@ -149,31 +254,54 @@ final class Ui
 		}
 	}
 
-	/** Padded block with a divider underneath, like the mockup's .sec. */
+	/** Padded block with a 2px divider underneath, like the mockup's .sec. */
 	static Column section()
 	{
 		Column c = new Column(5);
 		c.setBorder(BorderFactory.createCompoundBorder(
-			BorderFactory.createMatteBorder(0, 0, 1, 0, LINE),
+			BorderFactory.createMatteBorder(0, 0, 2, 0, SECTION_LINE),
 			BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD)));
 		return c;
 	}
 
+	/** Section with a pixel-font header as its first row. */
+	static Column section(String header)
+	{
+		Column c = section();
+		c.addRow(header(header));
+		return c;
+	}
+
+	/** Task header block: lighter stone with a 2px dark edge underneath. */
+	static Column hero()
+	{
+		Column c = new Column(4);
+		c.setOpaque(true);
+		c.setBackground(HEADER_BG);
+		c.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createMatteBorder(0, 0, 2, 0, EDGE_DARK),
+			BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+		return c;
+	}
+
+	/** Key in faint, value on the right in the given colour (.kv). */
 	static JPanel kv(String key, String value, Color valueColor)
 	{
 		JPanel p = new JPanel(new BorderLayout(6, 0));
 		p.setOpaque(false);
-		p.add(label(key, body(), MUTED), BorderLayout.WEST);
+		p.add(label(key, body(), FAINT), BorderLayout.WEST);
 		p.add(label(value, body(), valueColor), BorderLayout.EAST);
 		return p;
 	}
 
+	/** Small boxed chip on inner stone (.chip). */
 	static JLabel chip(String html, Color fg, Color bg)
 	{
 		JLabel l = label("<html>" + html + "</html>", small(), fg);
 		l.setOpaque(true);
 		l.setBackground(bg);
-		l.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
+		l.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(EDGE_DARK),
+			BorderFactory.createEmptyBorder(2, 5, 2, 5)));
 		return l;
 	}
 
@@ -184,7 +312,7 @@ final class Ui
 		return p;
 	}
 
-	/** Clickable flat label; L&F independent so it looks the same in RuneLite and headless renders. */
+	/** Clickable flat label (segmented-control cells); L&F independent so it renders the same headless. */
 	static class FlatButton extends JLabel
 	{
 		private Color base;
@@ -193,12 +321,13 @@ final class Ui
 		FlatButton(String text, Color fg, Color bg, Color hover, Runnable onClick)
 		{
 			super(text, SwingConstants.CENTER);
-			setFont(bold());
+			setFont(body());
 			setForeground(fg);
 			setOpaque(true);
 			setColors(bg, hover);
 			setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
 			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			aa(this);
 			addMouseListener(new MouseAdapter()
 			{
 				@Override
@@ -229,14 +358,16 @@ final class Ui
 		}
 	}
 
-	static FlatButton primary(String text, Runnable onClick)
+	/** Stone button with yellow text. */
+	static StoneButton primary(String text, Runnable onClick)
 	{
-		return new FlatButton(text, new Color(26, 26, 26), ORANGE, new Color(240, 154, 16), onClick);
+		return new StoneButton(text, true, onClick);
 	}
 
-	static FlatButton ghost(String text, Runnable onClick)
+	/** Stone button with gold text. */
+	static StoneButton ghost(String text, Runnable onClick)
 	{
-		return new FlatButton(text, TEXT, ROW, ROW2, onClick);
+		return new StoneButton(text, false, onClick);
 	}
 
 	static void onClick(JComponent c, Runnable r)
@@ -252,53 +383,13 @@ final class Ui
 		});
 	}
 
-	/** Horizontal track with a fill, for progress and the XP/GP bars. */
-	static class Bar extends JComponent
-	{
-		private final double fraction;
-		private final Color fill;
-		private final int height;
-
-		Bar(double fraction, Color fill, int height)
-		{
-			this.fraction = Math.max(0, Math.min(1, fraction));
-			this.fill = fill;
-			this.height = height;
-		}
-
-		@Override
-		public Dimension getPreferredSize()
-		{
-			return new Dimension(20, height);
-		}
-
-		@Override
-		protected void paintComponent(Graphics g)
-		{
-			Graphics2D g2 = (Graphics2D) g.create();
-			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			int w = getWidth();
-			int h = Math.min(height, getHeight());
-			int y = (getHeight() - h) / 2;
-			g2.setColor(ROW);
-			g2.fillRoundRect(0, y, w, h, h, h);
-			int fw = (int) Math.round(w * fraction);
-			if (fw > 0)
-			{
-				g2.setColor(fill);
-				g2.fillRoundRect(0, y, Math.max(fw, h), h, h, h);
-			}
-			g2.dispose();
-		}
-	}
-
+	/** Orange 1px frame with an inner brown line, for the selected / best-pick row. */
 	static Border leftAccent()
 	{
 		return BorderFactory.createCompoundBorder(
-			BorderFactory.createMatteBorder(0, 0, 1, 0, LINE),
-			BorderFactory.createCompoundBorder(
-				BorderFactory.createMatteBorder(0, 3, 0, 0, ORANGE),
-				BorderFactory.createEmptyBorder(PAD, PAD - 3, PAD, PAD)));
+			BorderFactory.createLineBorder(ORANGE),
+			BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(BEST_INNER),
+				BorderFactory.createEmptyBorder(PAD - 2, PAD - 2, PAD - 2, PAD - 2)));
 	}
 
 	static JPanel message(String text)
@@ -306,17 +397,18 @@ final class Ui
 		JPanel p = new JPanel(new BorderLayout());
 		p.setOpaque(false);
 		p.setBorder(BorderFactory.createEmptyBorder(24, PAD, 24, PAD));
-		JLabel l = label(text, body(), MUTED);
+		JLabel l = wrapped(text, body(), MUTED, INNER_WIDTH);
 		l.setHorizontalAlignment(SwingConstants.CENTER);
 		p.add(l, BorderLayout.CENTER);
 		return p;
 	}
 
+	/** Centred faint footer line (.foot). */
 	static JLabel note(String text)
 	{
 		JLabel l = label(wrapHtml(text, small(), INNER_WIDTH, true), small(), FAINT);
 		l.setHorizontalAlignment(SwingConstants.CENTER);
-		l.setBorder(BorderFactory.createEmptyBorder(6, PAD, PAD, PAD));
+		l.setBorder(BorderFactory.createEmptyBorder(8, PAD, 8, PAD));
 		return l;
 	}
 

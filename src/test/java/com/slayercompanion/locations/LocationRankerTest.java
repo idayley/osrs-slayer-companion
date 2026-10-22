@@ -67,7 +67,7 @@ public class LocationRankerTest
 		assertEquals("a", r.get(0).getLocation().getId());
 		assertTrue(r.get(0).isUsable());
 		assertFalse(r.get(1).isUsable());
-		assertEquals("Konar sent you elsewhere", r.get(1).getLockedReason());
+		assertEquals("Not your Konar location", r.get(1).getLockedReason());
 	}
 
 	@Test
@@ -135,7 +135,7 @@ public class LocationRankerTest
 		Location a = loc("a", "A", 3010, 3000, 0);
 		Location b = loc("b", "B", 2990, 3000, 0);
 		List<RankedLocation> r = rank(Arrays.asList(a, b), Style.MELEE, OPEN, Optional.empty(), Collections.emptySet());
-		assertEquals("Picked because it's the best available.", r.get(0).getWhy());
+		assertEquals("Best available", r.get(0).getWhy());
 	}
 
 	@Test
@@ -154,7 +154,7 @@ public class LocationRankerTest
 		List<RankedLocation> r = rank(Arrays.asList(near, safe), Style.RANGED, OPEN, Optional.empty(),
 			new HashSet<>(Arrays.asList("safe", "near")));
 		assertTrue(r.get(0).isRecommended());
-		assertEquals("Picked because it has a safespot and is closest.", r.get(0).getWhy());
+		assertEquals("Safespot · Closest", r.get(0).getWhy());
 		assertFalse(r.get(1).isRecommended());
 	}
 
@@ -163,14 +163,14 @@ public class LocationRankerTest
 	{
 		Location a = loc("a", "A", 3001, 3000, 0);
 		List<RankedLocation> melee = rank(Arrays.asList(a), Style.MELEE, OPEN, Optional.empty(), Collections.emptySet());
-		assertEquals("Picked because it is closest.", melee.get(0).getWhy());
+		assertEquals("Closest", melee.get(0).getWhy());
 
 		// Safespot chosen but farther than a locked-out... usable but not closest
 		Location close = loc("close", "Close", 3001, 3000, 0);
 		Location safe = loc("safe", "Safe", 3100, 3000, 0);
 		List<RankedLocation> r = rank(Arrays.asList(close, safe), Style.MAGIC, OPEN, Optional.empty(),
 			new HashSet<>(Arrays.asList("safe")));
-		assertEquals("Picked because it has a safespot.", r.get(0).getWhy());
+		assertEquals("Safespot", r.get(0).getWhy());
 	}
 
 	@Test
@@ -186,5 +186,20 @@ public class LocationRankerTest
 		List<RankedLocation> r = rank(Arrays.asList(a), Style.MELEE, l -> Optional.of("x"), Optional.empty(),
 			Collections.emptySet());
 		assertFalse(r.get(0).isRecommended());
+	}
+
+	@Test
+	public void routedTimeBeatsStraightLine()
+	{
+		// Straight-line, "far" is 10 minutes away; Shortest Path knows a teleport that makes it 1 minute.
+		Location near = loc("near", "Near", 3300, 3000, 0); // 90 s on foot
+		Location far = loc("far", "Far", 1000, 3000, 0);
+		List<RankedLocation> r = LocationRanker.rank(Arrays.asList(near, far), Style.MELEE, PLAYER, OPEN,
+			Optional.empty(), l -> false, l -> 0, l -> 0,
+			l -> l == far ? java.util.OptionalDouble.of(60) : java.util.OptionalDouble.empty());
+		assertEquals("far", r.get(0).getLocation().getId());
+		assertEquals(60, r.get(0).getTravelSeconds(), 0.001);
+		assertTrue(r.get(0).isTravelRouted());
+		assertFalse(r.get(1).isTravelRouted());
 	}
 }

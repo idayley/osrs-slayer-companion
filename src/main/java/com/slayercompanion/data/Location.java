@@ -14,6 +14,8 @@ public class Location
 	private String taskId;
 	private int monsterId;
 	private WorldPointDto entrance;
+	/** Where "Take me there" sends Shortest Path when it can't reach the entrance; see tools/route_targets.py. */
+	private WorldPointDto route;
 	private List<String> tags = new ArrayList<>();
 	private Map<String, Integer> skillReqs = new HashMap<>();
 	/** RuneLite Quest enum names. */
@@ -22,4 +24,9 @@ public class Location
 	private double overheadSeconds;
 	private double killSpeedFactor;
 	private double bonusGpPerKill;
+
+	public WorldPointDto routeTarget()
+	{
+		return route != null ? route : entrance;
+	}
 }

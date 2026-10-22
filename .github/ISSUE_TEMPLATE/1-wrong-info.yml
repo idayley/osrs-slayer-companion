@@ -1,0 +1,26 @@
+name: Wrong game info
+description: A weakness, requirement, location, drop, price or time that doesn't match the game.
+title: "[Wrong info] "
+labels: ["wrong info"]
+body:
+  - type: input
+    id: task
+    attributes:
+      label: Task or item
+      placeholder: e.g. Kurask, Trident of the swamp
+    validations:
+      required: true
+  - type: textarea
+    id: shown
+    attributes:
+      label: What the plugin shows
+      description: A screenshot of the panel helps a lot.
+    validations:
+      required: true
+  - type: textarea
+    id: correct
+    attributes:
+      label: What's actually correct
+      description: Link the OSRS Wiki page if it backs you up.
+    validations:
+      required: true

@@ -27,6 +27,17 @@ public class GameDataTest
 	}
 
 	@Test
+	public void chargedTridentPricesFromItsUnchargedState()
+	{
+		GameData data = GameData.load("/com/slayercompanion/");
+		java.util.List<Integer> ids = new java.util.ArrayList<>();
+		data.otherStates(12899).forEach(e -> ids.add(e.getItemId()));
+		assertEquals(java.util.Collections.singletonList(12900), ids); // not the (e) or (o) versions
+		assertEquals(78, (int) data.equipment(12899).get().getSkillReqs().get("magic"));
+		assertEquals(75, (int) data.equipment(11905).get().getSkillReqs().get("magic"));
+	}
+
+	@Test
 	public void missingResourceFailsLoudly()
 	{
 		try

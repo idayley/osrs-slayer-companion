@@ -12,6 +12,8 @@ public class RankedLocation
 	private String lockedReason;
 	private boolean hasSafespot;
 	private double travelSeconds;
+	/** travelSeconds is Shortest Path's route time rather than a straight-line estimate. */
+	private boolean travelRouted;
 	private double xpPerHour;
 	private double gpPerHour;
 	private boolean recommended;
